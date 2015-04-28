@@ -2,19 +2,26 @@ package br.edu.ifg.livroar;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import edu.dhbw.andar.ARObject;
+import edu.dhbw.andar.pub.SimpleBox;
 
 /**
  * Created by leandro on 28/04/15.
  */
-public class CarObject extends ARObject {
+public class CarObject extends LivroObject {
+
+    private SimpleBox box;
 
     public CarObject() {
-        super("car", "car", 80.0, new double[]{0,0});
+        super("car", "android.patt");
     }
 
     @Override
     public void init(GL10 gl10) {
 
+    }
+
+    @Override
+    public synchronized void draw(GL10 gl) {
+        super.draw(gl);
     }
 }
