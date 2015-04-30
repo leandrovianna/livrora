@@ -5,9 +5,9 @@ package br.edu.ifg.livroar;
  */
 public class ObjParse {
 
-    public static Object3D loadObj(String objPath) {
+    public static ObjModel loadObj(String objPath) {
 
         //TODO: fazer parse
-        return null;
+        return new ObjModel();
     }
 }

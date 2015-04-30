@@ -26,7 +26,7 @@ public class MainActivity extends AndARActivity {
             CuboTest cuboAzul = new CuboTest("cuboAzul", "patt.hiro", new RGBColor(0,0,255));
             CuboTest cuboVermelho = new CuboTest("cuboVermelho", "android.patt", new RGBColor(255,0,0));
 
-            Object3D object = ObjParse.loadObj("teste");
+            Object3D object = new Object3D("teste", "teste.patt", ObjParse.loadObj("teste"));
 
             setNonARRenderer(renderer); //adicionando o renderer
 
