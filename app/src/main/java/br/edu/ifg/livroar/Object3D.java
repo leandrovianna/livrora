@@ -13,33 +13,28 @@ import edu.dhbw.andar.ARObject;
 public class Object3D extends ARObject {
 
     private static final String TAG = "Object3D";
-    private final String objName;
+    private Model model;
 
     /**
      * Constroi um Objeto3D compatível com o AndAR.
      * @param name Nome para o objeto, pode ser qualquer nome
      * @param patternName Nome do arquivo da marca (.patt)
      *                    que está na pasta assets do projeto
-     * @param objName Nome do arquivo do modelo 3D (.obj) e
-     *                do arquivo de textura (.mtl).
-     *                Eles devem ter o mesmo nome.
      */
-    public Object3D(String name, String patternName, String objName) {
+    public Object3D(String name, String patternName, Model model) {
         //80.0 significa 80mm, o tamanho da marca matricial
         super(name, patternName, 80.0, new double[]{0,0});
-
-        this.objName = objName;
-
-        //TODO: fazer conversão do arquivo obj em modelo opengl
+        this.model = model;
     }
 
     @Override
-    public void init(GL10 gl10) {
-
+    public void init(GL10 gl) {
+        model.init(gl);
     }
 
     @Override
     public synchronized void draw(GL10 gl) {
         super.draw(gl);
+        model.draw(gl);
     }
 }

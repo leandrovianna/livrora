@@ -26,6 +26,8 @@ public class MainActivity extends AndARActivity {
             CuboTest cuboAzul = new CuboTest("cuboAzul", "patt.hiro", new RGBColor(0,0,255));
             CuboTest cuboVermelho = new CuboTest("cuboVermelho", "android.patt", new RGBColor(255,0,0));
 
+            Object3D object = ObjParse.loadObj("teste");
+
             setNonARRenderer(renderer); //adicionando o renderer
 
             arToolkit.registerARObject(cuboAzul);
@@ -42,7 +44,7 @@ public class MainActivity extends AndARActivity {
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
         Log.e(TAG, "AndAR Uncaught Exception: " + ex.getMessage());
-        Log.e(TAG, "AndAR Uncaught Exception: Thread{" + thread.toString() + "}");
+        Log.e(TAG, "AndAR Uncaught Exception: " + thread.toString());
         finish();
     }
 }

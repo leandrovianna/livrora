@@ -19,7 +19,7 @@ public class CuboTest extends Object3D {
     private final FloatBuffer matFlashBrilho;
 
     public CuboTest(String name, String patternName, RGBColor color) {
-        super(name, patternName, null);
+        super(name, patternName);
 
         box = new SimpleBox();
 
