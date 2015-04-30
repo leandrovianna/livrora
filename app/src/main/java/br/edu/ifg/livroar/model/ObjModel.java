@@ -1,6 +1,7 @@
-package br.edu.ifg.livroar;
+package br.edu.ifg.livroar.model;
 
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -9,9 +10,10 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class ObjModel implements Model {
 
-    private FloatBuffer bufferVertices;
+    private FloatBuffer bufferPositions;
     private FloatBuffer bufferUvs;
     private FloatBuffer bufferNormals;
+    private FloatBuffer bufferColors;
     private int vertexCount;
 
     @Override
@@ -22,23 +24,28 @@ public class ObjModel implements Model {
     @Override
     public void draw(GL10 gl) {
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 3, this.bufferVertices);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 3, this.bufferPositions);
 
         gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
         gl.glVertexPointer(3, GL10.GL_FLOAT, 3, this.bufferNormals);
 
+        //Fazer o bind da texture
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
         gl.glVertexPointer(2, GL10.GL_FLOAT, 2, this.bufferUvs);
 
         gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.vertexCount);
+
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
+        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
     }
 
-    public FloatBuffer getBufferVertices() {
-        return bufferVertices;
+    public FloatBuffer getBufferPositions() {
+        return bufferPositions;
     }
 
-    public void setBufferVertices(FloatBuffer bufferVertices) {
-        this.bufferVertices = bufferVertices;
+    public void setBufferPositions(FloatBuffer bufferPositions) {
+        this.bufferPositions = bufferPositions;
     }
 
     public FloatBuffer getBufferUvs() {
@@ -55,6 +62,14 @@ public class ObjModel implements Model {
 
     public void setBufferNormals(FloatBuffer bufferNormals) {
         this.bufferNormals = bufferNormals;
+    }
+
+    public FloatBuffer getBufferColors() {
+        return bufferColors;
+    }
+
+    public void setBufferColors(FloatBuffer bufferColors) {
+        this.bufferColors = bufferColors;
     }
 
     public int getVertexCount() {

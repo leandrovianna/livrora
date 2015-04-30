@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import br.edu.ifg.livroar.model.Object3D;
 import edu.dhbw.andar.pub.SimpleBox;
 import edu.dhbw.andar.util.GraphicsUtil;
 

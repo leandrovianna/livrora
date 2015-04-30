@@ -1,4 +1,4 @@
-package br.edu.ifg.livroar;
+package br.edu.ifg.livroar.model;
 
 import javax.microedition.khronos.opengles.GL10;
 

@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/LivroAR.iml" filepath="$PROJECT_DIR$/LivroAR.iml" />
       <module fileurl="file://$PROJECT_DIR$/andar/andar.iml" filepath="$PROJECT_DIR$/andar/andar.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/livrora-master.iml" filepath="$PROJECT_DIR$/livrora-master.iml" />
     </modules>
   </component>
 </project>

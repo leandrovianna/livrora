@@ -3,6 +3,8 @@ package br.edu.ifg.livroar;
 import android.os.Bundle;
 import android.util.Log;
 
+import br.edu.ifg.livroar.model.Object3D;
+import br.edu.ifg.livroar.model.ObjParser;
 import edu.dhbw.andar.ARToolkit;
 import edu.dhbw.andar.AndARActivity;
 import edu.dhbw.andar.exceptions.AndARException;
@@ -26,7 +28,7 @@ public class MainActivity extends AndARActivity {
             CuboTest cuboAzul = new CuboTest("cuboAzul", "patt.hiro", new RGBColor(0,0,255));
             CuboTest cuboVermelho = new CuboTest("cuboVermelho", "android.patt", new RGBColor(255,0,0));
 
-            Object3D object = new Object3D("teste", "teste.patt", ObjParse.loadObj("teste"));
+            Object3D object = ObjParser.loadObj("teste");
 
             setNonARRenderer(renderer); //adicionando o renderer
 
