@@ -1,7 +1,8 @@
 package br.edu.ifg.livroar.model;
 
+import android.util.Log;
+
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
@@ -38,6 +39,8 @@ public class ObjModel implements Model {
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glDisableClientState(GL10.GL_NORMAL_ARRAY);
         gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+
+        Log.i("ObjModel", "draw()");
     }
 
     public FloatBuffer getBufferPositions() {

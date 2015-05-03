@@ -23,7 +23,7 @@ import br.edu.ifg.livroar.Vec3f;
  */
 public class ObjParser {
 
-    public static ObjModel loadObj(Context context, String objPath) {
+    public static ObjModel loadObj(Context context, String objPath) throws IOException {
 
         // Dados das vertices duplicadas, considerar usar multiplas partes por ObjModel
         List<Vec3f> positions = new ArrayList<>();
@@ -46,42 +46,38 @@ public class ObjParser {
         String[] lineParts;
         RGBColorF curColor = new RGBColorF(0,0,1);
 
-        try {
-            reader = new BufferedReader(new InputStreamReader(context.getAssets().open(objPath+".obj")));
-            while((line = reader.readLine())!=null){
-                lineParts = line.split("[ ]+");
-                switch (lineParts[0]){
-                    case "mtllib":
-                        materials = MtlParser.loadMTL(context, objPath); //Nome do mtl == nome do obj
-                        break;
-                    case "v":
-                        parseV(positions, lineParts[1], lineParts[2], lineParts[3]);
-                        break;
-                    case "vt":
-                        parseVT(uvs, lineParts[1], lineParts[2]);
-                        break;
-                    case "vn":
-                        parseVN(normals, lineParts[1], lineParts[2], lineParts[3]);
-                        break;
-                    case "usemtl":
-                        if(!materials.isEmpty() && materials.get(lineParts[1])!=null){
-                            curColor = materials.get(lineParts[1]).getDiffuse();
-                        }
-                        else{
-                            curColor = new RGBColorF(0,0,1); //Se material nao estiver carregado, setar cor para azul
-                        }
-                        break;
-                    case "f":
-                        parseF(lineParts[1],
-                                positions, positionsDupli,
-                                normals, normalsDupli,
-                                uvs, uvsDupli,
-                                curColor, colorsDupli);
-                        break;
-                }
+        reader = new BufferedReader(new InputStreamReader(context.getAssets().open(objPath+".obj")));
+        while((line = reader.readLine())!=null){
+            lineParts = line.split("[ ]+");
+            switch (lineParts[0]){
+                case "mtllib":
+                    materials = MtlParser.loadMTL(context, objPath); //Nome do mtl == nome do obj
+                    break;
+                case "v":
+                    parseV(positions, lineParts[1], lineParts[2], lineParts[3]);
+                    break;
+                case "vt":
+                    parseVT(uvs, lineParts[1], lineParts[2]);
+                    break;
+                case "vn":
+                    parseVN(normals, lineParts[1], lineParts[2], lineParts[3]);
+                    break;
+                case "usemtl":
+                    if(!materials.isEmpty() && materials.get(lineParts[1])!=null){
+                        curColor = materials.get(lineParts[1]).getDiffuse();
+                    }
+                    else{
+                        curColor = new RGBColorF(0,0,1); //Se material nao estiver carregado, setar cor para azul
+                    }
+                    break;
+                case "f":
+                    parseF(lineParts[1]+" "+lineParts[2]+" "+lineParts[3],
+                            positions, positionsDupli,
+                            normals, normalsDupli,
+                            uvs, uvsDupli,
+                            curColor, colorsDupli);
+                    break;
             }
-        }catch (IOException e){
-
         }
 
         ObjModel objModel = new ObjModel();
@@ -112,17 +108,18 @@ public class ObjParser {
                                List<Vec2f> uvs , List<Vec2f> uvsDupli,
                                RGBColorF curColor, List<RGBColorF> colorsDupli){
 
+        //mudança: trocando indice 1 por 0
         String[] lineSubParts = lineParts1.split("[ ]+");
-        if(lineSubParts[1].matches("[0-9]+")){ //Face composta de posicoes
-            for (int i = 1; i < 4; i++) {
+        if(lineSubParts[0].matches("[0-9]+")){ //Face composta de posicoes
+            for (int i = 0; i < 3; i++) {
                 short indx = Short.parseShort(lineSubParts[i]);
                 indx--;
                 positionsDupli.add(positions.get(indx));
                 colorsDupli.add(curColor);
             }
-        }else if(lineSubParts[1].matches("[0-9]+/[0-9]+")){//Face composta de posicoes e UVs
-            for (int i = 1; i < 4; i++) {
-                String[] l = lineSubParts[i].split("[/]");
+        }else if(lineSubParts[0].matches("[0-9]+/[0-9]+")){//Face composta de posicoes e UVs
+            for (int i = 0; i < 3; i++) {
+                String[] l = lineSubParts[i].split("[/]+");
                 short indx = Short.parseShort(l[0]);
                 indx--;
                 positionsDupli.add(positions.get(indx));
@@ -133,9 +130,9 @@ public class ObjParser {
 
                 colorsDupli.add(curColor);
             }
-        }else if(lineSubParts[1].matches("[0-9]+//[0-9]+")){ //Face composta de posicoes e normais
-            for (int i = 1; i < 4; i++) {
-                String[] l = lineSubParts[i].split("[//]");
+        }else if(lineSubParts[0].matches("[0-9]+//[0-9]+")){ //Face composta de posicoes e normais
+            for (int i = 0; i < 3; i++) {
+                String[] l = lineSubParts[i].split("[//]+");
                 short indx = Short.parseShort(l[0]);
                 indx--;
                 positionsDupli.add(positions.get(indx));
@@ -146,8 +143,8 @@ public class ObjParser {
 
                 colorsDupli.add(curColor);
             }
-        }else if(lineSubParts[1].matches("[0-9]+/[0-9]+/[0-9]+")){//Face composta de posicoes, UVs e normais
-            for (int i = 1; i < 4; i++) {
+        }else if(lineSubParts[0].matches("[0-9]+/[0-9]+/[0-9]+")){//Face composta de posicoes, UVs e normais
+            for (int i = 0; i < 3; i++) {
                 String[] l = lineSubParts[i].split("[/]");
                 short indx = Short.parseShort(l[0]);
                 indx--;

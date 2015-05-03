@@ -3,6 +3,8 @@ package br.edu.ifg.livroar;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.io.IOException;
+
 import br.edu.ifg.livroar.model.Object3D;
 import br.edu.ifg.livroar.model.ObjParser;
 import edu.dhbw.andar.ARToolkit;
@@ -24,27 +26,30 @@ public class MainActivity extends AndARActivity {
             renderer = new DefaultRenderer();
             arToolkit = getArtoolkit();
 
-            CuboTest cuboVerde = new CuboTest("cuboVerde", "barcode.patt", new RGBColor(0,255,0));
-            CuboTest cuboAzul = new CuboTest("cuboAzul", "patt.hiro", new RGBColor(0,0,255));
-            CuboTest cuboVermelho = new CuboTest("cuboVermelho", "android.patt", new RGBColor(255,0,0));
+            Object3D cuboVerde = new Object3D("cuboVerde", "barcode.patt", new CuboTestModel(new RGBColor(0,255,0)));
+            Object3D cuboAzul = new Object3D("cuboAzul", "patt.hiro", new CuboTestModel(new RGBColor(0,0,255)));
 
-            Object3D object = ObjParser.loadObj("teste");
+            Object3D icosphere = new Object3D("icosphere", "android.patt", ObjParser.loadObj(this, "icosphere"));
 
             setNonARRenderer(renderer); //adicionando o renderer
 
             arToolkit.registerARObject(cuboAzul);
             arToolkit.registerARObject(cuboVerde);
-            arToolkit.registerARObject(cuboVermelho);
+            arToolkit.registerARObject(icosphere);
 
             startPreview();
         } catch (AndARException e) {
             e.printStackTrace();
             Log.e(TAG, "AndAR Exception: " + e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG, "IO Exception: "+e.getMessage());
         }
     }
 
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
+        ex.printStackTrace();
         Log.e(TAG, "AndAR Uncaught Exception: " + ex.getMessage());
         Log.e(TAG, "AndAR Uncaught Exception: " + thread.toString());
         finish();

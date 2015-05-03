@@ -27,6 +27,10 @@ public class Object3D extends ARObject {
         this.model = model;
     }
 
+    public Object3D(String name, String patternName) {
+        super(name, patternName, 80.0, new double[]{0,0});
+    }
+
     @Override
     public void init(GL10 gl) {
         model.init(gl);
