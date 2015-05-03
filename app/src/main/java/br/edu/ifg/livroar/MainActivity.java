@@ -5,8 +5,8 @@ import android.util.Log;
 
 import java.io.IOException;
 
-import br.edu.ifg.livroar.model.Object3D;
 import br.edu.ifg.livroar.model.ObjParser;
+import br.edu.ifg.livroar.model.Object3D;
 import edu.dhbw.andar.ARToolkit;
 import edu.dhbw.andar.AndARActivity;
 import edu.dhbw.andar.exceptions.AndARException;
@@ -26,15 +26,10 @@ public class MainActivity extends AndARActivity {
             renderer = new DefaultRenderer();
             arToolkit = getArtoolkit();
 
-            Object3D cuboVerde = new Object3D("cuboVerde", "barcode.patt", new CuboTestModel(new RGBColor(0,255,0)));
-            Object3D cuboAzul = new Object3D("cuboAzul", "patt.hiro", new CuboTestModel(new RGBColor(0,0,255)));
-
             Object3D icosphere = new Object3D("icosphere", "android.patt", ObjParser.loadObj(this, "icosphere"));
 
             setNonARRenderer(renderer); //adicionando o renderer
 
-            arToolkit.registerARObject(cuboAzul);
-            arToolkit.registerARObject(cuboVerde);
             arToolkit.registerARObject(icosphere);
 
             startPreview();

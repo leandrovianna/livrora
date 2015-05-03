@@ -1,4 +1,4 @@
-package br.edu.ifg.livroar;
+package br.edu.ifg.livroar.util;
 
 
 public class Vec2 {

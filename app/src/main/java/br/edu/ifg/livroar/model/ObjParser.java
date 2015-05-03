@@ -1,6 +1,7 @@
 package br.edu.ifg.livroar.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,14 +15,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.edu.ifg.livroar.RGBColor;
-import br.edu.ifg.livroar.Vec2;
-import br.edu.ifg.livroar.Vec3;
+import br.edu.ifg.livroar.util.RGBColor;
+import br.edu.ifg.livroar.util.Vec2;
+import br.edu.ifg.livroar.util.Vec3;
 
 /**
  * Created by leandro on 30/04/15.
  */
 public class ObjParser {
+
+    private static final String TAG = "ObjParser";
 
     public static ObjModel loadObj(Context context, String objPath) throws IOException {
 
@@ -48,6 +51,7 @@ public class ObjParser {
 
         reader = new BufferedReader(new InputStreamReader(context.getAssets().open(objPath+".obj")));
         while((line = reader.readLine())!=null){
+            Log.i(TAG, line);
             lineParts = line.split("[ ]+");
             switch (lineParts[0]){
                 case "mtllib":

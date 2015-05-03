@@ -1,6 +1,6 @@
 package br.edu.ifg.livroar.model;
 
-import br.edu.ifg.livroar.RGBColor;
+import br.edu.ifg.livroar.util.RGBColor;
 
 /**
  * Created by JoaoPaulo on 29/04/2015.

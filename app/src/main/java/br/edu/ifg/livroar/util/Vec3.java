@@ -1,4 +1,4 @@
-package br.edu.ifg.livroar;
+package br.edu.ifg.livroar.util;
 
 /**
  * Created by JoaoPaulo on 02/04/2015.

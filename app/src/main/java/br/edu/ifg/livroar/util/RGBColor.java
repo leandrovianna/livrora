@@ -1,4 +1,4 @@
-package br.edu.ifg.livroar;
+package br.edu.ifg.livroar.util;
 
 import java.io.Serializable;
 
