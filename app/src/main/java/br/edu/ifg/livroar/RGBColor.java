@@ -7,9 +7,9 @@ import java.io.Serializable;
  */
 public class RGBColor implements Serializable {
 
-    private int red;
-    private int green;
-    private int blue;
+    private float red;
+    private float green;
+    private float blue;
 
     public RGBColor() {
         red = 0;
@@ -17,7 +17,7 @@ public class RGBColor implements Serializable {
         blue = 0;
     }
 
-    public RGBColor(int red, int green, int blue) {
+    public RGBColor(float red, float green, float blue) {
         checkValue(red);
         checkValue(green);
         checkValue(blue);
@@ -26,36 +26,36 @@ public class RGBColor implements Serializable {
         this.blue = blue;
     }
 
-    public int getRed() {
+    public float getRed() {
         return red;
     }
 
-    public void setRed(int red) {
+    public void setRed(float red) {
         checkValue(red);
         this.red = red;
     }
 
-    public int getGreen() {
+    public float getGreen() {
         return green;
     }
 
-    public void setGreen(int green) {
+    public void setGreen(float green) {
         checkValue(green);
         this.green = green;
     }
 
-    public int getBlue() {
+    public float getBlue() {
         return blue;
     }
 
-    public void setBlue(int blue) {
+    public void setBlue(float blue) {
         checkValue(blue);
         this.blue = blue;
     }
 
-    private void checkValue(int value) {
-        if (value > 255 && value < 0)
-            throw new IllegalArgumentException("O argumento deve ser de 0 a 255");
+    private void checkValue(float value) {
+        if (value > 1 && value < 0)
+            throw new IllegalArgumentException("O argumento deve ser de 0 a 1");
     }
 
     public float[] getFloatArray() {

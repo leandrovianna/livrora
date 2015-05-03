@@ -1,6 +1,6 @@
 package br.edu.ifg.livroar.model;
 
-import br.edu.ifg.livroar.RGBColorF;
+import br.edu.ifg.livroar.RGBColor;
 
 /**
  * Created by JoaoPaulo on 29/04/2015.
@@ -9,9 +9,9 @@ public class MtlMaterial {
 
     private String name;
     private float shininess;
-    private RGBColorF ambient;
-    private RGBColorF diffuse;
-    private RGBColorF specular;
+    private RGBColor ambient;
+    private RGBColor diffuse;
+    private RGBColor specular;
     private float transparency;
     private int illum;
 
@@ -38,28 +38,28 @@ public class MtlMaterial {
         this.shininess = shininess;
     }
 
-    public RGBColorF getAmbient() {
+    public RGBColor getAmbient() {
         return ambient;
     }
 
     public void setAmbient(float r, float g, float b) {
-        ambient = new RGBColorF(r,g,b);
+        ambient = new RGBColor(r,g,b);
     }
 
-    public RGBColorF getDiffuse() {
+    public RGBColor getDiffuse() {
         return diffuse;
     }
 
     public void setDiffuse(float r, float g, float b) {
-        diffuse = new RGBColorF(r,g,b);
+        diffuse = new RGBColor(r,g,b);
     }
 
-    public RGBColorF getSpecular() {
+    public RGBColor getSpecular() {
         return specular;
     }
 
     public void setSpecular(float r, float g, float b) {
-        specular = new RGBColorF(r,g,b);
+        specular = new RGBColor(r,g,b);
     }
 
     public float getTransparency() {

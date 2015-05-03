@@ -14,9 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.edu.ifg.livroar.RGBColorF;
-import br.edu.ifg.livroar.Vec2f;
-import br.edu.ifg.livroar.Vec3f;
+import br.edu.ifg.livroar.RGBColor;
+import br.edu.ifg.livroar.Vec2;
+import br.edu.ifg.livroar.Vec3;
 
 /**
  * Created by leandro on 30/04/15.
@@ -26,17 +26,17 @@ public class ObjParser {
     public static ObjModel loadObj(Context context, String objPath) throws IOException {
 
         // Dados das vertices duplicadas, considerar usar multiplas partes por ObjModel
-        List<Vec3f> positions = new ArrayList<>();
-        List<Vec3f> positionsDupli = new ArrayList<>();
+        List<Vec3> positions = new ArrayList<>();
+        List<Vec3> positionsDupli = new ArrayList<>();
 
-        List<Vec3f> normals = new ArrayList<>();
-        List<Vec3f> normalsDupli = new ArrayList<>();
+        List<Vec3> normals = new ArrayList<>();
+        List<Vec3> normalsDupli = new ArrayList<>();
 
-        List<Vec2f> uvs = new ArrayList<>();
-        List<Vec2f> uvsDupli = new ArrayList<>();
+        List<Vec2> uvs = new ArrayList<>();
+        List<Vec2> uvsDupli = new ArrayList<>();
 
-        List<RGBColorF> colors = new ArrayList<>();
-        List<RGBColorF> colorsDupli = new ArrayList<>();
+        List<RGBColor> colors = new ArrayList<>();
+        List<RGBColor> colorsDupli = new ArrayList<>();
 
         Map<String, MtlMaterial> materials = new HashMap<>();
         int vertsCount = 0;
@@ -44,7 +44,7 @@ public class ObjParser {
         BufferedReader reader;
         String line;
         String[] lineParts;
-        RGBColorF curColor = new RGBColorF(0,0,1);
+        RGBColor curColor = new RGBColor(0,0,1);
 
         reader = new BufferedReader(new InputStreamReader(context.getAssets().open(objPath+".obj")));
         while((line = reader.readLine())!=null){
@@ -67,7 +67,7 @@ public class ObjParser {
                         curColor = materials.get(lineParts[1]).getDiffuse();
                     }
                     else{
-                        curColor = new RGBColorF(0,0,1); //Se material nao estiver carregado, setar cor para azul
+                        curColor = new RGBColor(0,0,1); //Se material nao estiver carregado, setar cor para azul
                     }
                     break;
                 case "f":
@@ -90,23 +90,23 @@ public class ObjParser {
         return objModel;
     }
 
-    private static void parseV(List<Vec3f> positions, String x, String y, String z){
-        positions.add(new Vec3f(Float.parseFloat(x),Float.parseFloat(y),Float.parseFloat(z)));
+    private static void parseV(List<Vec3> positions, String x, String y, String z){
+        positions.add(new Vec3(Float.parseFloat(x),Float.parseFloat(y),Float.parseFloat(z)));
     }
 
-    private static void parseVT(List<Vec2f> uvs, String u, String v){
-        uvs.add(new Vec2f(Float.parseFloat(u),Float.parseFloat(v)));
+    private static void parseVT(List<Vec2> uvs, String u, String v){
+        uvs.add(new Vec2(Float.parseFloat(u),Float.parseFloat(v)));
     }
 
-    private static void parseVN(List<Vec3f> normals, String x, String y, String z){
-        normals.add(new Vec3f(Float.parseFloat(x),Float.parseFloat(y),Float.parseFloat(z)));
+    private static void parseVN(List<Vec3> normals, String x, String y, String z){
+        normals.add(new Vec3(Float.parseFloat(x),Float.parseFloat(y),Float.parseFloat(z)));
     }
 
     private static void parseF(String lineParts1,
-                               List<Vec3f> positions, List<Vec3f> positionsDupli,
-                               List<Vec3f> normals, List<Vec3f> normalsDupli,
-                               List<Vec2f> uvs , List<Vec2f> uvsDupli,
-                               RGBColorF curColor, List<RGBColorF> colorsDupli){
+                               List<Vec3> positions, List<Vec3> positionsDupli,
+                               List<Vec3> normals, List<Vec3> normalsDupli,
+                               List<Vec2> uvs , List<Vec2> uvsDupli,
+                               RGBColor curColor, List<RGBColor> colorsDupli){
 
         //mudança: trocando indice 1 por 0
         String[] lineSubParts = lineParts1.split("[ ]+");
@@ -164,12 +164,12 @@ public class ObjParser {
 
     }
 
-    private static FloatBuffer vec3fListToFloatBuffer(List<Vec3f> list){
+    private static FloatBuffer vec3fListToFloatBuffer(List<Vec3> list){
 
         float[] floatArray = new float[list.size() * 3];
 
         int i = 0;
-        for (Vec3f v : list){
+        for (Vec3 v : list){
             floatArray[i++] = v.x;
             floatArray[i++] = v.y;
             floatArray[i++] = v.z;
@@ -185,12 +185,12 @@ public class ObjParser {
         return floatBuffer;
     }
 
-    private static FloatBuffer vec2fListToFloatBuffer(List<Vec2f> list){
+    private static FloatBuffer vec2fListToFloatBuffer(List<Vec2> list){
 
         float[] floatArray = new float[list.size() * 2];
 
         int i = 0;
-        for (Vec2f v : list){
+        for (Vec2 v : list){
             floatArray[i++] = v.x;
             floatArray[i++] = v.y;
         }
@@ -205,12 +205,12 @@ public class ObjParser {
         return floatBuffer;
     }
 
-    private static FloatBuffer rgbcolorfListToFloatBuffer(List<RGBColorF> list){
+    private static FloatBuffer rgbcolorfListToFloatBuffer(List<RGBColor> list){
 
         float[] floatArray = new float[list.size() * 3];
 
         int i = 0;
-        for (RGBColorF c : list){
+        for (RGBColor c : list){
             floatArray[i++] = c.getRed();
             floatArray[i++] = c.getGreen();
             floatArray[i++] = c.getBlue();

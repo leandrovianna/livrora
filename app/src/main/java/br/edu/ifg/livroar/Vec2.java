@@ -1,26 +1,26 @@
 package br.edu.ifg.livroar;
 
 
-public class Vec2f {
+public class Vec2 {
 
 	public float x;
 	public float y;
 	
-	public Vec2f(float x, float y){
+	public Vec2(float x, float y){
 		this.x = x;
         this.y = y;
 	}
 	
-	public Vec2f copy(){
-		return new Vec2f(x, y);
+	public Vec2 copy(){
+		return new Vec2(x, y);
 	}
 	
-	public void set(Vec2f v) {
+	public void set(Vec2 v) {
 		this.x = v.x;
 		this.x = v.x;
 	}
 	
-	public float dot(Vec2f v){
+	public float dot(Vec2 v){
 		return x * v.x + y * v.y;
 	}
 
@@ -46,7 +46,7 @@ public class Vec2f {
         y = (float)(x * sen + y * cos);
 	}
 	
-	public void add(Vec2f v){
+	public void add(Vec2 v){
 		x += v.x;
         y += v.y;
 	}
@@ -56,7 +56,7 @@ public class Vec2f {
         y += n;
 	}
 	
-	public void sub(Vec2f v){
+	public void sub(Vec2 v){
 		x -= v.x;
         y -= v.y;
 	}
@@ -66,7 +66,7 @@ public class Vec2f {
         y -= n;
 	}
 	
-	public void mult(Vec2f v){
+	public void mult(Vec2 v){
 		x *= v.x;
         y *= v.y;
 	}
@@ -76,7 +76,7 @@ public class Vec2f {
         y *= n;
 	}
 	
-	public void div(Vec2f v){
+	public void div(Vec2 v){
 		x /= v.x;
         y /= v.y;
 	}
