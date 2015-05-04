@@ -5,6 +5,7 @@ import javax.microedition.khronos.opengles.GL10;
 import br.edu.ifg.livroar.MainActivity;
 import br.edu.ifg.livroar.model.Object3D;
 import br.edu.ifg.livroar.util.Vec3;
+import edu.dhbw.andar.ARObject;
 
 /**
  * Created by JoaoPaulo on 04/05/2015.
@@ -12,30 +13,32 @@ import br.edu.ifg.livroar.util.Vec3;
 public class TestAnimation implements Animation {
 
     private int times = 0;
-    private float zDisp = .9f;
+    private float zDisp = 3f;
 
     @Override
-    public void update(Object3D object, GL10 gl) {
+    public void update(Vec3 objectPosition, Vec3 objectRotation, GL10 gl) {
         times++;
 
         if(times % 30 == 0){
             zDisp *= -1;
         }
 
-        gl.glScalef(.1f,.1f,.1f);
+        objectPosition.z += zDisp;
+        objectRotation.z += .05f;
+        rotatePoint(objectPosition, objectRotation.z);
 
-        object.getRotation().z += .5f;
-        rotatePoint(object.getPosition(), object.getRotation().z);
-
-        object.setPosition(object.getPosition().x, object.getPosition().y, object.getPosition().z );
-
-        gl.glTranslatef(object.getPosition().x, object.getPosition().y, object.getPosition().z);
+//        objectPosition.set(objectPosition.x, objectPosition.y, objectPosition.z);
+        gl.glTranslatef(objectPosition.x, objectPosition.y, objectPosition.z);
+        gl.glRotatef(objectRotation.x, 1, 0, 0);
+        gl.glRotatef(objectRotation.y, 0, 1, 0);
+        gl.glRotatef(objectRotation.z, 0, 0, 1);
     }
 
     public void rotatePoint(Vec3 point, double angle){
         double angleRad = Math.toRadians(angle);
-        point.x = (float)(point.x * Math.cos(angleRad) - point.y * Math.sin(angleRad));
-        point.y = (float)(point.y * Math.cos(angleRad) + point.x * Math.sin(angleRad));
+        Vec3 copy = point.copy();
+        point.x = (float)(copy.x * Math.cos(angleRad) - copy.y * Math.sin(angleRad));
+        point.y = (float)(copy.y * Math.cos(angleRad) + copy.x * Math.sin(angleRad));
     }
 
 }
