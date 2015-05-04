@@ -26,7 +26,8 @@ public class ObjParser {
 
     private static final String TAG = "ObjParser";
 
-    public static ObjModel loadObj(Context context, String objPath) throws IOException {
+    public static ObjModel loadObj(Context context, String objPath) throws IOException
+    {
 
         // Dados das vertices duplicadas, considerar usar multiplas partes por ObjModel
         List<Vec3> positions = new ArrayList<>();
@@ -185,6 +186,7 @@ public class ObjParser {
                 .asFloatBuffer()
                 .put(floatArray);
         floatBuffer.position(0);
+        floatBuffer.flip();
 
         return floatBuffer;
     }

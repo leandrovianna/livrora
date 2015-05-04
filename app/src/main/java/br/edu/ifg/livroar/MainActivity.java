@@ -5,8 +5,11 @@ import android.util.Log;
 
 import java.io.IOException;
 
+import br.edu.ifg.livroar.animation.TestAnimation;
+import br.edu.ifg.livroar.model.AnimatedObject3D;
 import br.edu.ifg.livroar.model.ObjParser;
 import br.edu.ifg.livroar.model.Object3D;
+import br.edu.ifg.livroar.util.RGBColor;
 import edu.dhbw.andar.ARToolkit;
 import edu.dhbw.andar.AndARActivity;
 import edu.dhbw.andar.exceptions.AndARException;
@@ -26,11 +29,14 @@ public class MainActivity extends AndARActivity {
             renderer = new DefaultRenderer();
             arToolkit = getArtoolkit();
 
-            Object3D icosphere = new Object3D("icosphere", "android.patt", ObjParser.loadObj(this, "icosphere"));
+//          Object3D monkey = new Object3D("monkey", "android.patt", ObjParser.loadObj(this, "monkey"));
+            AnimatedObject3D monkey = new AnimatedObject3D("icosphere", "android.patt",
+                    ObjParser.loadObj(this, "icosphere"), new TestAnimation());
+            monkey.setPosition(50,0,0);
 
             setNonARRenderer(renderer); //adicionando o renderer
 
-            arToolkit.registerARObject(icosphere);
+            arToolkit.registerARObject(monkey);
 
             startPreview();
         } catch (AndARException e) {

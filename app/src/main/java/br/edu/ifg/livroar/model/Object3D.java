@@ -2,6 +2,7 @@ package br.edu.ifg.livroar.model;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import br.edu.ifg.livroar.util.Vec3;
 import edu.dhbw.andar.ARObject;
 
 /**
@@ -13,7 +14,10 @@ import edu.dhbw.andar.ARObject;
 public class Object3D extends ARObject {
 
     private static final String TAG = "Object3D";
-    private Model model;
+    protected Model model;
+
+    private Vec3 position = new Vec3(0,0,0);
+    private Vec3 rotation = new Vec3(0,0,0);
 
     /**
      * Constroi um Objeto3D compatível com o AndAR.
@@ -39,6 +43,37 @@ public class Object3D extends ARObject {
     @Override
     public synchronized void draw(GL10 gl) {
         super.draw(gl);
+
+//        gl.glScalef(20,20,20);
+
         model.draw(gl);
+    }
+
+    public Vec3 getPosition() {
+        return position;
+    }
+
+    public void setPosition(Vec3 position) {
+        this.position = position;
+    }
+
+    public void setPosition(float x, float y, float z){
+        position.x = x;
+        position.y = y;
+        position.z = z;
+    }
+
+    public Vec3 getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(Vec3 rotation) {
+        this.rotation = rotation;
+    }
+
+    public void setRotation(float angleX, float angleY, float angleZ){
+        rotation.x = angleX;
+        rotation.y = angleY;
+        rotation.z = angleZ;
     }
 }
