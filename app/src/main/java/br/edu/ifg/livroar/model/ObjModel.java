@@ -11,10 +11,12 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class ObjModel implements Model {
 
-    private FloatBuffer bufferPositions;
-    private FloatBuffer bufferUvs;
-    private FloatBuffer bufferNormals;
-    private FloatBuffer bufferColors;
+    private FloatBuffer positionsBuffer;
+    private FloatBuffer UVsBuffer;
+    private FloatBuffer normalsBuffer;
+    private FloatBuffer specularColorsBuffer;
+    private FloatBuffer diffuseColorsBuffer;
+    private FloatBuffer ambientColorsBuffer;
     private int vertexCount;
 
     @Override
@@ -28,16 +30,18 @@ public class ObjModel implements Model {
         gl.glScalef(20,20,20);
 
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.bufferPositions);
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, this.positionsBuffer);
 
         gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
-        gl.glNormalPointer(GL10.GL_FLOAT, 0, this.bufferNormals);
+        gl.glNormalPointer(GL10.GL_FLOAT, 0, this.normalsBuffer);
 
-        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
-        gl.glColorPointer(3, GL10.GL_FLOAT, 0, this.bufferColors);
+//        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, this.specularColorsBuffer);
+        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, this.diffuseColorsBuffer);
+        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, this.ambientColorsBuffer);
+
         //Fazer o bind da texture
 //        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-//        gl.glVertexPointer(2, GL10.GL_FLOAT, 2, this.bufferUvs);
+//        gl.glVertexPointer(2, GL10.GL_FLOAT, 2, this.UVsBuffer);
 
         gl.glDrawArrays(GL10.GL_TRIANGLES, 0, this.vertexCount);
 
@@ -49,36 +53,52 @@ public class ObjModel implements Model {
         Log.i("ObjModel", "draw()");
     }
 
-    public FloatBuffer getBufferPositions() {
-        return bufferPositions;
+    public FloatBuffer getPositionsBuffer() {
+        return positionsBuffer;
     }
 
-    public void setBufferPositions(FloatBuffer bufferPositions) {
-        this.bufferPositions = bufferPositions;
+    public void setPositionsBuffer(FloatBuffer positionsBuffer) {
+        this.positionsBuffer = positionsBuffer;
     }
 
-    public FloatBuffer getBufferUvs() {
-        return bufferUvs;
+    public FloatBuffer getUVsBuffer() {
+        return UVsBuffer;
     }
 
-    public void setBufferUvs(FloatBuffer bufferUvs) {
-        this.bufferUvs = bufferUvs;
+    public void setUVsBuffer(FloatBuffer UVsBuffer) {
+        this.UVsBuffer = UVsBuffer;
     }
 
-    public FloatBuffer getBufferNormals() {
-        return bufferNormals;
+    public FloatBuffer getNormalsBuffer() {
+        return normalsBuffer;
     }
 
-    public void setBufferNormals(FloatBuffer bufferNormals) {
-        this.bufferNormals = bufferNormals;
+    public void setNormalsBuffer(FloatBuffer normalsBuffer) {
+        this.normalsBuffer = normalsBuffer;
     }
 
-    public FloatBuffer getBufferColors() {
-        return bufferColors;
+    public FloatBuffer getDiffuseColorsBuffer() {
+        return diffuseColorsBuffer;
     }
 
-    public void setBufferColors(FloatBuffer bufferColors) {
-        this.bufferColors = bufferColors;
+    public void setDiffuseColorsBuffer(FloatBuffer diffuseColorsBuffer) {
+        this.diffuseColorsBuffer = diffuseColorsBuffer;
+    }
+
+    public FloatBuffer getSpecularColorsBuffer() {
+        return specularColorsBuffer;
+    }
+
+    public void setSpecularColorsBuffer(FloatBuffer specularColorsBuffer) {
+        this.specularColorsBuffer = specularColorsBuffer;
+    }
+
+    public FloatBuffer getAmbientColorsBuffer() {
+        return ambientColorsBuffer;
+    }
+
+    public void setAmbientColorsBuffer(FloatBuffer ambientColorsBuffer) {
+        this.ambientColorsBuffer = ambientColorsBuffer;
     }
 
     public int getVertexCount() {

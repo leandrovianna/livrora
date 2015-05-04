@@ -20,6 +20,12 @@ public class MtlMaterial {
 
     public MtlMaterial(String name) {
         this.name = name;
+        shininess = 0;
+        ambient = new RGBColor(0,0,0);
+        diffuse = new RGBColor(1,0,1);
+        specular = new RGBColor(0,0,0);
+        transparency = 1;
+        illum = 1;
     }
 
     public String getName() {

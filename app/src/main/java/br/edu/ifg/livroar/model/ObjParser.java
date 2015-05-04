@@ -24,7 +24,7 @@ import br.edu.ifg.livroar.util.Vec3;
  */
 public class ObjParser {
 
-    private static final String TAG = "ObjParser";
+    public static final String TAG = "ObjParser";
 
     public static ObjModel loadObj(Context context, String objPath) throws IOException
     {
@@ -39,8 +39,9 @@ public class ObjParser {
         List<Vec2> uvs = new ArrayList<>();
         List<Vec2> uvsDupli = new ArrayList<>();
 
-        List<RGBColor> colors = new ArrayList<>();
-        List<RGBColor> colorsDupli = new ArrayList<>();
+        List<RGBColor> specularColorsDupli = new ArrayList<>();
+        List<RGBColor> diffuseColorsDupli = new ArrayList<>();
+        List<RGBColor> ambientColorsDupli = new ArrayList<>();
 
         Map<String, MtlMaterial> materials = new HashMap<>();
         int vertsCount = 0;
@@ -48,15 +49,16 @@ public class ObjParser {
         BufferedReader reader;
         String line;
         String[] lineParts;
-        RGBColor curColor = new RGBColor(0,0,1);
+        MtlMaterial curMaterial = new MtlMaterial();
 
         reader = new BufferedReader(new InputStreamReader(context.getAssets().open(objPath+".obj")));
         while((line = reader.readLine())!=null){
-            Log.i(TAG, line);
+//            Log.i(TAG, line);
             lineParts = line.split("[ ]+");
             switch (lineParts[0]){
                 case "mtllib":
-                    materials = MtlParser.loadMTL(context, objPath); //Nome do mtl == nome do obj
+                    Log.d(TAG, "MTLLIB");
+                    materials = MtlParser.loadMTL(context, lineParts[1]); //Nome do mtl == nome do obj
                     break;
                 case "v":
                     parseV(positions, lineParts[1], lineParts[2], lineParts[3]);
@@ -68,11 +70,12 @@ public class ObjParser {
                     parseVN(normals, lineParts[1], lineParts[2], lineParts[3]);
                     break;
                 case "usemtl":
+                    Log.d(TAG, "usemtl");
                     if(!materials.isEmpty() && materials.get(lineParts[1])!=null){
-                        curColor = materials.get(lineParts[1]).getDiffuse();
+                        curMaterial = materials.get(lineParts[1]);
                     }
                     else{
-                        curColor = new RGBColor(0,0,1); //Se material nao estiver carregado, setar cor para azul
+                        curMaterial = new MtlMaterial("Null"); //Se material nao estiver carregado, setar cor para azul
                     }
                     break;
                 case "f":
@@ -80,16 +83,19 @@ public class ObjParser {
                             positions, positionsDupli,
                             normals, normalsDupli,
                             uvs, uvsDupli,
-                            curColor, colorsDupli);
+                            curMaterial, specularColorsDupli,
+                            diffuseColorsDupli, ambientColorsDupli);
                     break;
             }
         }
 
         ObjModel objModel = new ObjModel();
-        objModel.setBufferPositions(vec3fListToFloatBuffer(positionsDupli));
-        objModel.setBufferNormals(vec3fListToFloatBuffer(normalsDupli));
-        objModel.setBufferUvs(vec2fListToFloatBuffer(uvsDupli));
-        objModel.setBufferColors(rgbcolorfListToFloatBuffer(colorsDupli));
+        objModel.setPositionsBuffer(vec3fListToFloatBuffer(positionsDupli));
+        objModel.setNormalsBuffer(vec3fListToFloatBuffer(normalsDupli));
+        objModel.setUVsBuffer(vec2fListToFloatBuffer(uvsDupli));
+        objModel.setSpecularColorsBuffer(rgbcolorfListToFloatBuffer(specularColorsDupli));
+        objModel.setDiffuseColorsBuffer(rgbcolorfListToFloatBuffer(diffuseColorsDupli));
+        objModel.setAmbientColorsBuffer(rgbcolorfListToFloatBuffer(ambientColorsDupli));
         objModel.setVertexCount(positionsDupli.size());
 
         return objModel;
@@ -111,7 +117,8 @@ public class ObjParser {
                                List<Vec3> positions, List<Vec3> positionsDupli,
                                List<Vec3> normals, List<Vec3> normalsDupli,
                                List<Vec2> uvs , List<Vec2> uvsDupli,
-                               RGBColor curColor, List<RGBColor> colorsDupli){
+                               MtlMaterial curMaterial, List<RGBColor> specularColorsDupli,
+                               List<RGBColor> diffuseColorsDupli, List<RGBColor> ambientColorsDupli){
 
         //mudança: trocando indice 1 por 0
         String[] lineSubParts = lineParts1.split("[ ]+");
@@ -120,7 +127,10 @@ public class ObjParser {
                 short indx = Short.parseShort(lineSubParts[i]);
                 indx--;
                 positionsDupli.add(positions.get(indx));
-                colorsDupli.add(curColor);
+
+                specularColorsDupli.add(curMaterial.getSpecular());
+                diffuseColorsDupli.add(curMaterial.getDiffuse());
+                ambientColorsDupli.add(curMaterial.getAmbient());
             }
         }else if(lineSubParts[0].matches("[0-9]+/[0-9]+")){//Face composta de posicoes e UVs
             for (int i = 0; i < 3; i++) {
@@ -133,7 +143,9 @@ public class ObjParser {
                 indx--;
                 uvsDupli.add(uvs.get(indx));
 
-                colorsDupli.add(curColor);
+                specularColorsDupli.add(curMaterial.getSpecular());
+                diffuseColorsDupli.add(curMaterial.getDiffuse());
+                ambientColorsDupli.add(curMaterial.getAmbient());
             }
         }else if(lineSubParts[0].matches("[0-9]+//[0-9]+")){ //Face composta de posicoes e normais
             for (int i = 0; i < 3; i++) {
@@ -146,7 +158,9 @@ public class ObjParser {
                 indx--;
                 normalsDupli.add(normals.get(indx));
 
-                colorsDupli.add(curColor);
+                specularColorsDupli.add(curMaterial.getSpecular());
+                diffuseColorsDupli.add(curMaterial.getDiffuse());
+                ambientColorsDupli.add(curMaterial.getAmbient());
             }
         }else if(lineSubParts[0].matches("[0-9]+/[0-9]+/[0-9]+")){//Face composta de posicoes, UVs e normais
             for (int i = 0; i < 3; i++) {
@@ -163,7 +177,9 @@ public class ObjParser {
                 indx--;
                 normalsDupli.add(normals.get(indx));
 
-                colorsDupli.add(curColor);
+                specularColorsDupli.add(curMaterial.getSpecular());
+                diffuseColorsDupli.add(curMaterial.getDiffuse());
+                ambientColorsDupli.add(curMaterial.getAmbient());
             }
         }
 

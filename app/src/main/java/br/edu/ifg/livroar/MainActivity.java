@@ -31,7 +31,7 @@ public class MainActivity extends AndARActivity {
 
 //          Object3D monkey = new Object3D("monkey", "android.patt", ObjParser.loadObj(this, "monkey"));
             AnimatedObject3D monkey = new AnimatedObject3D("icosphere", "android.patt",
-                    ObjParser.loadObj(this, "icosphere"), new TestAnimation());
+                    ObjParser.loadObj(this, "icospherehires"), new TestAnimation());
             monkey.setPosition(50,0,0);
 
             setNonARRenderer(renderer); //adicionando o renderer
