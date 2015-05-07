@@ -12,7 +12,7 @@ public class App extends Application {
 
     private static App singleton;
 
-    private App() {}
+    protected App() {}
 
     public static Context getContext() {
         return (Context) singleton;
