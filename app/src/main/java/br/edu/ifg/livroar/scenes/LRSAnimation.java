@@ -68,7 +68,7 @@ public class LRSAnimation {
         //Pontos de controle da curva, considerar implicacoes
         // para pre-calculo de loc/rot/scales
         public Vec2 outTangent;
-        public Vec3 inTangent;
+        public Vec2 inTangent;
 
         public double timeMillis;
         public Vec3 loc;

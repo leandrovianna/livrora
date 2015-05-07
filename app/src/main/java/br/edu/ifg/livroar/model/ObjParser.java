@@ -49,7 +49,7 @@ public class ObjParser {
         BufferedReader reader;
         String line;
         String[] lineParts;
-        Material curMaterial = new Material();
+        Material curMaterial = new Material("Null");
 
         reader = new BufferedReader(new InputStreamReader(context.getAssets().open(objPath+".obj")));
         while((line = reader.readLine())!=null){
