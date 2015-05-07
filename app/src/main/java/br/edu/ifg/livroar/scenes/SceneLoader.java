@@ -16,7 +16,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import br.edu.ifg.livroar.LivroApp;
+import br.edu.ifg.livroar.App;
 import br.edu.ifg.livroar.model.Material;
 
 
@@ -27,7 +27,7 @@ public class SceneLoader {
 
     public static Scene loadScene(String filePath) {
 
-        Context context = LivroApp.getContext();
+        Context context = App.getContext();
         List<Geometry> geometries = new ArrayList<>();
         Map<String, LRSAnimation> PRSAnimations = new HashMap<>();
         List<Material> materials = new ArrayList<>();

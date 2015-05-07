@@ -8,8 +8,6 @@ import java.io.IOException;
 import br.edu.ifg.livroar.animation.TestAnimation;
 import br.edu.ifg.livroar.model.AnimatedObject3D;
 import br.edu.ifg.livroar.model.ObjParser;
-import br.edu.ifg.livroar.model.Object3D;
-import br.edu.ifg.livroar.util.RGBColor;
 import edu.dhbw.andar.ARToolkit;
 import edu.dhbw.andar.AndARActivity;
 import edu.dhbw.andar.exceptions.AndARException;
@@ -19,14 +17,13 @@ public class MainActivity extends AndARActivity {
 
     private static final String TAG = "MainActivity";
     private ARToolkit arToolkit;
-    private DefaultRenderer renderer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         try {
-            renderer = new DefaultRenderer();
+            DefaultRenderer renderer = new DefaultRenderer();
             arToolkit = getArtoolkit();
 
 //          Object3D monkey = new Object3D("monkey", "android.patt", ObjParser.loadObj(this, "monkey"));
