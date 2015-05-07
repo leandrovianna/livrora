@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <contributor>
+      <author>JPGMorais</author>
+      <authoring_tool>Blender 2.74.0 commit date:2015-03-31, commit time:13:39, hash:000dfc0</authoring_tool>
+    </contributor>
+    <created>2015-05-05T19:21:15</created>
+    <modified>2015-05-05T19:21:15</modified>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_images>
+    <image id="ironic_png" name="ironic_png">
+      <init_from>/C:/Users/JoaoPaulo/Pictures/Wallpapers/ironic.png</init_from>
+    </image>
+  </library_images>
+  <library_effects>
+    <effect id="Material_001-effect">
+      <profile_COMMON>
+        <newparam sid="ironic_png-surface">
+          <surface type="2D">
+            <init_from>ironic_png</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="ironic_png-sampler">
+          <sampler2D>
+            <source>ironic_png-surface</source>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color sid="emission">0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color sid="ambient">0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="ironic_png-sampler" texcoord="UVMap"/>
+            </diffuse>
+            <specular>
+              <color sid="specular">0.5 0.5 0.5 1</color>
+            </specular>
+            <shininess>
+              <float sid="shininess">50</float>
+            </shininess>
+            <index_of_refraction>
+              <float sid="index_of_refraction">1</float>
+            </index_of_refraction>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_materials>
+    <material id="Material_001-material" name="Material_001">
+      <instance_effect url="#Material_001-effect"/>
+    </material>
+  </library_materials>
+  <library_geometries>
+    <geometry id="Circle-mesh" name="Circle">
+      <mesh>
+        <source id="Circle-mesh-positions">
+          <float_array id="Circle-mesh-positions-array" count="9">0 1 0 -0.8660254 -0.5000001 0 0.8660255 -0.4999999 0</float_array>
+          <technique_common>
+            <accessor source="#Circle-mesh-positions-array" count="3" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Circle-mesh-normals">
+          <float_array id="Circle-mesh-normals-array" count="3">0 0 1</float_array>
+          <technique_common>
+            <accessor source="#Circle-mesh-normals-array" count="1" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Circle-mesh-map-0">
+          <float_array id="Circle-mesh-map-0-array" count="6">0.2363324 0.225 0.7636675 0.225 0.5 1</float_array>
+          <technique_common>
+            <accessor source="#Circle-mesh-map-0-array" count="3" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Circle-mesh-colors-Col" name="Col">
+          <float_array id="Circle-mesh-colors-Col-array" count="9">1 1 1 1 1 1 1 1 1</float_array>
+          <technique_common>
+            <accessor source="#Circle-mesh-colors-Col-array" count="3" stride="3">
+              <param name="R" type="float"/>
+              <param name="G" type="float"/>
+              <param name="B" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Circle-mesh-vertices">
+          <input semantic="POSITION" source="#Circle-mesh-positions"/>
+        </vertices>
+        <polylist material="Material_001-material" count="1">
+          <input semantic="VERTEX" source="#Circle-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Circle-mesh-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#Circle-mesh-map-0" offset="2" set="0"/>
+          <input semantic="COLOR" source="#Circle-mesh-colors-Col" offset="3" set="0"/>
+          <vcount>3 </vcount>
+          <p>1 0 0 0 2 0 1 1 0 0 2 2</p>
+        </polylist>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_animations>
+    <animation id="triangle_location_X">
+      <source id="triangle_location_X-input">
+        <float_array id="triangle_location_X-input-array" count="11">0 0.3333333 0.6666667 1 1.333333 1.666667 2 2.333333 2.666667 3 3.333333</float_array>
+        <technique_common>
+          <accessor source="#triangle_location_X-input-array" count="11" stride="1">
+            <param name="TIME" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_location_X-output">
+        <float_array id="triangle_location_X-output-array" count="11">0 1 0 -1 0 0 0 0 0 0 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_location_X-output-array" count="11" stride="1">
+            <param name="X" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_location_X-interpolation">
+        <Name_array id="triangle_location_X-interpolation-array" count="11">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
+        <technique_common>
+          <accessor source="#triangle_location_X-interpolation-array" count="11" stride="1">
+            <param name="INTERPOLATION" type="name"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_location_X-intangent">
+        <float_array id="triangle_location_X-intangent-array" count="22">-0.1301372 0 0.2031962 1 0.5365295 0.3904115 0.8698628 -1 1.203196 0 1.53653 0 1.869863 0 2.203196 0 2.53653 0 2.869863 0 3.203196 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_location_X-intangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_location_X-outtangent">
+        <float_array id="triangle_location_X-outtangent-array" count="22">0.1301372 0 0.4634705 1 0.7968038 -0.3904115 1.130137 -1 1.46347 0 1.796804 0 2.130137 0 2.46347 0 2.796804 0 3.130137 0 3.46347 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_location_X-outtangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <sampler id="triangle_location_X-sampler">
+        <input semantic="INPUT" source="#triangle_location_X-input"/>
+        <input semantic="OUTPUT" source="#triangle_location_X-output"/>
+        <input semantic="INTERPOLATION" source="#triangle_location_X-interpolation"/>
+        <input semantic="IN_TANGENT" source="#triangle_location_X-intangent"/>
+        <input semantic="OUT_TANGENT" source="#triangle_location_X-outtangent"/>
+      </sampler>
+      <channel source="#triangle_location_X-sampler" target="triangle/location.X"/>
+    </animation>
+    <animation id="triangle_location_Y">
+      <source id="triangle_location_Y-input">
+        <float_array id="triangle_location_Y-input-array" count="11">0 0.3333333 0.6666667 1 1.333333 1.666667 2 2.333333 2.666667 3 3.333333</float_array>
+        <technique_common>
+          <accessor source="#triangle_location_Y-input-array" count="11" stride="1">
+            <param name="TIME" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_location_Y-output">
+        <float_array id="triangle_location_Y-output-array" count="11">0 0 1 0 0 0 0 0 0 0 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_location_Y-output-array" count="11" stride="1">
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_location_Y-interpolation">
+        <Name_array id="triangle_location_Y-interpolation-array" count="11">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
+        <technique_common>
+          <accessor source="#triangle_location_Y-interpolation-array" count="11" stride="1">
+            <param name="INTERPOLATION" type="name"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_location_Y-intangent">
+        <float_array id="triangle_location_Y-intangent-array" count="22">-0.1301372 0 0.2031962 0 0.5365295 1 0.8698628 0 1.203196 0 1.53653 0 1.869863 0 2.203196 0 2.53653 0 2.869863 0 3.203196 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_location_Y-intangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_location_Y-outtangent">
+        <float_array id="triangle_location_Y-outtangent-array" count="22">0.1301372 0 0.4634705 0 0.7968038 1 1.130137 0 1.46347 0 1.796804 0 2.130137 0 2.46347 0 2.796804 0 3.130137 0 3.46347 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_location_Y-outtangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <sampler id="triangle_location_Y-sampler">
+        <input semantic="INPUT" source="#triangle_location_Y-input"/>
+        <input semantic="OUTPUT" source="#triangle_location_Y-output"/>
+        <input semantic="INTERPOLATION" source="#triangle_location_Y-interpolation"/>
+        <input semantic="IN_TANGENT" source="#triangle_location_Y-intangent"/>
+        <input semantic="OUT_TANGENT" source="#triangle_location_Y-outtangent"/>
+      </sampler>
+      <channel source="#triangle_location_Y-sampler" target="triangle/location.Y"/>
+    </animation>
+    <animation id="triangle_location_Z">
+      <source id="triangle_location_Z-input">
+        <float_array id="triangle_location_Z-input-array" count="11">0 0.3333333 0.6666667 1 1.333333 1.666667 2 2.333333 2.666667 3 3.333333</float_array>
+        <technique_common>
+          <accessor source="#triangle_location_Z-input-array" count="11" stride="1">
+            <param name="TIME" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_location_Z-output">
+        <float_array id="triangle_location_Z-output-array" count="11">0 0 0 0 0 0 0 0 0 0 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_location_Z-output-array" count="11" stride="1">
+            <param name="Z" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_location_Z-interpolation">
+        <Name_array id="triangle_location_Z-interpolation-array" count="11">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
+        <technique_common>
+          <accessor source="#triangle_location_Z-interpolation-array" count="11" stride="1">
+            <param name="INTERPOLATION" type="name"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_location_Z-intangent">
+        <float_array id="triangle_location_Z-intangent-array" count="22">-0.1301372 0 0.2031962 0 0.5365295 0 0.8698628 0 1.203196 0 1.53653 0 1.869863 0 2.203196 0 2.53653 0 2.869863 0 3.203196 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_location_Z-intangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_location_Z-outtangent">
+        <float_array id="triangle_location_Z-outtangent-array" count="22">0.1301372 0 0.4634705 0 0.7968038 0 1.130137 0 1.46347 0 1.796804 0 2.130137 0 2.46347 0 2.796804 0 3.130137 0 3.46347 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_location_Z-outtangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <sampler id="triangle_location_Z-sampler">
+        <input semantic="INPUT" source="#triangle_location_Z-input"/>
+        <input semantic="OUTPUT" source="#triangle_location_Z-output"/>
+        <input semantic="INTERPOLATION" source="#triangle_location_Z-interpolation"/>
+        <input semantic="IN_TANGENT" source="#triangle_location_Z-intangent"/>
+        <input semantic="OUT_TANGENT" source="#triangle_location_Z-outtangent"/>
+      </sampler>
+      <channel source="#triangle_location_Z-sampler" target="triangle/location.Z"/>
+    </animation>
+    <animation id="triangle_rotation_euler_X">
+      <source id="triangle_rotation_euler_X-input">
+        <float_array id="triangle_rotation_euler_X-input-array" count="11">0 0.3333333 0.6666667 1 1.333333 1.666667 2 2.333333 2.666667 3 3.333333</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_X-input-array" count="11" stride="1">
+            <param name="TIME" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_X-output">
+        <float_array id="triangle_rotation_euler_X-output-array" count="11">0 0 0 0 0 45 45 45 0 0 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_X-output-array" count="11" stride="1">
+            <param name="ANGLE" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_X-interpolation">
+        <Name_array id="triangle_rotation_euler_X-interpolation-array" count="11">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_X-interpolation-array" count="11" stride="1">
+            <param name="INTERPOLATION" type="name"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_X-intangent">
+        <float_array id="triangle_rotation_euler_X-intangent-array" count="22">-0.1301372 0 0.2031962 0 0.5365295 0 0.8698628 0 1.203196 0 1.53653 45 1.869863 45 2.203196 45 2.53653 0 2.869863 0 3.203196 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_X-intangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_X-outtangent">
+        <float_array id="triangle_rotation_euler_X-outtangent-array" count="22">0.1301372 0 0.4634705 0 0.7968038 0 1.130137 0 1.46347 0 1.796804 45 2.130137 45 2.46347 45 2.796804 0 3.130137 0 3.46347 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_X-outtangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <sampler id="triangle_rotation_euler_X-sampler">
+        <input semantic="INPUT" source="#triangle_rotation_euler_X-input"/>
+        <input semantic="OUTPUT" source="#triangle_rotation_euler_X-output"/>
+        <input semantic="INTERPOLATION" source="#triangle_rotation_euler_X-interpolation"/>
+        <input semantic="IN_TANGENT" source="#triangle_rotation_euler_X-intangent"/>
+        <input semantic="OUT_TANGENT" source="#triangle_rotation_euler_X-outtangent"/>
+      </sampler>
+      <channel source="#triangle_rotation_euler_X-sampler" target="triangle/rotationX.ANGLE"/>
+    </animation>
+    <animation id="triangle_rotation_euler_Y">
+      <source id="triangle_rotation_euler_Y-input">
+        <float_array id="triangle_rotation_euler_Y-input-array" count="11">0 0.3333333 0.6666667 1 1.333333 1.666667 2 2.333333 2.666667 3 3.333333</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Y-input-array" count="11" stride="1">
+            <param name="TIME" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Y-output">
+        <float_array id="triangle_rotation_euler_Y-output-array" count="11">0 0 0 0 0 0 45 45 0 0 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Y-output-array" count="11" stride="1">
+            <param name="ANGLE" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Y-interpolation">
+        <Name_array id="triangle_rotation_euler_Y-interpolation-array" count="11">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Y-interpolation-array" count="11" stride="1">
+            <param name="INTERPOLATION" type="name"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Y-intangent">
+        <float_array id="triangle_rotation_euler_Y-intangent-array" count="22">-0.1301372 0 0.2031962 0 0.5365295 0 0.8698628 0 1.203196 0 1.53653 0 1.869863 45 2.203196 45 2.53653 0 2.869863 0 3.203196 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Y-intangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Y-outtangent">
+        <float_array id="triangle_rotation_euler_Y-outtangent-array" count="22">0.1301372 0 0.4634705 0 0.7968038 0 1.130137 0 1.46347 0 1.796804 0 2.130137 45 2.46347 45 2.796804 0 3.130137 0 3.46347 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Y-outtangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <sampler id="triangle_rotation_euler_Y-sampler">
+        <input semantic="INPUT" source="#triangle_rotation_euler_Y-input"/>
+        <input semantic="OUTPUT" source="#triangle_rotation_euler_Y-output"/>
+        <input semantic="INTERPOLATION" source="#triangle_rotation_euler_Y-interpolation"/>
+        <input semantic="IN_TANGENT" source="#triangle_rotation_euler_Y-intangent"/>
+        <input semantic="OUT_TANGENT" source="#triangle_rotation_euler_Y-outtangent"/>
+      </sampler>
+      <channel source="#triangle_rotation_euler_Y-sampler" target="triangle/rotationY.ANGLE"/>
+    </animation>
+    <animation id="triangle_rotation_euler_Z">
+      <source id="triangle_rotation_euler_Z-input">
+        <float_array id="triangle_rotation_euler_Z-input-array" count="11">0 0.3333333 0.6666667 1 1.333333 1.666667 2 2.333333 2.666667 3 3.333333</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Z-input-array" count="11" stride="1">
+            <param name="TIME" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Z-output">
+        <float_array id="triangle_rotation_euler_Z-output-array" count="11">0 0 0 0 0 0 0 -45 0 0 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Z-output-array" count="11" stride="1">
+            <param name="ANGLE" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Z-interpolation">
+        <Name_array id="triangle_rotation_euler_Z-interpolation-array" count="11">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Z-interpolation-array" count="11" stride="1">
+            <param name="INTERPOLATION" type="name"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Z-intangent">
+        <float_array id="triangle_rotation_euler_Z-intangent-array" count="22">-0.1301372 0 0.2031962 0 0.5365295 0 0.8698628 0 1.203196 0 1.53653 0 1.869863 0 2.203196 -45 2.53653 0 2.869863 0 3.203196 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Z-intangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Z-outtangent">
+        <float_array id="triangle_rotation_euler_Z-outtangent-array" count="22">0.1301372 0 0.4634705 0 0.7968038 0 1.130137 0 1.46347 0 1.796804 0 2.130137 0 2.46347 -45 2.796804 0 3.130137 0 3.46347 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Z-outtangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <sampler id="triangle_rotation_euler_Z-sampler">
+        <input semantic="INPUT" source="#triangle_rotation_euler_Z-input"/>
+        <input semantic="OUTPUT" source="#triangle_rotation_euler_Z-output"/>
+        <input semantic="INTERPOLATION" source="#triangle_rotation_euler_Z-interpolation"/>
+        <input semantic="IN_TANGENT" source="#triangle_rotation_euler_Z-intangent"/>
+        <input semantic="OUT_TANGENT" source="#triangle_rotation_euler_Z-outtangent"/>
+      </sampler>
+      <channel source="#triangle_rotation_euler_Z-sampler" target="triangle/rotationZ.ANGLE"/>
+    </animation>
+    <animation id="triangle_scale_X">
+      <source id="triangle_scale_X-input">
+        <float_array id="triangle_scale_X-input-array" count="11">0 0.3333333 0.6666667 1 1.333333 1.666667 2 2.333333 2.666667 3 3.333333</float_array>
+        <technique_common>
+          <accessor source="#triangle_scale_X-input-array" count="11" stride="1">
+            <param name="TIME" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_scale_X-output">
+        <float_array id="triangle_scale_X-output-array" count="11">1 1 1 1 1 1 1 1 1 2 1</float_array>
+        <technique_common>
+          <accessor source="#triangle_scale_X-output-array" count="11" stride="1">
+            <param name="X" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_scale_X-interpolation">
+        <Name_array id="triangle_scale_X-interpolation-array" count="11">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
+        <technique_common>
+          <accessor source="#triangle_scale_X-interpolation-array" count="11" stride="1">
+            <param name="INTERPOLATION" type="name"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_scale_X-intangent">
+        <float_array id="triangle_scale_X-intangent-array" count="22">-0.1301372 1 0.2031962 1 0.5365295 1 0.8698628 1 1.203196 1 1.53653 1 1.869863 1 2.203196 1 2.53653 1 2.869863 2 3.203196 1</float_array>
+        <technique_common>
+          <accessor source="#triangle_scale_X-intangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_scale_X-outtangent">
+        <float_array id="triangle_scale_X-outtangent-array" count="22">0.1301372 1 0.4634705 1 0.7968038 1 1.130137 1 1.46347 1 1.796804 1 2.130137 1 2.46347 1 2.796804 1 3.130137 2 3.46347 1</float_array>
+        <technique_common>
+          <accessor source="#triangle_scale_X-outtangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <sampler id="triangle_scale_X-sampler">
+        <input semantic="INPUT" source="#triangle_scale_X-input"/>
+        <input semantic="OUTPUT" source="#triangle_scale_X-output"/>
+        <input semantic="INTERPOLATION" source="#triangle_scale_X-interpolation"/>
+        <input semantic="IN_TANGENT" source="#triangle_scale_X-intangent"/>
+        <input semantic="OUT_TANGENT" source="#triangle_scale_X-outtangent"/>
+      </sampler>
+      <channel source="#triangle_scale_X-sampler" target="triangle/scale.X"/>
+    </animation>
+    <animation id="triangle_scale_Y">
+      <source id="triangle_scale_Y-input">
+        <float_array id="triangle_scale_Y-input-array" count="11">0 0.3333333 0.6666667 1 1.333333 1.666667 2 2.333333 2.666667 3 3.333333</float_array>
+        <technique_common>
+          <accessor source="#triangle_scale_Y-input-array" count="11" stride="1">
+            <param name="TIME" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_scale_Y-output">
+        <float_array id="triangle_scale_Y-output-array" count="11">1 1 1 1 1 1 1 1 1 2 1</float_array>
+        <technique_common>
+          <accessor source="#triangle_scale_Y-output-array" count="11" stride="1">
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_scale_Y-interpolation">
+        <Name_array id="triangle_scale_Y-interpolation-array" count="11">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
+        <technique_common>
+          <accessor source="#triangle_scale_Y-interpolation-array" count="11" stride="1">
+            <param name="INTERPOLATION" type="name"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_scale_Y-intangent">
+        <float_array id="triangle_scale_Y-intangent-array" count="22">-0.1301372 1 0.2031962 1 0.5365295 1 0.8698628 1 1.203196 1 1.53653 1 1.869863 1 2.203196 1 2.53653 1 2.869863 2 3.203196 1</float_array>
+        <technique_common>
+          <accessor source="#triangle_scale_Y-intangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_scale_Y-outtangent">
+        <float_array id="triangle_scale_Y-outtangent-array" count="22">0.1301372 1 0.4634705 1 0.7968038 1 1.130137 1 1.46347 1 1.796804 1 2.130137 1 2.46347 1 2.796804 1 3.130137 2 3.46347 1</float_array>
+        <technique_common>
+          <accessor source="#triangle_scale_Y-outtangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <sampler id="triangle_scale_Y-sampler">
+        <input semantic="INPUT" source="#triangle_scale_Y-input"/>
+        <input semantic="OUTPUT" source="#triangle_scale_Y-output"/>
+        <input semantic="INTERPOLATION" source="#triangle_scale_Y-interpolation"/>
+        <input semantic="IN_TANGENT" source="#triangle_scale_Y-intangent"/>
+        <input semantic="OUT_TANGENT" source="#triangle_scale_Y-outtangent"/>
+      </sampler>
+      <channel source="#triangle_scale_Y-sampler" target="triangle/scale.Y"/>
+    </animation>
+    <animation id="triangle_scale_Z">
+      <source id="triangle_scale_Z-input">
+        <float_array id="triangle_scale_Z-input-array" count="11">0 0.3333333 0.6666667 1 1.333333 1.666667 2 2.333333 2.666667 3 3.333333</float_array>
+        <technique_common>
+          <accessor source="#triangle_scale_Z-input-array" count="11" stride="1">
+            <param name="TIME" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_scale_Z-output">
+        <float_array id="triangle_scale_Z-output-array" count="11">1 1 1 1 1 1 1 1 1 2 1</float_array>
+        <technique_common>
+          <accessor source="#triangle_scale_Z-output-array" count="11" stride="1">
+            <param name="Z" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_scale_Z-interpolation">
+        <Name_array id="triangle_scale_Z-interpolation-array" count="11">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
+        <technique_common>
+          <accessor source="#triangle_scale_Z-interpolation-array" count="11" stride="1">
+            <param name="INTERPOLATION" type="name"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_scale_Z-intangent">
+        <float_array id="triangle_scale_Z-intangent-array" count="22">-0.1301372 1 0.2031962 1 0.5365295 1 0.8698628 1 1.203196 1 1.53653 1 1.869863 1 2.203196 1 2.53653 1 2.869863 2 3.203196 1</float_array>
+        <technique_common>
+          <accessor source="#triangle_scale_Z-intangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_scale_Z-outtangent">
+        <float_array id="triangle_scale_Z-outtangent-array" count="22">0.1301372 1 0.4634705 1 0.7968038 1 1.130137 1 1.46347 1 1.796804 1 2.130137 1 2.46347 1 2.796804 1 3.130137 2 3.46347 1</float_array>
+        <technique_common>
+          <accessor source="#triangle_scale_Z-outtangent-array" count="11" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <sampler id="triangle_scale_Z-sampler">
+        <input semantic="INPUT" source="#triangle_scale_Z-input"/>
+        <input semantic="OUTPUT" source="#triangle_scale_Z-output"/>
+        <input semantic="INTERPOLATION" source="#triangle_scale_Z-interpolation"/>
+        <input semantic="IN_TANGENT" source="#triangle_scale_Z-intangent"/>
+        <input semantic="OUT_TANGENT" source="#triangle_scale_Z-outtangent"/>
+      </sampler>
+      <channel source="#triangle_scale_Z-sampler" target="triangle/scale.Z"/>
+    </animation>
+  </library_animations>
+  <library_controllers/>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="triangle" name="triangle" type="NODE">
+        <translate sid="location">0 0 0</translate>
+        <rotate sid="rotationZ">0 0 1 0</rotate>
+        <rotate sid="rotationY">0 1 0 0</rotate>
+        <rotate sid="rotationX">1 0 0 0</rotate>
+        <scale sid="scale">1 1 1</scale>
+        <instance_geometry url="#Circle-mesh">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material_001-material" target="#Material_001-material">
+                <bind_vertex_input semantic="UVMap" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

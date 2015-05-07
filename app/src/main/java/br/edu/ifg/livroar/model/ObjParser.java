@@ -43,13 +43,13 @@ public class ObjParser {
         List<RGBColor> diffuseColorsDupli = new ArrayList<>();
         List<RGBColor> ambientColorsDupli = new ArrayList<>();
 
-        Map<String, MtlMaterial> materials = new HashMap<>();
+        Map<String, Material> materials = new HashMap<>();
         int vertsCount = 0;
 
         BufferedReader reader;
         String line;
         String[] lineParts;
-        MtlMaterial curMaterial = new MtlMaterial();
+        Material curMaterial = new Material();
 
         reader = new BufferedReader(new InputStreamReader(context.getAssets().open(objPath+".obj")));
         while((line = reader.readLine())!=null){
@@ -75,7 +75,7 @@ public class ObjParser {
                         curMaterial = materials.get(lineParts[1]);
                     }
                     else{
-                        curMaterial = new MtlMaterial("Null"); //Se material nao estiver carregado, setar cor para azul
+                        curMaterial = new Material("Null"); //Se material nao estiver carregado, setar cor para azul
                     }
                     break;
                 case "f":
@@ -117,7 +117,7 @@ public class ObjParser {
                                List<Vec3> positions, List<Vec3> positionsDupli,
                                List<Vec3> normals, List<Vec3> normalsDupli,
                                List<Vec2> uvs , List<Vec2> uvsDupli,
-                               MtlMaterial curMaterial, List<RGBColor> specularColorsDupli,
+                               Material curMaterial, List<RGBColor> specularColorsDupli,
                                List<RGBColor> diffuseColorsDupli, List<RGBColor> ambientColorsDupli){
 
         //mudança: trocando indice 1 por 0

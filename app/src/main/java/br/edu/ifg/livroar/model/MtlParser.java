@@ -15,9 +15,9 @@ import java.util.Map;
 public class MtlParser {
     public static final String TAG = "MtlParser";
 
-    public static Map<String, MtlMaterial> loadMTL(Context context, String filePath) throws IOException {
+    public static Map<String, Material> loadMTL(Context context, String filePath) throws IOException {
 
-        Map<String, MtlMaterial> materials = new HashMap<>();
+        Map<String, Material> materials = new HashMap<>();
 
         BufferedReader reader;
         String line;
@@ -30,7 +30,7 @@ public class MtlParser {
             switch (lineParts[0]){
                 case "newmtl":
                     curMaterial = lineParts[1];
-                    materials.put(lineParts[1], new MtlMaterial(lineParts[1]));
+                    materials.put(lineParts[1], new Material(lineParts[1]));
                     break;
                 case "Ns":
                     if(curMaterial != null) materials.get(curMaterial).setShininess(Float.parseFloat(lineParts[1]));
@@ -61,7 +61,7 @@ public class MtlParser {
             }
         }
 
-        for (MtlMaterial m : materials.values()){
+        for (Material m : materials.values()){
             Log.i(TAG, m.toString());
         }
 
