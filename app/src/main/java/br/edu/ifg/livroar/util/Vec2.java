@@ -25,65 +25,76 @@ public class Vec2 {
 	}
 
     public float length(){
-        return (float) Math.sqrt((x*x) + (y*y));
+        return (float) Math.sqrt((x * x) + (y * y));
     }
 
-	public void normalize (){
+	public Vec2 normalize (){
 		this.div(length());
+		return this;
 	}
 	
-	public void setLength (float length) {
+	public Vec2 setLength (float length) {
 		normalize();
         mult(length);
+		return this;
 	}
 	
-	public void rotateRad(float angle){
-		
+	public Vec2 rotateRad(float angle){
 		double sen = Math.sin(angle);
 		double cos = Math.cos(angle);
 		
 		x = (float)(x * cos - y * sen);
         y = (float)(x * sen + y * cos);
+
+		return this;
 	}
 	
-	public void add(Vec2 v){
+	public Vec2 add(Vec2 v){
 		x += v.x;
         y += v.y;
+		return this;
 	}
 	
-	public void add(float n){
+	public Vec2 add(float n){
 		x += n;
         y += n;
+		return this;
 	}
 	
-	public void sub(Vec2 v){
+	public Vec2 sub(Vec2 v){
 		x -= v.x;
         y -= v.y;
+		return this;
 	}
 	
-	public void sub(float n){
+	public Vec2 sub(float n){
 		x -= n;
         y -= n;
+		return this;
 	}
 	
-	public void mult(Vec2 v){
+	public Vec2 mult(Vec2 v){
 		x *= v.x;
         y *= v.y;
+		return this;
 	}
 	
-	public void mult(float n){
+	public Vec2 mult(float n){
 		x *= n;
         y *= n;
+		return this;
 	}
 	
-	public void div(Vec2 v){
+	public Vec2 div(Vec2 v){
 		x /= v.x;
         y /= v.y;
+		return this;
 	}
 	
-	public void div(float n){
+	public Vec2 div(float n){
 		x /= n;
         y /= n;
+		return this;
 	}
 	
 	public String toString(){

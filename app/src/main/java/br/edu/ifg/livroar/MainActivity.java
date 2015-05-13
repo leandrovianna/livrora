@@ -6,8 +6,11 @@ import android.util.Log;
 import java.io.IOException;
 
 import br.edu.ifg.livroar.animation.TestAnimation;
+import br.edu.ifg.livroar.animation.TestAnimation1;
 import br.edu.ifg.livroar.model.AnimatedObject3D;
 import br.edu.ifg.livroar.model.ObjParser;
+import br.edu.ifg.livroar.scenes.Scene;
+import br.edu.ifg.livroar.scenes.SceneLoader;
 import edu.dhbw.andar.ARToolkit;
 import edu.dhbw.andar.AndARActivity;
 import edu.dhbw.andar.exceptions.AndARException;
@@ -26,22 +29,25 @@ public class MainActivity extends AndARActivity {
             DefaultRenderer renderer = new DefaultRenderer();
             arToolkit = getArtoolkit();
 
-//          Object3D monkey = new Object3D("monkey", "android.patt", ObjParser.loadObj(this, "monkey"));
-            AnimatedObject3D monkey = new AnimatedObject3D("icosphere", "android.patt",
-                    ObjParser.loadObj(this, "icospherehires"), new TestAnimation());
-            monkey.setPosition(50,0,0);
-
+//            AnimatedObject3D a = new AnimatedObject3D("icosphere", "android.patt",
+//                    ObjParser.loadObj(this, "icospherehires"), new TestAnimation());
+//            a.setPosition(100, 0, 0);
+//            AnimatedObject3D b = new AnimatedObject3D("icosphere", "android.patt",
+//                    ObjParser.loadObj(this, "icospherehires"), new TestAnimation1());
+//            b.setPosition(20, 0, 0);
             setNonARRenderer(renderer); //adicionando o renderer
 
-            arToolkit.registerARObject(monkey);
+//            Scene triangleScene = SceneLoader.loadScene("triangle", "android.patt");
+//            triangleScene.registerGeometries(arToolkit);
+            Scene triangle1 = SceneLoader.loadScene("triangle1", "android.patt");
+            triangle1.registerGeometries(arToolkit);
+//  arToolkit.registerARObject(a);
+//            arToolkit.registerARObject(b);
 
             startPreview();
         } catch (AndARException e) {
             e.printStackTrace();
             Log.e(TAG, "AndAR Exception: " + e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e(TAG, "IO Exception: "+e.getMessage());
         }
     }
 

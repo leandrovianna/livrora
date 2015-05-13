@@ -1,5 +1,7 @@
 package br.edu.ifg.livroar.scenes;
 
+import android.util.Log;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -8,49 +10,98 @@ import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import br.edu.ifg.livroar.util.Vec2;
+import br.edu.ifg.livroar.util.Vec3;
+import edu.dhbw.andar.ARObject;
+
 /**
  * Created by JoaoPaulo on 05/05/2015.
  */
-public class Geometry {
-
-    private static final int POS_DATA_SIZE = 3;
-    private static final int NORMAL_OFFSET = POS_DATA_SIZE;
-    private static final int NORMAL_DATA_SIZE = 3;
-    private static final int UV_OFFSET = POS_DATA_SIZE + NORMAL_DATA_SIZE;
-    private static final int UV_DATA_SIZE = 2;
-    private static final int STRIDE = (POS_DATA_SIZE + NORMAL_DATA_SIZE + UV_DATA_SIZE) * 4;
+public class Geometry extends ARObject{
 
     private List<GeometryPart> parts;
-    private FloatBuffer verticesBuffer;
 
-    private String animationName = "null";
-    private double animationStartTimeMillis = 0;
-    private int curKeyframe;
+    private Vec3 position;
+    private Vec3 rotation;
+    private Vec3 scale;
+    private long curTime = 0;
+    private List<Animation> animations;
 
-    public Geometry() {
-        this.parts = new ArrayList<>();
+    public Geometry(String name, String patternName, List<GeometryPart> parts) {
+        this(name, patternName, parts,
+                new ArrayList<Animation>());
     }
 
+    public Geometry(String name, String patternName,
+                    List<GeometryPart> parts, List<Animation> animations) {
+        super(name, patternName, 80.0, new double[]{0,0});
+        this.parts = parts;
+        this.animations = animations;
+        position = new Vec3(0,0,0);
+        rotation = new Vec3(0,0,0);
+        scale = new Vec3(20,20,20);
+    }
+
+    @Override
     public void init(GL10 gl) {
         for(GeometryPart gp : parts){
             gp.init(gl);
         }
     }
 
+    private void animate(GL10 gl){
+        curTime = System.currentTimeMillis();
+
+        for (Animation a : animations) {
+            float p = a.getP(curTime);
+            if(p!=0) Log.d("Geometry", "p: " + p);
+            switch (a.getType()){
+                case LOC_X:
+                    position.x = p;
+                    break;
+                case LOC_Y:
+                    position.y = p;
+                    break;
+                case LOC_Z:
+                    position.z = p;
+                    break;
+                case ROT_X:
+                    rotation.x = p;
+                    break;
+                case ROT_Y:
+                    rotation.y = p;
+                    break;
+                case ROT_Z:
+                    rotation.z = p;
+                    break;
+                case SCALE_X:
+                    scale.x = p * 20;
+                    break;
+                case SCALE_Y:
+                    scale.y = p * 20;
+                    break;
+                case SCALE_Z:
+                    scale.z = p * 20;
+                    break;
+            }
+        }
+
+        gl.glTranslatef(position.x, position.y, position.z);
+        gl.glRotatef(rotation.x, 1, 0, 0);
+        gl.glRotatef(rotation.y, 0, 1, 0);
+        gl.glRotatef(rotation.z, 0, 0, 1);
+        gl.glScalef(scale.x, scale.y, scale.z);
+    }
+
+    @Override
     public void draw(GL10 gl) {
+        super.draw(gl);
+
+        animate(gl);
 
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL10.GL_NORMAL_ARRAY);
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-
-        verticesBuffer.position(0);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, STRIDE, verticesBuffer);
-
-        verticesBuffer.position(NORMAL_OFFSET);
-        gl.glNormalPointer(GL10.GL_FLOAT, STRIDE, verticesBuffer);
-
-        verticesBuffer.position(UV_OFFSET);
-        gl.glTexCoordPointer(2, GL10.GL_FLOAT, STRIDE, verticesBuffer);
 
         for(GeometryPart p : parts) {
             p.draw(gl);
@@ -63,17 +114,6 @@ public class Geometry {
 
     }
 
-    public void draw(GL10 gl, LRSAnimation animation, double time, double deltaTime) {
-//        LRSAnimation.Keyframe posRotSca = animation.getNextPosRotSca(animationStartTimeMillis, time, deltaTime, curKeyframe);
-//        gl.glTranslatef(posRotSca.loc.x, posRotSca.loc.y, posRotSca.loc.z);
-//        gl.glRotatef(posRotSca.rot.x, 1, 0, 0);
-//        gl.glRotatef(posRotSca.rot.y, 0, 1, 0);
-//        gl.glRotatef(posRotSca.rot.z, 0, 0, 1);
-//        gl.glScalef(posRotSca.sca.x, posRotSca.sca.y, posRotSca.sca.z);
-
-        draw(gl);
-    }
-
     public List<GeometryPart> getParts() {
         return parts;
     }
@@ -84,32 +124,22 @@ public class Geometry {
         }
     }
 
-    public FloatBuffer getVerticesBuffer() {
-        return verticesBuffer;
+    public List<Animation> getAnimations() {
+        return animations;
     }
 
-    public void setVerticesBuffer(float[] vertices) {
-        this.verticesBuffer = ByteBuffer
-                .allocateDirect(vertices.length * 4)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer()
-                .put(vertices);
-        verticesBuffer.position(0);
+    public void setAnimations(List<Animation> animations) {
+        this.animations = animations;
     }
 
-    public String getAnimationName() {
-        return animationName;
-    }
-
-    public void setAnimationName(String animationName) {
-        this.animationName = animationName;
-    }
-
-    public double getAnimationStartTimeMillis() {
-        return animationStartTimeMillis;
-    }
-
-    public void setAnimationStartTimeMillis(double animationStartTimeMillis) {
-        this.animationStartTimeMillis = animationStartTimeMillis;
+    @Override
+    public String toString() {
+        int vCount = 0;
+        for(GeometryPart p : parts){
+            vCount += p.getVertexCount();
+        }
+        return "Geometry: part count:" + parts.size() +
+                " ; vertex count: " + vCount +
+                " ; animation count: " + animations.size();
     }
 }

@@ -36,6 +36,9 @@ public class Material {
 
     public Material(String name) {
         this.name = name;
+        setAmbient(ambient.getRed(), ambient.getGreen(), ambient.getBlue());
+        setDiffuse(diffuse.getRed(), diffuse.getGreen(), diffuse.getBlue());
+        setSpecular(specular.getRed(), specular.getGreen(), specular.getBlue());
     }
 
     public String getName() {
@@ -129,14 +132,27 @@ public class Material {
     }
 
     public void setTexureId(GL10 gl) {
-        int[] texIds = new int[1];
-        gl.glGenTextures(1, texIds, 0);
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, texIds[0]);
-        texureId = texIds[0];
-        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, texture,0);
-        texture.recycle();
-        gl.glTexParameterx(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
-        gl.glTexParameterx(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+        if(texture!=null){
+            int[] texIds = new int[1];
+            gl.glGenTextures(1, texIds, 0);
+            gl.glBindTexture(GL10.GL_TEXTURE_2D, texIds[0]);
+            texureId = texIds[0];
+            Log.d("Material", "Texture ID: " + texureId);
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D,
+                    GL10.GL_TEXTURE_MIN_FILTER,
+                    GL10.GL_NEAREST);
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D,
+                    GL10.GL_TEXTURE_MAG_FILTER,
+                    GL10.GL_NEAREST);
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D,
+                    GL10.GL_TEXTURE_WRAP_S,
+                    GL10.GL_REPEAT);
+            gl.glTexParameterf(GL10.GL_TEXTURE_2D,
+                    GL10.GL_TEXTURE_WRAP_T,
+                    GL10.GL_REPEAT);
+            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, texture,0);
+            texture.recycle();
+        }
     }
 
     public boolean hasTexture() {
@@ -146,7 +162,6 @@ public class Material {
     public Bitmap getTexture() {
         return texture;
     }
-
     public void setTexture(Context context, String texName) {
         try {
             InputStream texIn = context.getAssets().open("textures/"+texName);

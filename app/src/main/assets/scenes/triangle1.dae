@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <contributor>
+      <author>JPGMorais</author>
+      <authoring_tool>Blender 2.74.0 commit date:2015-03-31, commit time:13:39, hash:000dfc0</authoring_tool>
+    </contributor>
+    <created>2015-05-13T15:12:32</created>
+    <modified>2015-05-13T15:12:32</modified>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_images>
+    <image id="ironic_png_001" name="ironic_png_001">
+      <init_from>/C:/Users/JoaoPaulo/Pictures/Wallpapers/ironic.png</init_from>
+    </image>
+  </library_images>
+  <library_effects>
+    <effect id="Material_001-effect">
+      <profile_COMMON>
+        <newparam sid="ironic_png_001-surface">
+          <surface type="2D">
+            <init_from>ironic_png_001</init_from>
+          </surface>
+        </newparam>
+        <newparam sid="ironic_png_001-sampler">
+          <sampler2D>
+            <source>ironic_png_001-surface</source>
+          </sampler2D>
+        </newparam>
+        <technique sid="common">
+          <phong>
+            <emission>
+              <color sid="emission">0 0 0 1</color>
+            </emission>
+            <ambient>
+              <color sid="ambient">0 0 0 1</color>
+            </ambient>
+            <diffuse>
+              <texture texture="ironic_png_001-sampler" texcoord="Circle-mesh-map-0"/>
+            </diffuse>
+            <specular>
+              <color sid="specular">0.25 0.25 0.25 1</color>
+            </specular>
+            <shininess>
+              <float sid="shininess">50</float>
+            </shininess>
+            <index_of_refraction>
+              <float sid="index_of_refraction">1</float>
+            </index_of_refraction>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_materials>
+    <material id="Material_001-material" name="Material_001">
+      <instance_effect url="#Material_001-effect"/>
+    </material>
+  </library_materials>
+  <library_geometries>
+    <geometry id="triangle-mesh" name="triangle">
+      <mesh>
+        <source id="triangle-mesh-positions">
+          <float_array id="triangle-mesh-positions-array" count="9">0 1 0 -0.8660254 -0.5000001 0 0.8660255 -0.4999999 0</float_array>
+          <technique_common>
+            <accessor source="#triangle-mesh-positions-array" count="3" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="triangle-mesh-normals">
+          <float_array id="triangle-mesh-normals-array" count="3">0 0 1</float_array>
+          <technique_common>
+            <accessor source="#triangle-mesh-normals-array" count="1" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="triangle-mesh-map-0">
+          <float_array id="triangle-mesh-map-0-array" count="6">0.2363324 0.225 0.7636675 0.225 0.5 1</float_array>
+          <technique_common>
+            <accessor source="#triangle-mesh-map-0-array" count="3" stride="2">
+              <param name="S" type="float"/>
+              <param name="T" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="triangle-mesh-colors-Col" name="Col">
+          <float_array id="triangle-mesh-colors-Col-array" count="9">1 1 1 1 1 1 1 1 1</float_array>
+          <technique_common>
+            <accessor source="#triangle-mesh-colors-Col-array" count="3" stride="3">
+              <param name="R" type="float"/>
+              <param name="G" type="float"/>
+              <param name="B" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="triangle-mesh-vertices">
+          <input semantic="POSITION" source="#triangle-mesh-positions"/>
+        </vertices>
+        <polylist material="Material_001-material" count="1">
+          <input semantic="VERTEX" source="#triangle-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#triangle-mesh-normals" offset="1"/>
+          <input semantic="TEXCOORD" source="#triangle-mesh-map-0" offset="2" set="0"/>
+          <input semantic="COLOR" source="#triangle-mesh-colors-Col" offset="3" set="0"/>
+          <vcount>3 </vcount>
+          <p>1 0 0 0 2 0 1 1 0 0 2 2</p>
+        </polylist>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_animations>
+    <animation id="triangle_rotation_euler_X">
+      <source id="triangle_rotation_euler_X-input">
+        <float_array id="triangle_rotation_euler_X-input-array" count="101">0 0.04166662 0.08333331 0.125 0.1666666 0.2083333 0.25 0.2916666 0.3333333 0.375 0.4166666 0.4583333 0.5 0.5416667 0.5833333 0.625 0.6666667 0.7083333 0.75 0.7916667 0.8333333 0.875 0.9166667 0.9583333 1 1.041667 1.083333 1.125 1.166667 1.208333 1.25 1.291667 1.333333 1.375 1.416667 1.458333 1.5 1.541667 1.583333 1.625 1.666667 1.708333 1.75 1.791667 1.833333 1.875 1.916667 1.958333 2 2.041667 2.083333 2.125 2.166667 2.208333 2.25 2.291667 2.333333 2.375 2.416667 2.458333 2.5 2.541667 2.583333 2.625 2.666667 2.708333 2.75 2.791667 2.833333 2.875 2.916667 2.958333 3 3.041667 3.083333 3.125 3.166667 3.208333 3.25 3.291667 3.333333 3.375 3.416667 3.458333 3.5 3.541667 3.583333 3.625 3.666667 3.708333 3.75 3.791667 3.833333 3.875 3.916667 3.958333 4 4.041666 4.083333 4.125 4.166666</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_X-input-array" count="101" stride="1">
+            <param name="TIME" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_X-output">
+        <float_array id="triangle_rotation_euler_X-output-array" count="101">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_X-output-array" count="101" stride="1">
+            <param name="ANGLE" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_X-interpolation">
+        <Name_array id="triangle_rotation_euler_X-interpolation-array" count="101">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_X-interpolation-array" count="101" stride="1">
+            <param name="INTERPOLATION" type="name"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_X-intangent">
+        <float_array id="triangle_rotation_euler_X-intangent-array" count="202">-0.01626712 0 0.0253995 0 0.06706619 0 0.1087328 0 0.1503995 0 0.1920661 0 0.2337328 0 0.2753995 0 0.3170662 0 0.3587328 0 0.4003995 0 0.4420662 0 0.4837328 0 0.5253995 0 0.5670662 0 0.6087329 0 0.6503995 0 0.6920662 0 0.7337329 0 0.7753995 0 0.8170662 0 0.8587329 0 0.9003995 0 0.9420662 0 0.9837329 0 1.0254 0 1.067066 0 1.108733 0 1.1504 0 1.192066 0 1.233733 0 1.2754 0 1.317066 0 1.358733 0 1.4004 0 1.442066 0 1.483733 0 1.5254 0 1.567066 0 1.608733 0 1.6504 0 1.692066 0 1.733733 0 1.7754 0 1.817066 0 1.858733 0 1.9004 0 1.942066 0 1.983733 0 2.025399 0 2.067066 0 2.108733 0 2.150399 0 2.192066 0 2.233733 0 2.275399 0 2.317066 0 2.358733 0 2.400399 0 2.442066 0 2.483733 0 2.525399 0 2.567066 0 2.608733 0 2.650399 0 2.692066 0 2.733733 0 2.775399 0 2.817066 0 2.858733 0 2.900399 0 2.942066 0 2.983733 0 3.025399 0 3.067066 0 3.108733 0 3.150399 0 3.192066 0 3.233733 0 3.275399 0 3.317066 0 3.358733 0 3.400399 0 3.442066 0 3.483733 0 3.525399 0 3.567066 0 3.608733 0 3.650399 0 3.692066 0 3.733733 0 3.775399 0 3.817066 0 3.858733 0 3.900399 0 3.942066 0 3.983733 0 4.0254 0 4.067066 0 4.108733 0 4.1504 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_X-intangent-array" count="101" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_X-outtangent">
+        <float_array id="triangle_rotation_euler_X-outtangent-array" count="202">0.01626712 0 0.0579338 0 0.09960043 0 0.1412671 0 0.1829338 0 0.2246004 0 0.2662671 0 0.3079338 0 0.3496004 0 0.3912671 0 0.4329338 0 0.4746004 0 0.5162671 0 0.5579338 0 0.5996005 0 0.6412671 0 0.6829338 0 0.7246005 0 0.7662671 0 0.8079338 0 0.8496005 0 0.8912671 0 0.9329338 0 0.9746005 0 1.016267 0 1.057934 0 1.0996 0 1.141267 0 1.182934 0 1.2246 0 1.266267 0 1.307934 0 1.3496 0 1.391267 0 1.432934 0 1.4746 0 1.516267 0 1.557934 0 1.5996 0 1.641267 0 1.682934 0 1.7246 0 1.766267 0 1.807934 0 1.8496 0 1.891267 0 1.932934 0 1.9746 0 2.016267 0 2.057934 0 2.099601 0 2.141267 0 2.182934 0 2.224601 0 2.266267 0 2.307934 0 2.349601 0 2.391267 0 2.432934 0 2.474601 0 2.516267 0 2.557934 0 2.599601 0 2.641267 0 2.682934 0 2.724601 0 2.766267 0 2.807934 0 2.849601 0 2.891267 0 2.932934 0 2.974601 0 3.016267 0 3.057934 0 3.099601 0 3.141267 0 3.182934 0 3.224601 0 3.266267 0 3.307934 0 3.349601 0 3.391267 0 3.432934 0 3.474601 0 3.516267 0 3.557934 0 3.599601 0 3.641267 0 3.682934 0 3.724601 0 3.766267 0 3.807934 0 3.849601 0 3.891267 0 3.932934 0 3.974601 0 4.016267 0 4.057934 0 4.0996 0 4.141267 0 4.182934 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_X-outtangent-array" count="101" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <sampler id="triangle_rotation_euler_X-sampler">
+        <input semantic="INPUT" source="#triangle_rotation_euler_X-input"/>
+        <input semantic="OUTPUT" source="#triangle_rotation_euler_X-output"/>
+        <input semantic="INTERPOLATION" source="#triangle_rotation_euler_X-interpolation"/>
+        <input semantic="IN_TANGENT" source="#triangle_rotation_euler_X-intangent"/>
+        <input semantic="OUT_TANGENT" source="#triangle_rotation_euler_X-outtangent"/>
+      </sampler>
+      <channel source="#triangle_rotation_euler_X-sampler" target="triangle/rotationX.ANGLE"/>
+    </animation>
+    <animation id="triangle_rotation_euler_Y">
+      <source id="triangle_rotation_euler_Y-input">
+        <float_array id="triangle_rotation_euler_Y-input-array" count="101">0 0.04166662 0.08333331 0.125 0.1666666 0.2083333 0.25 0.2916666 0.3333333 0.375 0.4166666 0.4583333 0.5 0.5416667 0.5833333 0.625 0.6666667 0.7083333 0.75 0.7916667 0.8333333 0.875 0.9166667 0.9583333 1 1.041667 1.083333 1.125 1.166667 1.208333 1.25 1.291667 1.333333 1.375 1.416667 1.458333 1.5 1.541667 1.583333 1.625 1.666667 1.708333 1.75 1.791667 1.833333 1.875 1.916667 1.958333 2 2.041667 2.083333 2.125 2.166667 2.208333 2.25 2.291667 2.333333 2.375 2.416667 2.458333 2.5 2.541667 2.583333 2.625 2.666667 2.708333 2.75 2.791667 2.833333 2.875 2.916667 2.958333 3 3.041667 3.083333 3.125 3.166667 3.208333 3.25 3.291667 3.333333 3.375 3.416667 3.458333 3.5 3.541667 3.583333 3.625 3.666667 3.708333 3.75 3.791667 3.833333 3.875 3.916667 3.958333 4 4.041666 4.083333 4.125 4.166666</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Y-input-array" count="101" stride="1">
+            <param name="TIME" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Y-output">
+        <float_array id="triangle_rotation_euler_Y-output-array" count="101">0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Y-output-array" count="101" stride="1">
+            <param name="ANGLE" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Y-interpolation">
+        <Name_array id="triangle_rotation_euler_Y-interpolation-array" count="101">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Y-interpolation-array" count="101" stride="1">
+            <param name="INTERPOLATION" type="name"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Y-intangent">
+        <float_array id="triangle_rotation_euler_Y-intangent-array" count="202">-0.01626712 0 0.0253995 0 0.06706619 0 0.1087328 0 0.1503995 0 0.1920661 0 0.2337328 0 0.2753995 0 0.3170662 0 0.3587328 0 0.4003995 0 0.4420662 0 0.4837328 0 0.5253995 0 0.5670662 0 0.6087329 0 0.6503995 0 0.6920662 0 0.7337329 0 0.7753995 0 0.8170662 0 0.8587329 0 0.9003995 0 0.9420662 0 0.9837329 0 1.0254 0 1.067066 0 1.108733 0 1.1504 0 1.192066 0 1.233733 0 1.2754 0 1.317066 0 1.358733 0 1.4004 0 1.442066 0 1.483733 0 1.5254 0 1.567066 0 1.608733 0 1.6504 0 1.692066 0 1.733733 0 1.7754 0 1.817066 0 1.858733 0 1.9004 0 1.942066 0 1.983733 0 2.025399 0 2.067066 0 2.108733 0 2.150399 0 2.192066 0 2.233733 0 2.275399 0 2.317066 0 2.358733 0 2.400399 0 2.442066 0 2.483733 0 2.525399 0 2.567066 0 2.608733 0 2.650399 0 2.692066 0 2.733733 0 2.775399 0 2.817066 0 2.858733 0 2.900399 0 2.942066 0 2.983733 0 3.025399 0 3.067066 0 3.108733 0 3.150399 0 3.192066 0 3.233733 0 3.275399 0 3.317066 0 3.358733 0 3.400399 0 3.442066 0 3.483733 0 3.525399 0 3.567066 0 3.608733 0 3.650399 0 3.692066 0 3.733733 0 3.775399 0 3.817066 0 3.858733 0 3.900399 0 3.942066 0 3.983733 0 4.0254 0 4.067066 0 4.108733 0 4.1504 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Y-intangent-array" count="101" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Y-outtangent">
+        <float_array id="triangle_rotation_euler_Y-outtangent-array" count="202">0.01626712 0 0.0579338 0 0.09960043 0 0.1412671 0 0.1829338 0 0.2246004 0 0.2662671 0 0.3079338 0 0.3496004 0 0.3912671 0 0.4329338 0 0.4746004 0 0.5162671 0 0.5579338 0 0.5996005 0 0.6412671 0 0.6829338 0 0.7246005 0 0.7662671 0 0.8079338 0 0.8496005 0 0.8912671 0 0.9329338 0 0.9746005 0 1.016267 0 1.057934 0 1.0996 0 1.141267 0 1.182934 0 1.2246 0 1.266267 0 1.307934 0 1.3496 0 1.391267 0 1.432934 0 1.4746 0 1.516267 0 1.557934 0 1.5996 0 1.641267 0 1.682934 0 1.7246 0 1.766267 0 1.807934 0 1.8496 0 1.891267 0 1.932934 0 1.9746 0 2.016267 0 2.057934 0 2.099601 0 2.141267 0 2.182934 0 2.224601 0 2.266267 0 2.307934 0 2.349601 0 2.391267 0 2.432934 0 2.474601 0 2.516267 0 2.557934 0 2.599601 0 2.641267 0 2.682934 0 2.724601 0 2.766267 0 2.807934 0 2.849601 0 2.891267 0 2.932934 0 2.974601 0 3.016267 0 3.057934 0 3.099601 0 3.141267 0 3.182934 0 3.224601 0 3.266267 0 3.307934 0 3.349601 0 3.391267 0 3.432934 0 3.474601 0 3.516267 0 3.557934 0 3.599601 0 3.641267 0 3.682934 0 3.724601 0 3.766267 0 3.807934 0 3.849601 0 3.891267 0 3.932934 0 3.974601 0 4.016267 0 4.057934 0 4.0996 0 4.141267 0 4.182934 0</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Y-outtangent-array" count="101" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <sampler id="triangle_rotation_euler_Y-sampler">
+        <input semantic="INPUT" source="#triangle_rotation_euler_Y-input"/>
+        <input semantic="OUTPUT" source="#triangle_rotation_euler_Y-output"/>
+        <input semantic="INTERPOLATION" source="#triangle_rotation_euler_Y-interpolation"/>
+        <input semantic="IN_TANGENT" source="#triangle_rotation_euler_Y-intangent"/>
+        <input semantic="OUT_TANGENT" source="#triangle_rotation_euler_Y-outtangent"/>
+      </sampler>
+      <channel source="#triangle_rotation_euler_Y-sampler" target="triangle/rotationY.ANGLE"/>
+    </animation>
+    <animation id="triangle_rotation_euler_Z">
+      <source id="triangle_rotation_euler_Z-input">
+        <float_array id="triangle_rotation_euler_Z-input-array" count="101">0 0.04166662 0.08333331 0.125 0.1666666 0.2083333 0.25 0.2916666 0.3333333 0.375 0.4166666 0.4583333 0.5 0.5416667 0.5833333 0.625 0.6666667 0.7083333 0.75 0.7916667 0.8333333 0.875 0.9166667 0.9583333 1 1.041667 1.083333 1.125 1.166667 1.208333 1.25 1.291667 1.333333 1.375 1.416667 1.458333 1.5 1.541667 1.583333 1.625 1.666667 1.708333 1.75 1.791667 1.833333 1.875 1.916667 1.958333 2 2.041667 2.083333 2.125 2.166667 2.208333 2.25 2.291667 2.333333 2.375 2.416667 2.458333 2.5 2.541667 2.583333 2.625 2.666667 2.708333 2.75 2.791667 2.833333 2.875 2.916667 2.958333 3 3.041667 3.083333 3.125 3.166667 3.208333 3.25 3.291667 3.333333 3.375 3.416667 3.458333 3.5 3.541667 3.583333 3.625 3.666667 3.708333 3.75 3.791667 3.833333 3.875 3.916667 3.958333 4 4.041666 4.083333 4.125 4.166666</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Z-input-array" count="101" stride="1">
+            <param name="TIME" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Z-output">
+        <float_array id="triangle_rotation_euler_Z-output-array" count="101">0 -0.4962873 -2.037889 -4.656697 -8.286081 -12.72945 -17.67266 -22.75133 -27.63789 -32.0982 -36 -39.69478 -43.32697 -46.92939 -50.51578 -54.09373 -57.6682 -61.24297 -64.8212 -68.40585 -72 -75.59816 -79.19754 -82.79749 -86.39775 -89.99818 -93.59867 -97.19917 -100.7996 -104.3999 -108 -111.6 -115.2001 -118.8001 -122.4 -126 -129.6 -133.2 -136.8 -140.4 -144 -147.6 -151.2 -154.8 -158.4 -162 -165.6 -169.2 -172.8 -176.4 -180 -183.6 -187.2 -190.8 -194.4 -198 -201.6 -205.2 -208.8 -212.4 -216 -219.6 -223.2 -226.8 -230.4 -234 -237.6 -241.2 -244.8 -248.4 -252 -255.6 -259.2 -262.8 -266.4 -270 -273.6 -277.2001 -280.8001 -284.4 -288 -291.6 -295.2001 -298.8001 -302.4001 -306.0001 -309.6 -313.2001 -316.8001 -320.4001 -324.0001 -328.3833 -333.4246 -338.5166 -343.3895 -347.8753 -351.843 -355.172 -357.7382 -359.4025 -360.0001</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Z-output-array" count="101" stride="1">
+            <param name="ANGLE" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Z-interpolation">
+        <Name_array id="triangle_rotation_euler_Z-interpolation-array" count="101">BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER BEZIER</Name_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Z-interpolation-array" count="101" stride="1">
+            <param name="INTERPOLATION" type="name"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Z-intangent">
+        <float_array id="triangle_rotation_euler_Z-intangent-array" count="202">-0.01626712 0 0.0253995 -0.09847956 0.06706619 -1.225754 0.1087328 -3.437014 0.1503995 -6.710233 0.1920661 -10.89713 0.2337328 -15.71633 0.2753995 -20.80606 0.3170662 -25.81332 0.3587328 -30.46587 0.4003995 -34.5171 0.4420662 -38.26451 0.4837328 -41.91473 0.5253995 -45.5261 0.5670662 -49.11726 0.6087329 -52.69753 0.6503995 -56.27263 0.6920662 -59.84667 0.7337329 -63.42296 0.7753995 -67.0045 0.8170662 -70.59602 0.8587329 -74.19316 0.9003995 -77.79219 0.9420662 -81.39196 0.9837329 -84.99213 1.0254 -88.59252 1.067066 -92.193 1.108733 -95.79351 1.1504 -99.39397 1.192066 -102.9943 1.233733 -106.5945 1.2754 -110.1946 1.317066 -113.7946 1.358733 -117.3946 1.4004 -120.9946 1.442066 -124.5946 1.483733 -128.1945 1.5254 -131.7945 1.567066 -135.3945 1.608733 -138.9945 1.6504 -142.5945 1.692066 -146.1945 1.733733 -149.7945 1.7754 -153.3945 1.817066 -156.9945 1.858733 -160.5945 1.9004 -164.1945 1.942066 -167.7945 1.983733 -171.3945 2.025399 -174.9945 2.067066 -178.5945 2.108733 -182.1945 2.150399 -185.7945 2.192066 -189.3945 2.233733 -192.9945 2.275399 -196.5945 2.317066 -200.1945 2.358733 -203.7945 2.400399 -207.3945 2.442066 -210.9945 2.483733 -214.5945 2.525399 -218.1945 2.567066 -221.7945 2.608733 -225.3945 2.650399 -228.9945 2.692066 -232.5945 2.733733 -236.1945 2.775399 -239.7945 2.817066 -243.3945 2.858733 -246.9945 2.900399 -250.5945 2.942066 -254.1945 2.983733 -257.7945 3.025399 -261.3945 3.067066 -264.9945 3.108733 -268.5946 3.150399 -272.1946 3.192066 -275.7946 3.233733 -279.3946 3.275399 -282.9945 3.317066 -286.5946 3.358733 -290.1946 3.400399 -293.7946 3.442066 -297.3946 3.483733 -300.9946 3.525399 -304.5946 3.567066 -308.1946 3.608733 -311.7946 3.650399 -315.3946 3.692066 -318.9946 3.733733 -322.4417 3.775399 -326.5436 3.817066 -331.4466 3.858733 -336.5714 3.900399 -341.5626 3.942066 -346.2251 3.983733 -350.4186 4.0254 -354.0213 4.067066 -356.9124 4.108733 -358.9609 4.1504 -360.0001</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Z-intangent-array" count="101" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <source id="triangle_rotation_euler_Z-outtangent">
+        <float_array id="triangle_rotation_euler_Z-outtangent-array" count="202">0.01626712 0 0.0579338 -0.8940951 0.09960043 -2.850025 0.1412671 -5.876379 0.1829338 -9.861927 0.2246004 -14.56176 0.2662671 -19.62899 0.3079338 -24.69659 0.3496004 -29.46245 0.3912671 -33.73053 0.4329338 -37.4829 0.4746004 -41.12504 0.5162671 -44.73921 0.5579338 -48.33269 0.5996005 -51.9143 0.6412671 -55.48992 0.6829338 -59.06377 0.7246005 -62.63927 0.7662671 -66.21943 0.8079338 -69.80719 0.8496005 -73.40398 0.8912671 -77.00316 0.9329338 -80.60289 0.9746005 -84.20301 1.016267 -87.80337 1.057934 -91.40384 1.0996 -95.00435 1.141267 -98.60483 1.182934 -102.2052 1.2246 -105.8055 1.266267 -109.4055 1.307934 -113.0055 1.3496 -116.6055 1.391267 -120.2055 1.432934 -123.8055 1.4746 -127.4055 1.516267 -131.0055 1.557934 -134.6055 1.5996 -138.2055 1.641267 -141.8054 1.682934 -145.4055 1.7246 -149.0055 1.766267 -152.6055 1.807934 -156.2055 1.8496 -159.8055 1.891267 -163.4055 1.932934 -167.0055 1.9746 -170.6055 2.016267 -174.2055 2.057934 -177.8054 2.099601 -181.4055 2.141267 -185.0055 2.182934 -188.6055 2.224601 -192.2055 2.266267 -195.8055 2.307934 -199.4055 2.349601 -203.0055 2.391267 -206.6055 2.432934 -210.2055 2.474601 -213.8055 2.516267 -217.4055 2.557934 -221.0055 2.599601 -224.6055 2.641267 -228.2055 2.682934 -231.8055 2.724601 -235.4055 2.766267 -239.0055 2.807934 -242.6055 2.849601 -246.2055 2.891267 -249.8055 2.932934 -253.4055 2.974601 -257.0055 3.016267 -260.6055 3.057934 -264.2055 3.099601 -267.8055 3.141267 -271.4055 3.182934 -275.0055 3.224601 -278.6055 3.266267 -282.2055 3.307934 -285.8055 3.349601 -289.4055 3.391267 -293.0055 3.432934 -296.6055 3.474601 -300.2055 3.516267 -303.8056 3.557934 -307.4056 3.599601 -311.0055 3.641267 -314.6055 3.682934 -318.2055 3.724601 -321.8056 3.766267 -325.5585 3.807934 -330.2231 3.849601 -335.4027 3.891267 -340.4617 3.932934 -345.2164 3.974601 -349.5255 4.016267 -353.2674 4.057934 -356.3228 4.0996 -358.564 4.141267 -359.844 4.182934 -360.0001</float_array>
+        <technique_common>
+          <accessor source="#triangle_rotation_euler_Z-outtangent-array" count="101" stride="2">
+            <param name="X" type="float"/>
+            <param name="Y" type="float"/>
+          </accessor>
+        </technique_common>
+      </source>
+      <sampler id="triangle_rotation_euler_Z-sampler">
+        <input semantic="INPUT" source="#triangle_rotation_euler_Z-input"/>
+        <input semantic="OUTPUT" source="#triangle_rotation_euler_Z-output"/>
+        <input semantic="INTERPOLATION" source="#triangle_rotation_euler_Z-interpolation"/>
+        <input semantic="IN_TANGENT" source="#triangle_rotation_euler_Z-intangent"/>
+        <input semantic="OUT_TANGENT" source="#triangle_rotation_euler_Z-outtangent"/>
+      </sampler>
+      <channel source="#triangle_rotation_euler_Z-sampler" target="triangle/rotationZ.ANGLE"/>
+    </animation>
+  </library_animations>
+  <library_controllers/>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="triangle" name="triangle" type="NODE">
+        <translate sid="location">0 0 0</translate>
+        <rotate sid="rotationZ">0 0 1 -32.0982</rotate>
+        <rotate sid="rotationY">0 1 0 0</rotate>
+        <rotate sid="rotationX">1 0 0 0</rotate>
+        <scale sid="scale">0.9999999 0.9999999 1</scale>
+        <instance_geometry url="#triangle-mesh">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Material_001-material" target="#Material_001-material">
+                <bind_vertex_input semantic="Circle-mesh-map-0" input_semantic="TEXCOORD" input_set="0"/>
+              </instance_material>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

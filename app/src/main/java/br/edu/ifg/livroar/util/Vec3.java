@@ -36,69 +36,84 @@ public class Vec3 {
     }
 
     public float length(){
-        return (float) Math.sqrt( (x*x) + (y*y) + (z*z));
+        return (float) Math.sqrt((x * x) + (y * y) + (z * z));
     }
 
-    public void normalize (){
+    public Vec3 normalize (){
         this.div(length());
+        return this;
     }
 
-    public void setLength (float length) {
+    public Vec3 setLength (float length) {
         normalize();
         mult(length);
+        return this;
     }
 
-    public void add(Vec3 v){
+    public Vec3 add(Vec3 v){
         x += v.x;
         y += v.y;
         z += v.z;
+        return this;
     }
 
-    public void add(float n){
+    public Vec3 add(float n){
         x += n;
         y += n;
         z += n;
+        return this;
     }
 
-    public void sub(Vec3 v){
+    public Vec3 add(Vec2 v) {
+        x += v.x;
+        y += v.y;
+        return this;
+    }
+
+    public Vec3 sub(Vec3 v){
         x -= v.x;
         y -= v.y;
         z -= v.z;
+        return this;
     }
 
-    public void sub(float n){
+    public Vec3 sub(float n){
         x -= n;
         y -= n;
         z -= n;
+        return this;
     }
 
-    public void mult(Vec3 v){
+    public Vec3 mult(Vec3 v){
         x *= v.x;
         y *= v.y;
         z *= v.z;
+        return this;
     }
 
-    public void mult(float n){
+    public Vec3 mult(float n){
         x *= n;
         y *= n;
         z *= n;
+        return this;
     }
 
-    public void div(Vec3 v){
+    public Vec3 div(Vec3 v){
         x /= v.x;
         y /= v.y;
         z /= v.z;
+        return this;
     }
 
-    public void div(float n){
+    public Vec3 div(float n){
         x /= n;
         y /= n;
         z /= n;
+        return this;
     }
+
 
     public String toString(){
         return "(" + x + "," + y + "," + z + ")";
     }
-
-
 }
