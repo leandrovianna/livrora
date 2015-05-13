@@ -22,6 +22,7 @@ public class Animation {
 
                 float s = (float) Utils.approxCubicBezierS(curTime, p0Time, c0.x, c1.x, p1Time);
                 // Interpolacao bezier cubica: B(s) = P0 * (1-s)^3 + 3*C0*s * (1-s)^2 + 3*C1 * s^2 *(1-s) + P1 * s^3
+                //TODO: Corrigir
                 return (p0  * ((1-s)*(1-s)*(1-s)) + 3 * c0.y * s * ((1-s)*(1-s)) + 3 * c1.y * (s * s) * (1-s) + p1 * (s * s * s));
             }
         };

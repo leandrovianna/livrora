@@ -79,9 +79,9 @@ public class GeometryPart {
         verticesBuffer.position(normalOffset);
         gl.glNormalPointer(GL10.GL_FLOAT, stride, verticesBuffer);
 
-        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, material.getSpecularBuffer());
+//        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, material.getSpecularBuffer());
         gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, material.getAmbientBuffer());
-        gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS, material.getShininess());
+//        gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS, material.getShininess());
 
         if(material.hasTexture()){
             verticesBuffer.position(uvOffset);

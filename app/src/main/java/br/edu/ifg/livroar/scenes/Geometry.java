@@ -57,13 +57,13 @@ public class Geometry extends ARObject{
             if(p!=0) Log.d("Geometry", "p: " + p);
             switch (a.getType()){
                 case LOC_X:
-                    position.x = p;
+                    position.x = p * 20;
                     break;
                 case LOC_Y:
-                    position.y = p;
+                    position.y = p * 20;
                     break;
                 case LOC_Z:
-                    position.z = p;
+                    position.z = p * 20;
                     break;
                 case ROT_X:
                     rotation.x = p;

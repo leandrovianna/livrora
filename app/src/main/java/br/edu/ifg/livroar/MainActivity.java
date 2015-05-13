@@ -39,8 +39,8 @@ public class MainActivity extends AndARActivity {
 
 //            Scene triangleScene = SceneLoader.loadScene("triangle", "android.patt");
 //            triangleScene.registerGeometries(arToolkit);
-            Scene triangle1 = SceneLoader.loadScene("triangle1", "android.patt");
-            triangle1.registerGeometries(arToolkit);
+            Scene atomTestScene = SceneLoader.loadScene("atom_test", "android.patt");
+            atomTestScene.registerGeometries(arToolkit);
 //  arToolkit.registerARObject(a);
 //            arToolkit.registerARObject(b);
 
