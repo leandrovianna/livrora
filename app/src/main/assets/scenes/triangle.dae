@@ -59,7 +59,7 @@
     </material>
   </library_materials>
   <library_geometries>
-    <geometry id="Circle-mesh" name="triangle">
+    <geometry id="Circle-mesh" name="Circle-mesh">
       <mesh>
         <source id="Circle-mesh-positions">
           <float_array id="Circle-mesh-positions-array" count="9">0 1 0 -0.8660254 -0.5000001 0 0.8660255 -0.4999999 0</float_array>

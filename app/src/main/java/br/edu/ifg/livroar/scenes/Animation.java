@@ -25,17 +25,17 @@ public class Animation {
                 //TODO: Corrigir
                 return (p0  * ((1-s)*(1-s)*(1-s)) + 3 * c0.y * s * ((1-s)*(1-s)) + 3 * c1.y * (s * s) * (1-s) + p1 * (s * s * s));
             }
-        };
+        },
         //TODO: Estudar necessidade dos outros tipos de interpolacao
-//        LINEAR{
-//            @Override
-//            public float interpolate(double curTime,
-//                                              double p0Time, float p0, Vec2 c0,
-//                                              double p1Time, float p1, Vec2 c1){
-//                float s = (float) Utils.getNormalizedValue(p0Time, p1Time, curTime);
-//                return p0 + (p1-p0) * s;
-//            }
-//        };
+        LINEAR{
+            @Override
+            public float interpolate(double curTime,
+                                     double p0Time, float p0, Vec2 c0,
+                                     double p1Time, float p1, Vec2 c1) {
+                float t = Utils.clamp(0,1, (float) (curTime / p1Time));
+                return (1-t)*p0 + t*p1;
+            }
+        };
 //        BSPLINE{
 //            @Override
 //            public Vec3f interpolate(double beginning, double currentTime, double duration, Vec3f p0, Vec3f p1) {

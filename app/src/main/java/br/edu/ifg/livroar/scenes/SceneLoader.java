@@ -37,6 +37,7 @@ public class SceneLoader {
         List<Geometry> geometries = new ArrayList<>();
         Map<String, Animation> animations = new HashMap<>();
         Map<String, Material>  materials = new HashMap<>();
+        Map<String, SceneNode> geomidNodeMap = new HashMap<>();
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         try {
@@ -57,9 +58,13 @@ public class SceneLoader {
                 animations = parseLibraryAnimations(library_animations);
             }
 
+            Element library_visual_scenes = (Element) collada.getElementsByTagName("library_visual_scenes").item(0);
+            if(library_visual_scenes != null)
+                geomidNodeMap = parseLibraryVisualScenes(library_visual_scenes);
+
             Element library_geometries = (Element) collada.getElementsByTagName("library_geometries").item(0);
             if(library_geometries != null)
-                geometries = parseLibraryGeometries(library_geometries,animations,materials,patterName);
+                geometries = parseLibraryGeometries(library_geometries, geomidNodeMap, animations,materials,patterName);
 
         } catch (ParserConfigurationException |
                 SAXException |
@@ -70,7 +75,7 @@ public class SceneLoader {
         return new Scene(geometries);
     }
 
-    private static Map<String, Material> getMaterials(Context context,
+    public static Map<String, Material> getMaterials(Context context,
                                                       Element library_images,
                                                       Element library_effects) {
         Map<String, Material>  materials = new HashMap<>();
@@ -144,18 +149,16 @@ public class SceneLoader {
         return materials;
     }
 
-    private static Map<String, Animation> parseLibraryAnimations(Element library_animations) {
+    public static Map<String, Animation> parseLibraryAnimations(Element library_animations) {
         Map<String, Animation> animations = new HashMap<>();
-        int length = library_animations.getElementsByTagName("animation").getLength();
-        for (int i = 0; i < length; i++) {
+        int animCount = library_animations.getElementsByTagName("animation").getLength();
+        for (int i = 0; i < animCount; i++) {
 
             Element animElement = (Element) library_animations.getElementsByTagName("animation").item(i);
-            Log.d(TAG, "Animacao: " + animElement.getAttribute("id"));
-            String[] id = animElement.getAttribute("id").split("[_]");
+
             List<Animation.Keyframe> keyframes = new ArrayList<>();
 
             int sourceCount = animElement.getElementsByTagName("source").getLength();
-            Log.d(TAG, "Source Count: " + sourceCount);
 
             Element sourceInput = (Element)animElement.getElementsByTagName("source").item(0);
             String[] input = sourceInput.getElementsByTagName("float_array").item(0).getTextContent().split("[ ]");
@@ -175,60 +178,88 @@ public class SceneLoader {
             for (String m : interpolation){
                 switch (m){
                     default:
-                    case "BEZIER":
-                        methods.add(Animation.InterpolationMethod.BEZIER);
-                        break;
+//                    case "BEZIER":
+//                        methods.add(Animation.InterpolationMethod.BEZIER);
+//                        break;
                         // case "HERMITE":
                         //methods.add(Animation.InterpolationMethod.);
                         //  break;
                         // case "BSPLINE":
                         //   methods.add(Animation.InterpolationMethod.BEZIER);
                         //  break;
-//                    case "LINEAR":
-//                        methods.add(Animation.InterpolationMethod.LINEAR);
-//                        break;
+                    case "LINEAR":
+                        methods.add(Animation.InterpolationMethod.LINEAR);
+                        break;
                 }
             }
-            Element intangentSource = ((Element)animElement.getElementsByTagName("source").item(3));
-            String[] intangents = intangentSource.getElementsByTagName("float_array").item(0).getTextContent().split("[ ]");
-            List<Vec2> inTans = Utils.stringArrayToVec2List(intangents);
-            Element outtangentSource = ((Element)animElement.getElementsByTagName("source").item(4));
-            String[] outtangents = outtangentSource.getElementsByTagName("float_array").item(0).getTextContent().split("[ ]");
-            List<Vec2> outTans = Utils.stringArrayToVec2List(outtangents);
+
+            List<Vec2> inTans;
+            List<Vec2> outTans;
+            if(!methods.get(0).equals("LINEAR"))
+            {
+                Element intangentSource = ((Element)animElement.getElementsByTagName("source").item(3));
+                String[] intangents = intangentSource.getElementsByTagName("float_array").item(0).getTextContent().split("[ ]");
+                inTans = Utils.stringArrayToVec2List(intangents);
+                Element outtangentSource = ((Element)animElement.getElementsByTagName("source").item(4));
+                String[] outtangents = outtangentSource.getElementsByTagName("float_array").item(0).getTextContent().split("[ ]");
+                outTans = Utils.stringArrayToVec2List(outtangents);
+            }else
+            {
+                inTans = new ArrayList<>(0);
+                outTans = new ArrayList<>(0);
+            }
 
             for (int j = 0; j < input.length; j++) {
                 keyframes.add(new Animation.Keyframe( methods.get(j), (long) (times.get(j)*1000), pos.get(j)));
             }
 
-            Animation animation = null;
-            if(animElement.getAttribute("id").endsWith("location_X")){
-                animation = new Animation(Animation.Type.LOC_X, keyframes, outTans, inTans);
-            }else if(animElement.getAttribute("id").endsWith("location_Y")){
-                animation = new Animation(Animation.Type.LOC_Y, keyframes, outTans, inTans);
-            }else if(animElement.getAttribute("id").endsWith("location_Z")){
-                animation = new Animation(Animation.Type.LOC_Z, keyframes, outTans, inTans);
-            }else if(animElement.getAttribute("id").endsWith("euler_X")){
-                animation = new Animation(Animation.Type.ROT_X, keyframes, outTans, inTans);
-            }else if(animElement.getAttribute("id").endsWith("euler_Y")){
-                animation = new Animation(Animation.Type.ROT_Y, keyframes, outTans, inTans);
-            }else if(animElement.getAttribute("id").endsWith("euler_Z")){
-                animation = new Animation(Animation.Type.ROT_Z, keyframes, outTans, inTans);
-            }else if(animElement.getAttribute("id").endsWith("scale_X")){
-                animation = new Animation(Animation.Type.SCALE_X, keyframes, outTans, inTans);
-            }else if(animElement.getAttribute("id").endsWith("scale_Y")){
-                animation = new Animation(Animation.Type.SCALE_Y, keyframes, outTans, inTans);
-            }else if(animElement.getAttribute("id").endsWith("scale_Z")){
-                animation = new Animation(Animation.Type.SCALE_Z, keyframes, outTans, inTans);
+            String target = ((Element)animElement.getElementsByTagName("channel").item(0))
+                    .getAttribute("target");
+            Animation.Type type;
+            switch (target.split("[/]")[1]){
+                case "location.X":
+                    type = Animation.Type.LOC_X;
+                    break;
+                case "location.Y":
+                    type = Animation.Type.LOC_Y;
+                    break;
+                case "location.Z":
+                    type = Animation.Type.LOC_Z;
+                    break;
+                case "rotation.X":
+                    type = Animation.Type.ROT_X;
+                    break;
+                case "rotation.Y":
+                    type = Animation.Type.ROT_Y;
+                    break;
+                default:
+                case "rotation.Z":
+                    type = Animation.Type.ROT_Z;
+                    break;
+                case "scale.X":
+                    type = Animation.Type.SCALE_X;
+                    break;
+                case "scale.Y":
+                    type = Animation.Type.SCALE_Y;
+                    break;
+                case "scale.Z":
+                    type = Animation.Type.SCALE_Z;
+                    break;
             }
-            assert animation != null;
-            animations.put(animElement.getAttribute("id"), animation);
-            Log.d(TAG, "Animation "+ animElement.getAttribute("id") + ": " + animation.toString());
-        }
 
+            Animation animation = new Animation(type, keyframes, outTans, inTans);
+
+            assert animation != null;
+            animations.put(target, animation);
+            Log.d(TAG, "Animation "+ animElement.getAttribute("id") + ": " +
+                    "; Target: " + target +
+                    ";" + animation.toString());
+        }
         return animations;
     }
 
-    private static List<Geometry> parseLibraryGeometries(Element library_geometries,
+    public static List<Geometry> parseLibraryGeometries(Element library_geometries,
+                                                         Map<String,SceneNode> idNodeMap,
                                                          Map<String, Animation> animations,
                                                          Map<String, Material>  materials,
                                                          String patterName) {
@@ -237,7 +268,7 @@ public class SceneLoader {
 
         for (int i = 0; i < length; i++) {
             Element geomElement = (Element) library_geometries.getElementsByTagName("geometry").item(i);
-            String geomName = geomElement.getAttribute("name");
+            String geomId = geomElement.getAttribute("id");
             int sourcesLength = ((Element)geomElement.getElementsByTagName("mesh").item(0))
                     .getElementsByTagName("source").getLength();
             List<GeometryPart> parts = new ArrayList<>();
@@ -314,7 +345,7 @@ public class SceneLoader {
                 String materialName = curPartElement.getAttribute("material");
                 Log.d(TAG, "Part: vertexCount: " + vertexCount +
                         "; material name: " + materialName +
-                "; partPositionsSize: " + partPositions.size());
+                        "; partPositionsSize: " + partPositions.size());
                 parts.add(new GeometryPart( vertexCount,
                         partPositions,
                         partNormals,
@@ -322,19 +353,193 @@ public class SceneLoader {
                         materials.get(materialName)));
             }
 
-            for (String animName : animations.keySet()){ // obtendo animacoes
-                if(animName.startsWith(geomName))
-                    geomAnims.add(animations.get(animName));
+            SceneNode node = idNodeMap.get(geomId);
+
+            for (String animTarget : animations.keySet()){ // obtendo animacoes
+                if(animTarget.split("[/]")[0].equals(node.id))
+                    geomAnims.add(animations.get(animTarget));
             }
 
-            Geometry g = new Geometry(geomName, patterName, parts, geomAnims);
-            Log.d(TAG, g.toString());
+            Geometry g = new Geometry(geomId, patterName,
+                    node.location, node.rotation, node.scale,
+                    parts, geomAnims);
+            Log.d(TAG, " Node id: " + node.id + "; " + g.toString());
             geometries.add(g);
 
         }
 
+        return geometries;
+    }
+
+    public static List<AutoLoadGeometry> parseLibraryGeometriesAL(Element library_geometries,
+                                                                  Map<String, SceneNode> idNodeMap,
+                                                                  Map<String, Animation> animations,
+                                                                  Map<String, Material> materials)
+    {
+        List<AutoLoadGeometry> geometries = new ArrayList<>();
+        int length = library_geometries.getElementsByTagName("geometry").getLength();
+
+        for (int i = 0; i < length; i++) {
+            Element geomElement = (Element) library_geometries.getElementsByTagName("geometry").item(i);
+            String geomId = geomElement.getAttribute("id");
+            int sourcesLength = ((Element)geomElement.getElementsByTagName("mesh").item(0))
+                    .getElementsByTagName("source").getLength();
+            List<GeometryPart> parts = new ArrayList<>();
+            List<Animation> geomAnims = new ArrayList<>();
+            List<Vec3> positions = new ArrayList<>();
+            List<Vec3> partPositions;
+            List<Vec3> normals = new ArrayList<>();
+            List<Vec3> partNormals;
+            List<Vec2> uvs = new ArrayList<>();
+            List<Vec2> partUvs;
+            boolean hasUvs = false;
+            int vertexCount = 0;
+            for (int j = 0; j < sourcesLength; j++) {
+                Element curSource = (Element)((Element) geomElement.getElementsByTagName("mesh").item(0))
+                        .getElementsByTagName("source").item(j);
+                String[] id = curSource.getAttribute("id").split("[-]");
+                if(id[id.length-1].equals("positions")){
+                    String[] posS = curSource.getElementsByTagName("float_array").item(0).getTextContent().split("[ ]");
+                    int posIndx = 0;
+                    for (int k = 0; k < posS.length/3; k++) {
+                        float x = Float.parseFloat(posS[posIndx++]);
+                        float y = Float.parseFloat(posS[posIndx++]);
+                        float z = Float.parseFloat(posS[posIndx++]);
+                        positions.add(new Vec3(x,y,z));
+                    }
+                }else if(id[id.length-1].equals("normals")){
+                    String[] normsS = curSource.getElementsByTagName("float_array").item(0).getTextContent().split("[ ]");
+                    int normsIndx = 0;
+                    for (int k = 0; k < normsS.length/3; k++) {
+                        float x = Float.parseFloat(normsS[normsIndx++]);
+                        float y = Float.parseFloat(normsS[normsIndx++]);
+                        float z = Float.parseFloat(normsS[normsIndx++]);
+                        normals.add(new Vec3(x,y,z));
+                    }
+                }else if((id[id.length-2]+"-"+id[id.length-1]).equals("map-0")){
+                    hasUvs = true;
+                    String[] uvsS = curSource.getElementsByTagName("float_array").item(0).getTextContent().split("[ ]");
+                    int uvsIndx = 0;
+                    for (int k = 0; k < uvsS.length/2; k++) {
+                        float x = Float.parseFloat(uvsS[uvsIndx++]);
+                        float y = Float.parseFloat(uvsS[uvsIndx++]);
+                        uvs.add(new Vec2(x,y));
+                    }
+                }
+            }
+
+            int partCount = ((Element)geomElement.getElementsByTagName("mesh").item(0))
+                    .getElementsByTagName("polylist").getLength();
+            for (int j = 0; j < partCount; j++) { // obtendo parts
+                Element curPartElement = (Element)((Element) geomElement.getElementsByTagName("mesh").item(0))
+                        .getElementsByTagName("polylist").item(j);
+                vertexCount = Integer.parseInt(curPartElement.getAttribute("count")) * 3;
+
+                partPositions = new ArrayList<>();
+                partNormals = new ArrayList<>();
+                partUvs = new ArrayList<>();
+
+                String[] indicesS = curPartElement.getElementsByTagName("p").item(0)
+                        .getTextContent().split("[ ]");
+                int inputCount = curPartElement.getElementsByTagName("input").getLength();
+                int index = 0;
+                for (int k = 0; k < indicesS.length/inputCount; k++) {
+                    partPositions.add(positions.get(Integer.parseInt(indicesS[index])));
+                    partNormals.add(normals.get(Integer.parseInt(indicesS[index + 1])));
+                    if(hasUvs){
+                        partUvs.add(uvs.get(Integer.parseInt(indicesS[index + 2])));
+                    }
+                    index += inputCount;
+                }
+                String materialName = curPartElement.getAttribute("material");
+                Log.d(TAG, "Part: vertexCount: " + vertexCount +
+                        "; material name: " + materialName +
+                        "; partPositionsSize: " + partPositions.size());
+                parts.add(new GeometryPart( vertexCount,
+                        partPositions,
+                        partNormals,
+                        partUvs,
+                        materials.get(materialName)));
+            }
+
+            SceneNode node = idNodeMap.get(geomId);
+
+            for (String animTarget : animations.keySet()){ // obtendo animacoes
+                if(animTarget.split("[/]")[0].equals(node.id))
+                    geomAnims.add(animations.get(animTarget));
+            }
+
+            AutoLoadGeometry g = new AutoLoadGeometry(parts,node.location,
+                    node.rotation,
+                    node.scale,
+                    geomAnims);
+            Log.d(TAG, " Node id: " + node.id + "; " + g.toString());
+            geometries.add(g);
+        }
 
         return geometries;
+    }
+
+    // relaciona os nodes na cena aos respectivos geometries
+    public static Map<String, SceneNode> parseLibraryVisualScenes(Element library_visual_scenes){
+        Map<String, SceneNode> geomNameNodeMap = new HashMap<>();
+
+        int vsCount = library_visual_scenes.getElementsByTagName("visual_scene").getLength();
+        for (int i = 0; i < vsCount; i++) {
+            Element curVS = (Element) library_visual_scenes.getElementsByTagName("visual_scene").item(i);
+            int nodeCount = curVS.getElementsByTagName("node").getLength();
+            for (int j = 0; j < nodeCount; j++) {
+                Element curNode = (Element) curVS.getElementsByTagName("node").item(j);
+
+                String id = curNode.getAttribute("id");
+
+                Element transformElement = (Element) curNode.getElementsByTagName("translate").item(0);
+                float x = Float.parseFloat(transformElement.getTextContent().split("[ ]")[0]);
+                float y = Float.parseFloat(transformElement.getTextContent().split("[ ]")[1]);
+                float z = Float.parseFloat(transformElement.getTextContent().split("[ ]")[2]);
+                Vec3 location = new Vec3(x,y,z);
+
+//                transformElement = (Element) curNode.getElementsByTagName("rotate").item(0);
+//                x = Float.parseFloat(transformElement.getTextContent().split("[ ]")[3]);
+//                transformElement = (Element) curNode.getElementsByTagName("rotate").item(1);
+//                y = Float.parseFloat(transformElement.getTextContent().split("[ ]")[3]);
+//                transformElement = (Element) curNode.getElementsByTagName("rotate").item(2);
+//                z = Float.parseFloat(transformElement.getTextContent().split("[ ]")[3]);
+                Vec3 rotation = new Vec3(0,0,0);
+
+                transformElement = (Element) curNode.getElementsByTagName("scale").item(0);
+                x = Float.parseFloat(transformElement.getTextContent().split("[ ]")[0]);
+                y = Float.parseFloat(transformElement.getTextContent().split("[ ]")[1]);
+                z = Float.parseFloat(transformElement.getTextContent().split("[ ]")[2]);
+                Vec3 scale = new Vec3(x,y,z);
+
+                String instanceGeomName = ((Element)curNode.getElementsByTagName("instance_geometry").item(0))
+                        .getAttribute("url").substring(1);
+
+                geomNameNodeMap.put(instanceGeomName, new SceneNode(id, instanceGeomName, location, rotation, scale));
+                Log.d(TAG, "ign = " + instanceGeomName + "; id: " + id);
+            }
+        }
+
+        return geomNameNodeMap;
+    }
+
+    public static class SceneNode {
+        String id;
+        public String instanceGeomName;
+        public Vec3 location;
+        public Vec3 rotation;
+        public Vec3 scale;
+
+        public SceneNode(String id,
+                         String instanceGeomName,
+                         Vec3 location, Vec3 rotation, Vec3 scale) {
+            this.id = id;
+            this.instanceGeomName = instanceGeomName;
+            this.location = location;
+            this.rotation = rotation;
+            this.scale = scale;
+        }
     }
 
 }
