@@ -3,14 +3,8 @@ package br.edu.ifg.livroar;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.io.IOException;
-
-import br.edu.ifg.livroar.animation.TestAnimation;
-import br.edu.ifg.livroar.animation.TestAnimation1;
-import br.edu.ifg.livroar.model.AnimatedObject3D;
-import br.edu.ifg.livroar.model.ObjParser;
-import br.edu.ifg.livroar.scenes.Scene;
-import br.edu.ifg.livroar.scenes.SceneLoader;
+import br.edu.ifg.livroar.scenes.AutoLoadScene;
+import br.edu.ifg.livroar.util.Vec3;
 import edu.dhbw.andar.ARToolkit;
 import edu.dhbw.andar.AndARActivity;
 import edu.dhbw.andar.exceptions.AndARException;
@@ -29,20 +23,17 @@ public class MainActivity extends AndARActivity {
             DefaultRenderer renderer = new DefaultRenderer();
             arToolkit = getArtoolkit();
 
-//            AnimatedObject3D a = new AnimatedObject3D("icosphere", "android.patt",
-//                    ObjParser.loadObj(this, "icospherehires"), new TestAnimation());
-//            a.setPosition(100, 0, 0);
-//            AnimatedObject3D b = new AnimatedObject3D("icosphere", "android.patt",
-//                    ObjParser.loadObj(this, "icospherehires"), new TestAnimation1());
-//            b.setPosition(20, 0, 0);
             setNonARRenderer(renderer); //adicionando o renderer
-
-//            Scene triangleScene = SceneLoader.loadScene("triangle", "android.patt");
-//            triangleScene.registerGeometries(arToolkit);
-            Scene atomTestScene = SceneLoader.loadScene("atom_test", "android.patt");
-            atomTestScene.registerGeometries(arToolkit);
+//            Scene atomTestScene = SceneLoader.loadScene("cenario", "android.patt");
+//            atomTestScene.registerGeometries(arToolkit);
 //  arToolkit.registerARObject(a);
 //            arToolkit.registerARObject(b);
+            AutoLoadScene cenario = new AutoLoadScene("cenario", "android.patt");
+            arToolkit.registerARObject(cenario);
+            AutoLoadScene kenny = new AutoLoadScene("cena_01_kenny", "android.patt");
+            arToolkit.registerARObject(kenny);
+            AutoLoadScene tric = new AutoLoadScene("cena_01_tric", "android.patt");
+            arToolkit.registerARObject(tric);
 
             startPreview();
         } catch (AndARException e) {

@@ -69,7 +69,6 @@ public class GeometryPart {
 
     public void init(GL10 gl) {
         material.setTexureId(gl);
-        Log.d("GeometryPart", "Init part");
     }
 
     public void draw(GL10 gl) {
