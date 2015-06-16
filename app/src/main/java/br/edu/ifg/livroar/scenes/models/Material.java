@@ -1,4 +1,4 @@
-package br.edu.ifg.livroar.model;
+package br.edu.ifg.livroar.scenes.models;
 
 
 import android.content.Context;

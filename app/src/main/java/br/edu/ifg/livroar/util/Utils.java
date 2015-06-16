@@ -85,4 +85,13 @@ public class Utils {
         return l;
     }
 
+    public static float[] DoubleArrayToFloatArray(double[] array)
+    {
+        float[] floatArray = new float[array.length];
+        for (int i = 0; i < array.length; i++)
+        {
+            floatArray[i] = (float) array[i];
+        }
+        return floatArray;
+    }
 }

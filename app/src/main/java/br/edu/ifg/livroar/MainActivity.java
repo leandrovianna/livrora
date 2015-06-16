@@ -3,7 +3,13 @@ package br.edu.ifg.livroar;
 import android.os.Bundle;
 import android.util.Log;
 
-import br.edu.ifg.livroar.scenes.AutoLoadScene;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import br.edu.ifg.livroar.scenes.Scene;
 import br.edu.ifg.livroar.util.Vec3;
 import edu.dhbw.andar.ARToolkit;
 import edu.dhbw.andar.AndARActivity;
@@ -24,21 +30,17 @@ public class MainActivity extends AndARActivity {
             arToolkit = getArtoolkit();
 
             setNonARRenderer(renderer); //adicionando o renderer
-//            Scene atomTestScene = SceneLoader.loadScene("cenario", "android.patt");
-//            atomTestScene.registerGeometries(arToolkit);
-//  arToolkit.registerARObject(a);
-//            arToolkit.registerARObject(b);
-            AutoLoadScene cenario = new AutoLoadScene("cenario", "android.patt");
-            arToolkit.registerARObject(cenario);
-            AutoLoadScene kenny = new AutoLoadScene("cena_01_kenny", "android.patt");
+
+            Scene kenny = new Scene("android.patt", "scenes/kenny.dae");
             arToolkit.registerARObject(kenny);
-            AutoLoadScene tric = new AutoLoadScene("cena_01_tric", "android.patt");
-            arToolkit.registerARObject(tric);
 
             startPreview();
         } catch (AndARException e) {
             e.printStackTrace();
             Log.e(TAG, "AndAR Exception: " + e.getMessage());
+        } catch (ParserConfigurationException | SAXException | IOException e)
+        {
+            e.printStackTrace();
         }
     }
 
