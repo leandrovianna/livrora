@@ -16,56 +16,6 @@ public class Utils {
         return ((value - min) / (max-min));
     }
 
-    /**
-     * @param posX variavel sobre a qual qual obter S;
-     * @param p0X primeiro ponto do segmento curva
-     * @param c0X primeiro ponto de controle da curva
-     * @param c1X segundo ponto de controle da curva
-     * @param p1X segundo ponto do segmento de curva
-     * */
-    public static double approxCubicBezierS(double posX, double p0X, double c0X, double c1X, double p1X) {
-
-        double approxEpsilon = 1.0E-09;
-        int maxIterations = 1000;
-
-        if(posX - p0X < 1.0E-20)
-            return 0.0;
-        if(p1X - posX < 1.0E-20)
-            return 1.0;
-
-        int iterStep = 0;
-        float u = 0, v = 1;
-        // subdivide gradativamente para aproximar valor de T
-        while(iterStep < maxIterations){
-
-            double a = (p0X + c0X)*.5f;
-            double b = (c0X + c1X)*.5f;
-            double c = (c1X + p1X)*.5f;
-            double d = (a + b)*.5f;
-            double e = (b + c)*.5f;
-            double f = (d + e)*.5f;
-
-            if(Math.abs(f - posX) < approxEpsilon)
-                return clamp(0,1, ((u + v)*0.5f));
-
-            if(f < posX){
-                p0X = f;
-                c0X = e;
-                c1X = c;
-                u = (u + v)*.5f;
-            }else {
-                c0X = a;
-                c1X = d;
-                p1X = f;
-                v = (u + v)*.5f;
-            }
-
-            iterStep++;
-        }
-
-        return clamp(0,1, ((u + v)*0.5f));
-    }
-
     public static float clamp(float min, float max, float value){
         if(value < min)
             return min;
@@ -93,5 +43,38 @@ public class Utils {
             floatArray[i] = (float) array[i];
         }
         return floatArray;
+    }
+
+    /**
+     * @param p0 posicao de inicio da curva (postions[i]);
+     * @param curX valor atual de x para o qual encontrar valor de y correspondente;
+     * @param p1 posicao de fim da curva (positions[i+1]);
+     * */
+    public static float interpolateLinear(Vec2 p0, float curX, Vec2 p1)
+    {
+        float s = curX/(p1.x - p0.x);
+        if(s>1) s=1;
+        else if(s<0) s=0;
+        return p0.y + (p1.y-p0.y)*s;
+    }
+
+    /**
+     * @param p0 posicao de inicio da curva (postions[i]);
+     * @param c0 primeiro ponto de controle da curva (outtangents[i]);
+     * @param curX valor atual de x para o qual encontrar valor de y correspondente;
+     * @param c1 segundo ponto de controle da curva (intangents[i+1]);
+     * @param p1 posicao de fim da curva (positions[i+1]);
+     * */
+    public static float interpolateCubicBezier(Vec2 p0, Vec2 c0, float curX, Vec2 c1, Vec2 p1)
+    {
+        float s = curX/(p1.x - p0.x);
+        if(s>1) s=1;
+        else if(s<0) s=0;
+        
+        float i_s = 1-s;
+        return p0.y * (i_s * i_s * i_s) +
+                3 * c0.y * s * (i_s * i_s) +
+                3 * c1.y * (s * s) * i_s +
+                p1.y * (s*s*s);
     }
 }
