@@ -5,21 +5,25 @@ import java.io.Serializable;
 /**
  * Created by leandro on 28/04/15.
  */
-public class RGBColor implements Serializable {
+public class RGBColor implements Serializable
+{
+	public static final RGBColor PINK = new RGBColor(1, 0, 1);
 
-    private float red;
-    private float green;
-    private float blue;
+	private float red;
+	private float green;
+	private float blue;
 
-    public RGBColor() {
-        red = 0;
-        green = 0;
-        blue = 0;
-    }
+	public RGBColor ()
+	{
+		red = 0;
+		green = 0;
+		blue = 0;
+	}
 
-    public RGBColor(float red, float green, float blue) {
-        checkValue(red);
-        checkValue(green);
+	public RGBColor (float red, float green, float blue)
+	{
+		checkValue(red);
+		checkValue(green);
         checkValue(blue);
         this.red = red;
         this.green = green;

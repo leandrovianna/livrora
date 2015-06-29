@@ -1,6 +1,5 @@
 package br.edu.ifg.livroar.scenes.animations;
 
-import br.edu.ifg.livroar.util.Utils;
 import br.edu.ifg.livroar.util.Vec2;
 
 /**
@@ -14,9 +13,10 @@ public class LinearKeyframe extends Keyframe
     }
 
     @Override
-    public Keyframe getInterpolation(float curTime, Keyframe other)
+    public Keyframe getCurPosition (float curTime, Keyframe other)
     {
-        float curPos = Utils.interpolateLinear(p, curTime, other.getP());
-        return new LinearKeyframe(new Vec2(curTime, curPos));
+//        float curPos = Utils.interpolateLinear(p, curTime, other.getP());
+//        return new LinearKeyframe(new Vec2(curTime, curPos));
+	    return null;
     }
 }

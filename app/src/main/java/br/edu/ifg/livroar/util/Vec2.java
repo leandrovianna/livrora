@@ -76,7 +76,12 @@ public class Vec2
 	{
 		return (x==v.x) && (y==v.y);
 	}
-	
+
+    public Vec3 toVec3()
+    {
+        return new Vec3(x, y, 0);
+    }
+
 	public static float magnitude(Vec2 v)
 	{
 		return (float) Math.sqrt((v.x*v.x)+(v.y*v.y));

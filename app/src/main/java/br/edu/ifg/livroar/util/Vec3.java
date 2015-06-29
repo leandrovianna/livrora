@@ -1,3 +1,4 @@
+package br.edu.ifg.livroar.util;
 
 public class Vec3
 {
@@ -77,7 +78,12 @@ public class Vec3
 	{
 		return (x==v.x) && (y==v.y) && (z==v.z);
 	}
-	
+
+    public Vec2 toVec2()
+    {
+        return new Vec2(x, y);
+    }
+
 	public static float magnitude(Vec3 v)
 	{
 		return (float) Math.sqrt((v.x*v.x)+(v.y*v.y)+(v.z*v.z));

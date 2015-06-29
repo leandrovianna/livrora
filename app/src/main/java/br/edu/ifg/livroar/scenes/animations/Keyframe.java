@@ -7,25 +7,13 @@ import br.edu.ifg.livroar.util.Vec2;
  */
 public abstract class Keyframe
 {
-    protected Vec2 p;
+    public Vec2 p;
 
-    /**
-     * @param p posicao do keyframe em que p.x corresponde ao tempo e p.y a posicao
-     * */
     public Keyframe(Vec2 p)
     {
         this.p = p;
     }
 
-    public abstract Keyframe getInterpolation(float curTime, Keyframe other);
+    public abstract Keyframe getCurPosition (float curTime, Keyframe other);
 
-    public Vec2 getP()
-    {
-        return p;
-    }
-
-    public void setP(Vec2 p)
-    {
-        this.p = p;
-    }
 }

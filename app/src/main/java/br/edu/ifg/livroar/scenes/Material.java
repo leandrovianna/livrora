@@ -1,7 +1,6 @@
-package br.edu.ifg.livroar.scenes.models;
+package br.edu.ifg.livroar.scenes;
 
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLUtils;
@@ -14,6 +13,7 @@ import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import br.edu.ifg.livroar.App;
 import br.edu.ifg.livroar.util.RGBColor;
 
 /**
@@ -158,13 +158,13 @@ public class Material {
     public boolean hasTexture() {
         return texureId != -1;
     }
-
-    public Bitmap getTexture() {
+	public Bitmap getTexture() {
         return texture;
     }
-    public void setTexture(Context context, String texName) {
+
+    public void setTexture(String texName) {
         try {
-            InputStream texIn = context.getAssets().open("textures/"+texName);
+            InputStream texIn = App.getContext().getAssets().open("textures/"+texName);
             texture = BitmapFactory.decodeStream(texIn);
             texIn.close();
             Log.d("Material", "Bitmap " + texName + " carregado com sucesso");

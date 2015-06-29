@@ -1,6 +1,5 @@
 package br.edu.ifg.livroar.scenes.animations;
 
-import br.edu.ifg.livroar.util.Utils;
 import br.edu.ifg.livroar.util.Vec2;
 
 /**
@@ -8,32 +7,23 @@ import br.edu.ifg.livroar.util.Vec2;
  */
 public class BezierKeyframe extends Keyframe
 {
-    private Vec2 c;
+    public Vec2 c0;
+    public Vec2 c1;
 
-    public BezierKeyframe(Vec2 p, Vec2 c)
+    public BezierKeyframe(Vec2 pos, Vec2 c0, Vec2 c1)
     {
-        super(p);
-        this.c = c;
+        super(pos);
+        this.c0 = c0;
+        this.c1 = c1;
     }
 
     @Override
-    public Keyframe getInterpolation(float curTime, Keyframe other)
+    public Keyframe getCurPosition (float curTime, Keyframe next)
     {
-        Vec2 otherC = (other instanceof BezierKeyframe ?
-                ((BezierKeyframe) other).getC() : other.getP());
-
-        float curPos = Utils.interpolateCubicBezier(p, c, curTime, otherC, other.getP());
-        Keyframe cur = new BezierKeyframe(new Vec2(curTime, curPos), null);
-        return cur;
+//        Vec2 nextC1 = (next instanceof BezierKeyframe ?
+//                ((BezierKeyframe)next).c1 : next.p);
+//        return Utils.interpolateCubicBezier(p.x, p.y, c0.x, c0.y, curTime, nextC1.x, nextC1.y, next.p.x, next.p.y);
+	    return null;
     }
 
-    public Vec2 getC()
-    {
-        return c;
-    }
-
-    public void setC(Vec2 c)
-    {
-        this.c = c;
-    }
 }

@@ -10,7 +10,6 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 
 import br.edu.ifg.livroar.scenes.Scene;
-import br.edu.ifg.livroar.util.Vec3;
 import edu.dhbw.andar.ARToolkit;
 import edu.dhbw.andar.AndARActivity;
 import edu.dhbw.andar.exceptions.AndARException;

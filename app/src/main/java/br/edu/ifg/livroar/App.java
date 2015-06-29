@@ -15,7 +15,7 @@ public class App extends Application {
     public App() {}
 
     public static Context getContext() {
-        return (Context) singleton;
+        return singleton;
     }
 
     public static App getInstance() {

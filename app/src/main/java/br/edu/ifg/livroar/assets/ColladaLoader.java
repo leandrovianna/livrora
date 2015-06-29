@@ -17,14 +17,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import br.edu.ifg.livroar.App;
+import br.edu.ifg.livroar.scenes.Material;
+import br.edu.ifg.livroar.scenes.Model;
+import br.edu.ifg.livroar.scenes.Scene;
 import br.edu.ifg.livroar.scenes.SceneObject;
 import br.edu.ifg.livroar.scenes.animations.Animation;
 import br.edu.ifg.livroar.scenes.animations.Keyframe;
-import br.edu.ifg.livroar.scenes.models.Material;
-import br.edu.ifg.livroar.scenes.models.ModelPart;
-import br.edu.ifg.livroar.scenes.models.attributes.MaterialAttribute;
-import br.edu.ifg.livroar.scenes.models.attributes.NormalAttribute;
-import br.edu.ifg.livroar.scenes.models.attributes.PositionAttribute;
+import br.edu.ifg.livroar.util.RGBColor;
 import br.edu.ifg.livroar.util.Vec2;
 import br.edu.ifg.livroar.util.Vec3;
 
@@ -33,434 +32,622 @@ import br.edu.ifg.livroar.util.Vec3;
  */
 public class ColladaLoader implements Asset3DLoader
 {
-    public static final String TAG = "ColladaLoader";
-    private String filePath;
-    private final Element mainElement;
+	public static final String TAG = "ColladaLoader";
+	private String filePath;
+	private final Element mainElement;
 
-    public ColladaLoader(String filePath) throws ParserConfigurationException, IOException, SAXException
-    {
-        this.filePath = filePath;
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document sceneDoc = dBuilder.parse(App.getContext().getAssets().open(filePath));
-        sceneDoc.normalize();
+	public ColladaLoader(String filePath) throws ParserConfigurationException, IOException, SAXException
+	{
+		this.filePath = filePath;
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		Document sceneDoc = dBuilder.parse(App.getContext().getAssets().open(filePath));
+		sceneDoc.normalize();
 
-        mainElement = (Element) sceneDoc.getElementsByTagName("COLLADA").item(0);
-    }
+		mainElement = (Element) sceneDoc.getElementsByTagName("COLLADA").item(0);
+	}
 
-    @Override
-    public List<SceneObject> loadObjects(String sceneName, String ... names)
-    {
-        Map<String, Element> libImages = getLibraryImagesMap();
-        Map<String, Element> libEffects = getLibraryEffectsMap();
-        Map<String, Element> libMaterials = getLibraryMaterialsMap();
-        Map<String, Element> libGeoms = getLibraryGeometriesMap();
-        Map<String, Element> libAnims = getLibraryAnimationsMap();
-        Map<String, Element> sceneNodes = getSceneNodesMap(getLibraryVisualScenesMap().get(sceneName));
+	@Override
+	public void loadObjects(Scene scene, String sceneName, String ... names)
+	{
+		Map<String, Element> libImages = getLibraryImagesMap();
+		Map<String, Element> libEffects = getLibraryEffectsMap();
+		Map<String, Element> libMaterials = getLibraryMaterialsMap();
+		Map<String, Element> libGeoms = getLibraryGeometriesMap();
+		Map<String, Element> libAnims = getLibraryAnimationsMap();
+		Map<String, Element> sceneNodes = getSceneNodesMap(getLibraryVisualScenesMap().get(sceneName));
 
-        List<SceneObject> objects = new ArrayList<>(names.length);
+		if(names.length > 0) // Alguns objetos
+		{
+			for (String name : names)
+			{
+				Element curNode = sceneNodes.get(name);
+				if (curNode != null)
+				{
+					scene.addObject(getSceneObject(scene,
+					                               curNode,
+					                               libImages,
+					                               libEffects,
+					                               libMaterials,
+					                               libGeoms,
+					                               libAnims));
+				}
+			}
+		}
+		else // Todos os objetos
+		{
+			Log.d(TAG, "Carregando todos os objetos da cena");
+			for (String id : sceneNodes.keySet())
+			{
+				SceneObject o = getSceneObject(scene,
+				                               sceneNodes.get(id),
+				                               libImages,
+				                               libEffects,
+				                               libMaterials,
+				                               libGeoms,
+				                               libAnims);
+				scene.addObject(o);
+				Log.d(TAG, "Objeto '" + id + "' carregado: " + o.toString());
+			}
+		}
+	}
 
-        if(names.length > 0) // Alguns objetos
-        {
-            for (String name : names)
-            {
-                Element curNode = sceneNodes.get(name);
-                if (curNode != null)
-                {
-                    objects.add(getSceneObject(curNode,
-                            libImages,
-                            libEffects,
-                            libMaterials,
-                            libGeoms,
-                            libAnims));
-                }
-            }
-        }
-        else // Todos os objetos
-        {
-            Log.d(TAG, "Carregando todos os objetos da cena");
-            for (String id : sceneNodes.keySet())
-            {
-                SceneObject o = getSceneObject(sceneNodes.get(id),
-                        libImages,
-                        libEffects,
-                        libMaterials,
-                        libGeoms,
-                        libAnims);
-                objects.add(o);
-                Log.d(TAG, "Objeto '" + id + "' carregado: " + o.toString());
-            }
-        }
+	private Map<String, Element> getLibraryImagesMap()
+	{
+		Element libImages = (Element) mainElement.getElementsByTagName("library_images").item(0);
+		int imgCount = libImages.getElementsByTagName("image").getLength();
+		Map<String, Element> map = new HashMap<>(imgCount);
+		for (int i = 0; i < imgCount; i++)
+		{
+			String id = ((Element)libImages.getElementsByTagName("image").item(i)).getAttribute("id");
+			map.put(id, (Element)libImages.getElementsByTagName("image").item(i));
+		}
+		return map;
+	}
 
-        return objects;
-    }
+	private Map<String, Element> getLibraryEffectsMap()
+	{
+		Element libEffects = (Element) mainElement.getElementsByTagName("library_effects").item(0);
+		int effCount = libEffects.getElementsByTagName("effect").getLength();
+		Map<String, Element> map = new HashMap<>(effCount);
+		for (int i = 0; i < effCount; i++)
+		{
+			String id = ((Element)libEffects.getElementsByTagName("effect").item(i)).getAttribute("id");
+			map.put(id, (Element)libEffects.getElementsByTagName("effect").item(i));
+		}
+		return map;
+	}
 
-    private Map<String, Element> getLibraryImagesMap()
-    {
-        Element libImages = (Element) mainElement.getElementsByTagName("library_images").item(0);
-        int imgCount = libImages.getElementsByTagName("image").getLength();
-        Map<String, Element> map = new HashMap<>(imgCount);
-        for (int i = 0; i < imgCount; i++)
-        {
-            String id = ((Element)libImages.getElementsByTagName("image").item(i)).getAttribute("id");
-            map.put(id, (Element)libImages.getElementsByTagName("image").item(i));
-        }
-        return map;
-    }
+	private Map<String, Element> getLibraryMaterialsMap()
+	{
+		Element libMaterials = (Element) mainElement.getElementsByTagName("library_materials").item(0);
+		int matCount = libMaterials.getElementsByTagName("material").getLength();
+		Map<String, Element> map = new HashMap<>(matCount);
+		for (int i = 0; i < matCount; i++)
+		{
+			String id = ((Element)libMaterials.getElementsByTagName("material").item(i)).getAttribute("id");
+			map.put(id, (Element)libMaterials.getElementsByTagName("material").item(i));
+		}
+		return map;
+	}
 
-    private Map<String, Element> getLibraryEffectsMap()
-    {
-        Element libEffects = (Element) mainElement.getElementsByTagName("library_effects").item(0);
-        int effCount = libEffects.getElementsByTagName("effect").getLength();
-        Map<String, Element> map = new HashMap<>(effCount);
-        for (int i = 0; i < effCount; i++)
-        {
-            String id = ((Element)libEffects.getElementsByTagName("effect").item(i)).getAttribute("id");
-            map.put(id, (Element)libEffects.getElementsByTagName("effect").item(i));
-        }
-        return map;
-    }
+	private Map<String, Element> getLibraryGeometriesMap()
+	{
+		Element libGeometries = (Element) mainElement.getElementsByTagName("library_geometries").item(0);
+		int geomCount = libGeometries.getElementsByTagName("geometry").getLength();
+		Map<String, Element> map = new HashMap<>(geomCount);
+		for (int i = 0; i < geomCount; i++)
+		{
+			String id = ((Element)libGeometries.getElementsByTagName("geometry").item(i)).getAttribute("id");
+			map.put(id, (Element)libGeometries.getElementsByTagName("geometry").item(i));
+		}
+		return map;
+	}
 
-    private Map<String, Element> getLibraryMaterialsMap()
-    {
-        Element libMaterials = (Element) mainElement.getElementsByTagName("library_materials").item(0);
-        int matCount = libMaterials.getElementsByTagName("material").getLength();
-        Map<String, Element> map = new HashMap<>(matCount);
-        for (int i = 0; i < matCount; i++)
-        {
-            String id = ((Element)libMaterials.getElementsByTagName("material").item(i)).getAttribute("id");
-            map.put(id, (Element)libMaterials.getElementsByTagName("material").item(i));
-        }
-        return map;
-    }
+	private Map<String, Element> getLibraryAnimationsMap()
+	{
+		Element libAnims = (Element) mainElement.getElementsByTagName("library_animations").item(0);
+		int animCount = libAnims.getElementsByTagName("animation").getLength();
+		Map<String, Element> map = new HashMap<>(animCount);
+		Element curElement;
+		for (int i = 0; i < animCount; i++)
+		{
+			curElement = (Element) libAnims.getElementsByTagName("animation").item(i);
+			String target = ((Element)curElement.getElementsByTagName("channel").item(0))
+					.getAttribute("target");
+			map.put(target, curElement);
+		}
+		return map;
+	}
 
-    private Map<String, Element> getLibraryGeometriesMap()
-    {
-        Element libGeometries = (Element) mainElement.getElementsByTagName("library_geometries").item(0);
-        int geomCount = libGeometries.getElementsByTagName("geometry").getLength();
-        Map<String, Element> map = new HashMap<>(geomCount);
-        for (int i = 0; i < geomCount; i++)
-        {
-            String id = ((Element)libGeometries.getElementsByTagName("geometry").item(i)).getAttribute("id");
-            map.put(id, (Element)libGeometries.getElementsByTagName("geometry").item(i));
-        }
-        return map;
-    }
+	private Map<String, Element> getLibraryVisualScenesMap()
+	{
+		Element libVScenes = (Element) mainElement.getElementsByTagName("library_visual_scenes").item(0);
+		int sceneCount = libVScenes.getElementsByTagName("visual_scene").getLength();
+		Map<String, Element> map = new HashMap<>(sceneCount);
+		for (int i = 0; i < sceneCount; i++)
+		{
+			String id = ((Element)libVScenes.getElementsByTagName("visual_scene").item(i)).getAttribute("id");
+			map.put(id, (Element)libVScenes.getElementsByTagName("visual_scene").item(i));
+		}
+		return map;
+	}
 
-    private Map<String, Element> getLibraryAnimationsMap()
-    {
-        Element libAnims = (Element) mainElement.getElementsByTagName("library_animations").item(0);
-        int animCount = libAnims.getElementsByTagName("animation").getLength();
-        Map<String, Element> map = new HashMap<>(animCount);
-        Element curElement;
-        for (int i = 0; i < animCount; i++)
-        {
-            curElement = (Element) libAnims.getElementsByTagName("animation").item(i);
-            String target = ((Element)curElement.getElementsByTagName("channel").item(0))
-                    .getAttribute("target");
-            map.put(target, curElement);
-        }
-        return map;
-    }
+	private Map<String, Element> getSceneNodesMap(Element visualSceneElement)
+	{
+		int nodeCount = visualSceneElement.getElementsByTagName("node").getLength();
+		Map<String, Element> map = new HashMap<>(nodeCount);
+		for (int i = 0; i < nodeCount; i++)
+		{
+			String id = ((Element)visualSceneElement.getElementsByTagName("node").item(i)).getAttribute("id");
+			map.put(id, (Element)visualSceneElement.getElementsByTagName("node").item(i));
+		}
+		return map;
+	}
 
-    private Map<String, Element> getLibraryVisualScenesMap()
-    {
-        Element libVScenes = (Element) mainElement.getElementsByTagName("library_visual_scenes").item(0);
-        int sceneCount = libVScenes.getElementsByTagName("visual_scene").getLength();
-        Map<String, Element> map = new HashMap<>(sceneCount);
-        for (int i = 0; i < sceneCount; i++)
-        {
-            String id = ((Element)libVScenes.getElementsByTagName("visual_scene").item(i)).getAttribute("id");
-            map.put(id, (Element)libVScenes.getElementsByTagName("visual_scene").item(i));
-        }
-        return map;
-    }
+	private SceneObject getSceneObject(Scene s,
+	                                   Element nodeElement,
+	                                   Map<String, Element> libraryImages,
+	                                   Map<String, Element> libraryEffects,
+	                                   Map<String, Element> libraryMaterials,
+	                                   Map<String, Element> libraryGeometries,
+	                                   Map<String, Element> libraryAnimations)
+	{
+		SceneObject obj = new SceneObject();
+		String nodeID = nodeElement.getAttribute("id");
 
-    private Map<String, Element> getSceneNodesMap(Element visualSceneElement)
-    {
-        int nodeCount = visualSceneElement.getElementsByTagName("node").getLength();
-        Map<String, Element> map = new HashMap<>(nodeCount);
-        for (int i = 0; i < nodeCount; i++)
-        {
-            String id = ((Element)visualSceneElement.getElementsByTagName("node").item(i)).getAttribute("id");
-            map.put(id, (Element)visualSceneElement.getElementsByTagName("node").item(i));
-        }
-        return map;
-    }
+		//Posicao
+		nodeElement = (Element) nodeElement.getElementsByTagName("translate").item(0);
+		if(nodeElement!=null)
+		{
+			String[] location = nodeElement.getTextContent().split("[ ]");
+			obj.setLocation(new Vec3(Float.parseFloat(location[0]),
+			                        Float.parseFloat(location[1]),
+			                        Float.parseFloat(location[2])));
+		}
+		nodeElement = (Element) nodeElement.getParentNode();
+		assert nodeElement != null;
+		//Rotacao
+		int count = nodeElement.getElementsByTagName("rotate").getLength();
+		float x = 0, y = 0, z = 0;
+		for (int i = 0; i < count; i++)
+		{
+			nodeElement = (Element) nodeElement.getElementsByTagName("rotate").item(i);
+			if(nodeElement.getAttribute("sid").endsWith("X"))
+				x = Float.parseFloat(nodeElement
+						                         .getTextContent().split("[ ]")[3]);
+			else if(nodeElement.getAttribute("sid").endsWith("Y"))
+				y = Float.parseFloat(nodeElement
+						                         .getTextContent().split("[ ]")[3]);
+			else if(nodeElement.getAttribute("sid").endsWith("Z"))
+				z = Float.parseFloat(nodeElement
+						                         .getTextContent().split("[ ]")[3]);
+			nodeElement = (Element) nodeElement.getParentNode();
+		}
+		obj.setRotation(new Vec3(x, y, z));
+		nodeElement = (Element) nodeElement.getParentNode();
+		assert nodeElement != null;
+		//Escala
+		nodeElement = (Element) nodeElement.getElementsByTagName("scale").item(0);
+		if(nodeElement!=null)
+		{
+			String[] scaleS = nodeElement.getTextContent().split("[ ]");
+			obj.setScale(new Vec3(Float.parseFloat(scaleS[0]) * 20,
+			                     Float.parseFloat(scaleS[1]) * 20,
+			                     Float.parseFloat(scaleS[2]) * 20));
+		}
+		nodeElement = (Element) nodeElement.getParentNode();
+		assert nodeElement != null;
 
-    private SceneObject getSceneObject(Element nodeElement,
-                                       Map<String, Element> libraryImages,
-                                       Map<String, Element> libraryEffects,
-                                       Map<String, Element> libraryMaterials,
-                                       Map<String, Element> libraryGeometries,
-                                       Map<String, Element> libraryAnimations)
-    {
-        String nodeID = nodeElement.getAttribute("id");
-        Vec3 loc = new Vec3(0,0,0);
-        Vec3 rot = new Vec3(0,0,0);
-        Vec3 scale = new Vec3(1,1,1);
-        List<ModelPart> parts = new ArrayList<>();
-        List<Animation> animations = new ArrayList<>();
+		//Geometry
+		String geomId = null;
+		nodeElement = (Element)nodeElement.getElementsByTagName("instance_geometry").item(0);
+		if(nodeElement!=null)
+			geomId = nodeElement.getAttribute("url").substring(1);
 
-        //Posicao
-        nodeElement = (Element) nodeElement.getElementsByTagName("translate").item(0);
-        if(nodeElement!=null)
-        {
-            String[] location = nodeElement.getTextContent().split("[ ]");
-            loc = new Vec3(Float.parseFloat(location[0]),
-                    Float.parseFloat(location[1]),
-                    Float.parseFloat(location[2]));
-        }
-        nodeElement = (Element) nodeElement.getParentNode();
-        assert nodeElement != null;
-        //Rotacao
-        int count = nodeElement.getElementsByTagName("rotate").getLength();
-        for (int i = 0; i < count; i++)
-        {
-            nodeElement = (Element) nodeElement.getElementsByTagName("rotate").item(i);
-            if(nodeElement.getAttribute("sid").endsWith("X"))
-                rot.x = Float.parseFloat(nodeElement
-                        .getTextContent().split("[ ]")[3]);
-            else if(nodeElement.getAttribute("sid").endsWith("Y"))
-                rot.y = Float.parseFloat(nodeElement
-                        .getTextContent().split("[ ]")[3]);
-            else if(nodeElement.getAttribute("sid").endsWith("Z"))
-                rot.z = Float.parseFloat(nodeElement
-                        .getTextContent().split("[ ]")[3]);
-            nodeElement = (Element) nodeElement.getParentNode();
-        }
-        nodeElement = (Element) nodeElement.getParentNode();
-        assert nodeElement != null;
-        //Escala
-        nodeElement = (Element) nodeElement.getElementsByTagName("scale").item(0);
-        if(nodeElement!=null)
-        {
-            String[] scaleS = nodeElement.getTextContent().split("[ ]");
-            scale = new Vec3(Float.parseFloat(scaleS[0]) * 20,
-                    Float.parseFloat(scaleS[1]) * 20,
-                    Float.parseFloat(scaleS[2]) * 20);
-        }
-        nodeElement = (Element) nodeElement.getParentNode();
-        assert nodeElement != null;
-        //Geometry
-        nodeElement = (Element) nodeElement.getElementsByTagName("instance_geometry").item(0);
-        if(nodeElement!=null)
-        {
-            String geomName = nodeElement.getAttribute("url").substring(1);
-            Element geometry = libraryGeometries.get(geomName);
-            geometry = (Element) geometry.getElementsByTagName("mesh").item(0);
-            assert geometry != null;
+		Element meshElement = libraryGeometries.get(geomId);
+		if(meshElement!=null)
+		{
+			Log.d(TAG, "Fazendo parse da geometry '" + geomId + "'" );
+			meshElement = (Element) meshElement.getElementsByTagName("mesh").item(0);
 
-            //Sources
-            Map<String, float[]> sources = new HashMap<>();
-            count = geometry.getElementsByTagName("source").getLength();
-            Element curSrc;
-            for (int i = 0; i < count; i++)
-            {
-                curSrc = (Element) geometry.getElementsByTagName("source").item(i);
-                String srcId = curSrc.getAttribute("id");
-                curSrc = (Element) geometry.getElementsByTagName("float_array").item(0);
-                assert curSrc!= null;
-                String[] srcContentS = curSrc.getTextContent().split("[ ]");
-                float[] srcContent = new float[srcContentS.length];
-                for (int k = 0; k < srcContentS.length; k++)
-                    srcContent[k] = Float.parseFloat(srcContentS[k]);
-                sources.put(srcId, srcContent);
-            }
-            geometry = (Element) geometry.getElementsByTagName("vertices").item(0);
-            String vertsId = geometry.getAttribute("id");
-            String vertsInputId = ((Element)geometry.getElementsByTagName("input").item(0)).getAttribute("source").substring(1);
-            float[] vertsSrc = sources.get(vertsInputId);
-            sources.remove(vertsInputId);
-            sources.put(vertsId, vertsSrc);
-            geometry = (Element) geometry.getParentNode();
+			List<Vec3> rawPositions = new ArrayList<>();
+			List<Vec3> positions;
+			List<Vec3> rawNormals = new ArrayList<>();
+			List<Vec3> normals;
+			List<Vec2> rawUvs = new ArrayList<>();
+			List<Vec2> uvs;
+			List<RGBColor> rawColors = new ArrayList<>();
+			List<RGBColor> colors;
+			List<Model.Part> parts = new ArrayList<>();
 
-            //Polylists/ModelParts
-            count = geometry.getElementsByTagName("polylist").getLength();
-            Element curPolylist;
-            for (int j = 0; j < count; j++)
-            {
-                curPolylist = (Element) geometry.getElementsByTagName("polylist").item(j);
+			// SOURCES
+			Element curSource;
+			int sourceCount = meshElement.getElementsByTagName("source").getLength();
+			Map<String, float[]> sources = new HashMap<>();
+			for (int i = 0; i < sourceCount; i++) // Mapear sources
+			{
+				curSource = ((Element)meshElement.getElementsByTagName("source").item(i));
+				String id = curSource.getAttribute("id");
+				String[] srcS = curSource.getElementsByTagName("float_array").item(0).getTextContent().split("[ ]");
+				float[] src = new float[srcS.length];
+				for (int j = 0; j < srcS.length; j++)
+					src[j] = Float.parseFloat(srcS[j]);
+				sources.put(id, src);
+			}
+			Element vertsElement = (Element) meshElement.getElementsByTagName("vertices").item(0);
+			String sourceID = ((Element)vertsElement.getElementsByTagName("input").item(0))
+					.getAttribute("source").substring(1);
+			float[] srcF = sources.get(sourceID);
+			sources.remove(sourceID);
+			for (int i = 0; i < srcF.length / 3; i++) // add vertices
+			{
+				x = srcF[i];
+				y = srcF[i+1];
+				z = srcF[i+2];
+				rawPositions.add(new Vec3(x,y,z));
+			}
 
-                int vertexCount = Integer.parseInt(curPolylist.getAttribute("count")) * 3;
-                List<Vec3> positions = new ArrayList<>();
-                String posSrcName = null;
-                int positionOffset = -1;
-                List<Vec3> normals = new ArrayList<>();
-                String normsSrcName = null;
-                int normalOffset = -1;
-                List<Vec2> uvs = new ArrayList<>();
-                String uvsSrcName = null;
-                int uvOffset = -1;
+			// POLYLISTS
+			Element curPolylist;
+			List<String> semantics = new ArrayList<>();
+			List<String> srcIds = new ArrayList<>();
+			Map<Short, short[]> indexGroups = new HashMap<>();
+			Map<Short, List<Short>> matchingVerts = new HashMap<>();
+			int polylistCount = meshElement.getElementsByTagName("polylist").getLength();
+			for (int i = 0; i < polylistCount; i++)
+			{
+				curPolylist = (Element) meshElement.getElementsByTagName("polylist").item(i);
 
-                Material material = getMaterial(libraryMaterials.get(curPolylist.getAttribute("material")),
-                        libraryImages, libraryEffects);
+				//INDICES
+				String[] indicesS = curPolylist.getElementsByTagName("p")
+				                               .item(0).getTextContent().split("[ ]");
+				short[] perInputIndices = new short[indicesS.length];
+				for (int j = 0; j < indicesS.length; j++)
+					perInputIndices[j] = Short.parseShort(indicesS[j]);
 
-                String[] indicesS = (curPolylist.getElementsByTagName("p").item(0))
-                        .getTextContent().split("[ ]");
-                int inputCount = curPolylist.getElementsByTagName("input").getLength();
-                Element curIn;
-                for (int k = 0; k < inputCount; k++)
-                {
-                    curIn = (Element) curPolylist.getElementsByTagName("input").item(k);
-                    String semantic = curIn.getAttribute("semantic");
-                    switch (semantic)
-                    {
-                        case "VERTEX":
-                            posSrcName = curIn.getAttribute("source").substring(1);
-                            positionOffset = Integer.parseInt(curIn.getAttribute("offset"));
-                            break;
-                        case "NORMAL":
-                            normsSrcName = curIn.getAttribute("source").substring(1);
-                            normalOffset = Integer.parseInt(curIn.getAttribute("offset"));
-                            break;
-                        case "TEXCOORD":
-                            uvsSrcName = curIn.getAttribute("source").substring(1);
-                            uvOffset = Integer.parseInt(curIn.getAttribute("offset"));
-                            break;
-//                                case "COLOR": Cor por vertice, atualmente usando somente cores por material
-//                                    break;
-                    }
-                }
+				//INPUTS
+				Element curInput;
+				int inputCount = curPolylist.getElementsByTagName("input").getLength();
+				semantics.clear(); // Semantics iguais para todos os polylists nas exportacoes do Blender
+				for (int j = 0; j < inputCount; j++)
+				{
+					curInput = (Element) curPolylist.getElementsByTagName("input").item(j);
+					String semantic = curInput.getAttribute("semantic");
+					semantics.add(semantic);
+					srcIds.add(curInput.getAttribute("source").substring(1));
+				}
 
-                assert positionOffset>-1;
-                for (int k = 0; k < indicesS.length; k+=inputCount)
-                {
-                    int index = Integer.parseInt(indicesS[k + positionOffset]);
-                    positions.add(new Vec3(sources.get(posSrcName)[index],
-                            sources.get(posSrcName)[index+1], sources.get(posSrcName)[index+2]));
-                    if(normalOffset!=-1)
-                    {
-                        index = Integer.parseInt(indicesS[k+normalOffset]);
-                        normals.add(new Vec3(sources.get(normsSrcName)[index],
-                                sources.get(normsSrcName)[index+1], sources.get(normsSrcName)[index+2]));
-                    }
-                    if(uvOffset!=-1)
-                    {
-                        index = Integer.parseInt(indicesS[k+uvOffset]);
-                        uvs.add(new Vec2(sources.get(uvsSrcName)[index],
-                                sources.get(uvsSrcName)[index+1]));
-                    }
-                }
+				//INDICES
+				// processamento de vertices com mesmo indice de posicao para gerar indices e
+				// listas de atributos apropriados
+				short[] indices = new short[perInputIndices.length/inputCount];
+				short curPrimary;
+				short[] curSecondaries;
+				for (int j = 0; j < perInputIndices.length; j+=inputCount)
+				{
+					curPrimary = perInputIndices[j]; //Indice de posicao
+					curSecondaries = new short[inputCount - 1];
+					for (int k = 0; k < inputCount-1; k++)
+						curSecondaries[k] = perInputIndices[j+(k+1)]; //Demais indices
 
-                ModelPart p = new ModelPart(vertexCount);
-                p.addAttribute(new PositionAttribute(positions));
-                if(normals.size()>0)
-                    p.addAttribute(new NormalAttribute(normals));
-                if(material!=null)
-                    p.addAttribute(new MaterialAttribute(material, uvs));
+					if(indexGroups.containsKey(curPrimary)) //Testar indice de posicao contra indices previamente processados
+					{
+						List<Short> possibleMatches = new ArrayList<>();
+						possibleMatches.add(curPrimary);
 
-                parts.add(p);
-            }
-            //Animations
-            animations.addAll(getAnimations(nodeID, libraryAnimations));
-        }
+						if(matchingVerts.containsKey(curPrimary)) //Adicionar aos possiveis matches tds os previamente associados
+						{
+							for (short k : matchingVerts.get(curPrimary))
+								possibleMatches.add(k);
+						}
 
-        return new SceneObject(loc, rot, scale, parts, animations);
-    }
+						boolean noMatch = true;
+						for (short k : possibleMatches) //Testar possiveis matches
+						{
+							int matchCount = 0;
+							for (int m = 0; m < curSecondaries.length; m++) //Comparar indices secundarios
+							{
+								if(curSecondaries[m] == indexGroups.get(k)[m])
+									matchCount++;
+							}
 
-    //Suportando apenas uma animacao locXYZ/rotXYZ/scaleXYZ por objeto como imposto pelo exporter do blender
-    private List<Animation> getAnimations(String targetName, Map<String, Element> libraryAnimations)
-    {
-        List<Element> animslocRotScaleXYZ = new ArrayList<>(9);
-        for (int i = 0; i < 9; i++)
-            animslocRotScaleXYZ.add(null);
+							if(matchCount==inputCount-1) // Vertice exatamente igual
+							{
+								noMatch = false;
+								break;
+							}
+						}
+
+						if(noMatch) //Vertice ainda nao indexado, duplicar posicao e associar indices
+						{
+							Vec3 pos = rawPositions.get(curPrimary);
+							short newIndex = (short)rawPositions.size();
+
+							if(!matchingVerts.containsKey(curPrimary))
+								matchingVerts.put(curPrimary, new ArrayList<Short>());
+							matchingVerts.get(curPrimary).add(newIndex);
+
+							curPrimary = newIndex;
+							rawPositions.add(pos);
+						}
+					}
+
+					indexGroups.put(curPrimary, curSecondaries); // adicionando vertice processado
+					indices[i/inputCount] = curPrimary;
+				}
+
+				Model.Part part = new Model.Part(indices);
+
+				//MATERIAL
+				String matName = curPolylist.getAttribute("material");
+				int matId = s.addMaterial(getMaterial(libraryMaterials.get(matName), libraryImages, libraryEffects));
+				part.setMaterialId(matId);
+
+				parts.add(part);
+			}
+
+			//Populando listas de atributos baseado nos inputs do ultimo polylist,
+			//o que deve ser igual a todos os outros na exportacao do blender
+			for (int j = 0; j < semantics.size(); j++)
+			{
+				String srcID = srcIds.get(j);
+				float[] src = sources.get(srcID);
+				switch (semantics.get(j))
+				{
+					case "NORMAL":
+						for (int k = 0; k < src.length/3; k++)
+						{
+							x = src[k];
+							y = src[k+1];
+							z = src[k+2];
+							rawNormals.add(new Vec3(x,y,z));
+						}
+						break;
+					case "TEXCOORDS":
+						for (int k = 0; k < src.length/2; k++)
+						{
+							x = src[k];
+							y = src[k+1];
+							rawUvs.add(new Vec2(x,y));
+						}
+						break;
+					case "COLOR":
+						for (int k = 0; k < src.length/3; k++)
+						{
+							float r = src[k];
+							float g = src[k+1];
+							float b = src[k+2];
+							rawColors.add(new RGBColor(r,g,b));
+						}
+						break;
+				}
+			}
+
+			positions = new ArrayList<>();
+			normals = new ArrayList<>();
+			uvs = new ArrayList<>();
+			colors = new ArrayList<>();
+
+			for (int j = 0; j < rawPositions.size(); j++)
+			{
+				positions.add(Vec3.ZERO);
+				normals.add(Vec3.ZERO);
+				uvs.add(Vec2.ZERO);
+				colors.add(RGBColor.PINK);
+			}
+
+			//Populando listas finais de atributos do mesh de acordo com os
+			// dados do processamento feito nos indices de cada polylist.
+			for (short i : indexGroups.keySet())
+			{
+				for (int j = 0; j < indexGroups.get(i).length; j++)
+				{
+					switch (semantics.get(j+1))
+					{
+						case "VERTEX":
+							positions.set(i, rawPositions.get(i));
+							break;
+						case "NORMAL":
+							normals.set(j, rawNormals.get(j));
+							break;
+						case "TEXCOORD":
+							uvs.set(j, rawUvs.get(j));
+							break;
+						case "COLOR":
+							colors.set(j, rawColors.get(j));
+							break;
+					}
+				}
+			}
+
+			int meshId = s.addModel(new Model(positions, normals, uvs, colors, parts));
+			obj.setMeshId(meshId);
+			Log.d(TAG, "Model count: " + s.getModels().size());
+		}
+
+		//Animations
+//		obj.setAnimations(getAnimations(nodeID, libraryAnimations));
+
+		return obj;
+	}
+
+	//Suportando apenas uma animacao locXYZ/rotXYZ/scaleXYZ por objeto como imposto pelo exporter do blender
+	private List<Animation> getAnimations(String targetName, Map<String, Element> libraryAnimations)
+	{
+		List<Animation> animations = new ArrayList<>();
+		List<Keyframe> locX, locY, locZ, rotX, rotY, rotZ, sclX, sclY, sclZ;
+		List<Element> animslocRotScaleXYZ = new ArrayList<>(9);
+		for (int i = 0; i < 9; i++)
+			animslocRotScaleXYZ.add(null);
 //        Element locX = null, locY = null, locZ = null,
 //                rotX = null, rotY = null, rotZ = null,
 //                scaleX = null, scaleY = null, scaleZ = null;
 
-        for (String t : libraryAnimations.keySet())
-        {
-            Element curAnim = libraryAnimations.get(t);
-            String[] target = t.split("[/]");
+		for (String t : libraryAnimations.keySet())
+		{
+			Element curAnim = libraryAnimations.get(t);
+			String[] target = t.split("[/]");
 
-            if(target[0].equals(targetName))
-            {
-                switch (target[1])
-                {
-                    case "location.X":
-                        animslocRotScaleXYZ.set(0,curAnim);
-                        break;
-                    case "location.Y":
-                        animslocRotScaleXYZ.set(1,curAnim);
-                        break;
-                    case "location.Z":
-                        animslocRotScaleXYZ.set(2,curAnim);
-                        break;
-                    case "rotationX.ANGLE":
-                        animslocRotScaleXYZ.set(3,curAnim);
-                        break;
-                    case "rotationY.ANGLE":
-                        animslocRotScaleXYZ.set(4,curAnim);
-                        break;
-                    case "rotationZ.ANGLE":
-                        animslocRotScaleXYZ.set(5,curAnim);
-                        break;
-                    case "scale.X":
-                        animslocRotScaleXYZ.set(6,curAnim);
-                        break;
-                    case "scale.Y":
-                        animslocRotScaleXYZ.set(7,curAnim);
-                        break;
-                    case "scale.Z":
-                        animslocRotScaleXYZ.set(8,curAnim);
-                }
-            }
-        }
+			if(target[0].equals(targetName))
+			{
+				switch (target[1])
+				{
+					case "location.X":
+						animslocRotScaleXYZ.set(0,curAnim);
+						break;
+					case "location.Y":
+						animslocRotScaleXYZ.set(1,curAnim);
+						break;
+					case "location.Z":
+						animslocRotScaleXYZ.set(2,curAnim);
+						break;
+					case "rotationX.ANGLE":
+						animslocRotScaleXYZ.set(3,curAnim);
+						break;
+					case "rotationY.ANGLE":
+						animslocRotScaleXYZ.set(4,curAnim);
+						break;
+					case "rotationZ.ANGLE":
+						animslocRotScaleXYZ.set(5,curAnim);
+						break;
+					case "scale.X":
+						animslocRotScaleXYZ.set(6,curAnim);
+						break;
+					case "scale.Y":
+						animslocRotScaleXYZ.set(7,curAnim);
+						break;
+					case "scale.Z":
+						animslocRotScaleXYZ.set(8,curAnim);
+				}
+			}
+		}
 
-        for (int i = 0; i < 3; i++) // Loc
-        {
-            Map<String, float[]> sourcesFloat = new HashMap<>();
-            Map<String, String[]> sourcesString = new HashMap<>();
+		for (int i = 0; i < 9; i++) // Parse anims
+		{
+			Map<String, String[]> sourcesString = new HashMap<>();
 
-            Element curAnim = animslocRotScaleXYZ.get(i);
-            if(curAnim!=null)
-            {
-                int sourceCount = curAnim.getElementsByTagName("source").getLength();
-                for (int j = 0; j < sourceCount; j++)
-                {
-                    curAnim = (Element) curAnim.getElementsByTagName("source").item(j);
-                    //Switch accessor
-                    curAnim = (Element) curAnim.getParentNode();
-                }
-            }
-        }
+			Element curAnim = animslocRotScaleXYZ.get(i);
+			if(curAnim!=null)
+			{
+				int sourceCount = curAnim.getElementsByTagName("source").getLength();
+				for (int j = 0; j < sourceCount; j++)
+				{
+					curAnim = (Element) curAnim.getElementsByTagName("source").item(j);
+					String id = curAnim.getAttribute("id");
+					String type = ((Element)((Element)((Element)curAnim.getElementsByTagName("technique_common"))
+							.getElementsByTagName("accessor")).getElementsByTagName("param")).getAttribute("type");
+					switch (type)
+					{
+						case "float":
+							sourcesString.put(id, curAnim.getElementsByTagName("float_array").item(0).getTextContent().split("[ ]"));
+							break;
+						case "name":
+							sourcesString.put(id, curAnim.getElementsByTagName("Name_array").item(0).getTextContent().split("[ ]"));
+							break;
+					}
+					curAnim = (Element) curAnim.getParentNode();
+				}
 
-        List<Keyframe> keyframes = new ArrayList<>();
-        List<Animation> animations = new ArrayList<>();
+				float[] input = null;
+				float[] output = null;
+				Vec2[] intangents = null;
+				Vec2[] outtangents = null;
+				String methodUrl = null;
 
-        //TODO: Parse dos keyframes
+				int inputCount = curAnim.getElementsByTagName("input").getLength();
+				for (int j = 0; j < inputCount; j++)
+				{
+					curAnim = (Element) curAnim.getElementsByTagName("input").item(j);
+					String semantic = curAnim.getAttribute("semantic");
+					String srcUrl = curAnim.getAttribute("source").substring(1);
+					switch (semantic)
+					{
+						case "INPUT":
+							input = new float[sourcesString.get(srcUrl).length];
+							for (int k = 0; k < input.length; k++)
+								input[k] = Float.parseFloat(sourcesString.get(srcUrl)[k]);
+							break;
+						case "OUTPUT":
+							output = new float[sourcesString.get(srcUrl).length];
+							for (int k = 0; k < output.length; k++)
+								output[k] = Float.parseFloat(sourcesString.get(srcUrl)[k]);
+							break;
+						case "INTERPOLATION":
+							methodUrl = srcUrl;
+							break;
+						case "IN_TANGENT":
+							intangents = new Vec2[sourcesString.get(srcUrl).length / 2];
+							int index = 0;
+							for (Vec2 v : intangents)
+							{
+								v.x = Float.parseFloat(sourcesString.get(srcUrl)[index++]);
+								v.y = Float.parseFloat(sourcesString.get(srcUrl)[index++]);
+							}
+							break;
+						case "OUT_TANGENT":
+							outtangents = new Vec2[sourcesString.get(srcUrl).length / 2];
+							index = 0;
+							for (Vec2 v : outtangents)
+							{
+								v.x = Float.parseFloat(sourcesString.get(srcUrl)[index++]);
+								v.y = Float.parseFloat(sourcesString.get(srcUrl)[index++]);
+							}
+							break;
+					}
+					curAnim = (Element) curAnim.getParentNode();
+				}
 
-        animations.add(new Animation(keyframes));
+				assert methodUrl!=null &&
+				       input!=null
+				       && output!=null;
+				for (int j = 0; j < sourcesString.get(methodUrl).length; j++)
+				{
+					switch (sourcesString.get(methodUrl)[j])
+					{
+						case "LINEAR":
+//							keyframes.add(new LinearKeyframe(new Vec2(input[j], output[j])));
+							break;
+						case "BEZIER":
+//							keyframes.add(new BezierKeyframe(new Vec2(input[j], output[j]), outtangents[j], intangents[j]));
+							break;
+					}
+				}
 
-        return animations;
-    }
 
-    private Material getMaterial(Element materialElement,
-                                 Map<String, Element> libraryImages,
-                                 Map<String, Element> libraryEffects)
-    {
-        String effectId = ((Element)materialElement.getElementsByTagName("instance_effect").item(0))
-                .getAttribute("url").substring(1);
-        Element effect = libraryEffects.get(effectId);
-        if(effect!=null)
-        {
-            effect = (Element) effect.getElementsByTagName("profile_COMMON").item(0);
-            Material m = new Material(materialElement.getAttribute("id"));
-            m.setAmbient(0,0,0);
-            m.setDiffuse(1, 0, 1);
-            m.setTransparency(1);
-            //TODO: Parse do material
+			}
+		}
 
-            return m;
-        }
-        else
-            return null;
-    }
+//		animations.add(new Animation(keyframes));
 
-    @Override
-    public String getFilePath()
-    {
-        return filePath;
-    }
+		return animations;
+	}
+
+	private Material getMaterial(Element materialElement,
+	                             Map<String, Element> libraryImages,
+	                             Map<String, Element> libraryEffects)
+	{
+		String effectId = ((Element)materialElement.getElementsByTagName("instance_effect").item(0))
+				.getAttribute("url").substring(1);
+		Element effect = libraryEffects.get(effectId);
+		if(effect!=null)
+		{
+			effect = (Element) effect.getElementsByTagName("profile_COMMON").item(0);
+			Material m = new Material(materialElement.getAttribute("id"));
+			m.setAmbient(0,0,0);
+			m.setDiffuse(1, 0, 1);
+			m.setTransparency(1);
+			//TODO: Parse do material
+
+			return m;
+		}
+		else
+			return null;
+	}
+
+	@Override
+	public String getFilePath()
+	{
+		return filePath;
+	}
 }
