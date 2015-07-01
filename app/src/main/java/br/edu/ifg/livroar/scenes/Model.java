@@ -76,10 +76,12 @@ public class Model
 		}
 		stride *= 4;
 
-		float[] vertexData = new float[positions.size() * 3 +
-		                               (hasNormals ? normals.size() * 3 : 0) +
-		                               (hasUvs ? uvs.size() * 2 : 0) +
-		                               (hasColors ? colors.size() * 4 : 0)];
+		float[] vertexData = new float[positions.size() * POS_DATA_SIZE +
+		                               (hasNormals ? normals.size() * NORMAL_DATA_SIZE : 0) +
+		                               (hasUvs ? uvs.size() * UV_DATA_SIZE : 0) +
+		                               (hasColors ? colors.size() * COLOR_DATA_SIZE : 0)];
+		Log.d(TAG, "data size: " + vertexData.length);
+
 		int index = 0;
 		for (int i = 0; i < positions.size(); i++)
 		{
@@ -154,8 +156,8 @@ public class Model
 				}
 				gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, mat.getAmbientBuffer());
 				gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, mat.getDiffuseBuffer());
-				//gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, mat.getSpecularBuffer());
-				//gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS, mat.getShininess());
+//				gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, mat.getSpecularBuffer());
+//				gl.glMaterialf(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS, mat.getShininess());
 			}
 			gl.glDrawElements(GL10.GL_TRIANGLES, p.vertexCount, GL10.GL_UNSIGNED_SHORT, p.indexBuffer);
 		}

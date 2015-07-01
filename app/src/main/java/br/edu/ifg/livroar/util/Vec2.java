@@ -93,5 +93,10 @@ public class Vec2
 		float dy = a.y - b.y;
 		return (float) Math.sqrt((dx*dx) + (dy*dy));
 	}
-	
+
+	@Override
+	public String toString ()
+	{
+		return "(" + x + ", " + y + ")";
+	}
 }

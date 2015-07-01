@@ -95,82 +95,111 @@ public class ColladaLoader implements Asset3DLoader
 	private Map<String, Element> getLibraryImagesMap()
 	{
 		Element libImages = (Element) mainElement.getElementsByTagName("library_images").item(0);
-		int imgCount = libImages.getElementsByTagName("image").getLength();
-		Map<String, Element> map = new HashMap<>(imgCount);
-		for (int i = 0; i < imgCount; i++)
+		if(libImages != null)
 		{
-			String id = ((Element)libImages.getElementsByTagName("image").item(i)).getAttribute("id");
-			map.put(id, (Element)libImages.getElementsByTagName("image").item(i));
+			int imgCount = libImages.getElementsByTagName("image").getLength();
+			Map<String, Element> map = new HashMap<>(imgCount);
+			for (int i = 0; i < imgCount; i++)
+			{
+				String id = ((Element)libImages.getElementsByTagName("image").item(i)).getAttribute("id");
+				map.put(id, (Element)libImages.getElementsByTagName("image").item(i));
+			}
+			return map;
 		}
-		return map;
+
+		return new HashMap<>(0);
 	}
 
 	private Map<String, Element> getLibraryEffectsMap()
 	{
 		Element libEffects = (Element) mainElement.getElementsByTagName("library_effects").item(0);
-		int effCount = libEffects.getElementsByTagName("effect").getLength();
-		Map<String, Element> map = new HashMap<>(effCount);
-		for (int i = 0; i < effCount; i++)
+		if(libEffects != null)
 		{
-			String id = ((Element)libEffects.getElementsByTagName("effect").item(i)).getAttribute("id");
-			map.put(id, (Element)libEffects.getElementsByTagName("effect").item(i));
+			int effCount = libEffects.getElementsByTagName("effect").getLength();
+			Map<String, Element> map = new HashMap<>(effCount);
+			for (int i = 0; i < effCount; i++)
+			{
+				String id = ((Element)libEffects.getElementsByTagName("effect").item(i)).getAttribute("id");
+				map.put(id, (Element)libEffects.getElementsByTagName("effect").item(i));
+			}
+			return map;
 		}
-		return map;
+
+		return new HashMap<>(0);
 	}
 
 	private Map<String, Element> getLibraryMaterialsMap()
 	{
 		Element libMaterials = (Element) mainElement.getElementsByTagName("library_materials").item(0);
-		int matCount = libMaterials.getElementsByTagName("material").getLength();
-		Map<String, Element> map = new HashMap<>(matCount);
-		for (int i = 0; i < matCount; i++)
+		if(libMaterials != null)
 		{
-			String id = ((Element)libMaterials.getElementsByTagName("material").item(i)).getAttribute("id");
-			map.put(id, (Element)libMaterials.getElementsByTagName("material").item(i));
+			int matCount = libMaterials.getElementsByTagName("material").getLength();
+			Map<String, Element> map = new HashMap<>(matCount);
+			for (int i = 0; i < matCount; i++)
+			{
+				String id = ((Element)libMaterials.getElementsByTagName("material").item(i)).getAttribute("id");
+				map.put(id, (Element)libMaterials.getElementsByTagName("material").item(i));
+			}
+			return map;
 		}
-		return map;
+
+		return new HashMap<>();
 	}
 
 	private Map<String, Element> getLibraryGeometriesMap()
 	{
 		Element libGeometries = (Element) mainElement.getElementsByTagName("library_geometries").item(0);
-		int geomCount = libGeometries.getElementsByTagName("geometry").getLength();
-		Map<String, Element> map = new HashMap<>(geomCount);
-		for (int i = 0; i < geomCount; i++)
+		if(libGeometries != null)
 		{
-			String id = ((Element)libGeometries.getElementsByTagName("geometry").item(i)).getAttribute("id");
-			map.put(id, (Element)libGeometries.getElementsByTagName("geometry").item(i));
+			int geomCount = libGeometries.getElementsByTagName("geometry").getLength();
+			Map<String, Element> map = new HashMap<>(geomCount);
+			for (int i = 0; i < geomCount; i++)
+			{
+				String id = ((Element)libGeometries.getElementsByTagName("geometry").item(i)).getAttribute("id");
+				map.put(id, (Element)libGeometries.getElementsByTagName("geometry").item(i));
+			}
+			return map;
 		}
-		return map;
+
+		return new HashMap<>(0);
 	}
 
 	private Map<String, Element> getLibraryAnimationsMap()
 	{
 		Element libAnims = (Element) mainElement.getElementsByTagName("library_animations").item(0);
-		int animCount = libAnims.getElementsByTagName("animation").getLength();
-		Map<String, Element> map = new HashMap<>(animCount);
-		Element curElement;
-		for (int i = 0; i < animCount; i++)
+		if(libAnims != null)
 		{
-			curElement = (Element) libAnims.getElementsByTagName("animation").item(i);
-			String target = ((Element)curElement.getElementsByTagName("channel").item(0))
-					.getAttribute("target");
-			map.put(target, curElement);
+			int animCount = libAnims.getElementsByTagName("animation").getLength();
+			Map<String, Element> map = new HashMap<>(animCount);
+			Element curElement;
+			for (int i = 0; i < animCount; i++)
+			{
+				curElement = (Element) libAnims.getElementsByTagName("animation").item(i);
+				String target = ((Element)curElement.getElementsByTagName("channel").item(0))
+						.getAttribute("target");
+				map.put(target, curElement);
+			}
+			return map;
 		}
-		return map;
+		return new HashMap<>(0);
 	}
 
 	private Map<String, Element> getLibraryVisualScenesMap()
 	{
 		Element libVScenes = (Element) mainElement.getElementsByTagName("library_visual_scenes").item(0);
-		int sceneCount = libVScenes.getElementsByTagName("visual_scene").getLength();
-		Map<String, Element> map = new HashMap<>(sceneCount);
-		for (int i = 0; i < sceneCount; i++)
+		if(libVScenes != null)
 		{
-			String id = ((Element)libVScenes.getElementsByTagName("visual_scene").item(i)).getAttribute("id");
-			map.put(id, (Element)libVScenes.getElementsByTagName("visual_scene").item(i));
+			int sceneCount = libVScenes.getElementsByTagName("visual_scene").getLength();
+			Map<String, Element> map = new HashMap<>(sceneCount);
+			for (int i = 0; i < sceneCount; i++)
+			{
+				String id = ((Element)libVScenes.getElementsByTagName("visual_scene").item(i)).getAttribute("id");
+				map.put(id, (Element)libVScenes.getElementsByTagName("visual_scene").item(i));
+			}
+			return map;
 		}
-		return map;
+
+		return new HashMap<>(0);
 	}
 
 	private Map<String, Element> getSceneNodesMap(Element visualSceneElement)
@@ -202,8 +231,8 @@ public class ColladaLoader implements Asset3DLoader
 		{
 			String[] location = nodeElement.getTextContent().split("[ ]");
 			obj.setLocation(new Vec3(Float.parseFloat(location[0]),
-			                        Float.parseFloat(location[1]),
-			                        Float.parseFloat(location[2])));
+			                         Float.parseFloat(location[1]),
+			                         Float.parseFloat(location[2])));
 		}
 		nodeElement = (Element) nodeElement.getParentNode();
 		assert nodeElement != null;
@@ -215,13 +244,13 @@ public class ColladaLoader implements Asset3DLoader
 			nodeElement = (Element) nodeElement.getElementsByTagName("rotate").item(i);
 			if(nodeElement.getAttribute("sid").endsWith("X"))
 				x = Float.parseFloat(nodeElement
-						                         .getTextContent().split("[ ]")[3]);
+						                     .getTextContent().split("[ ]")[3]);
 			else if(nodeElement.getAttribute("sid").endsWith("Y"))
 				y = Float.parseFloat(nodeElement
-						                         .getTextContent().split("[ ]")[3]);
+						                     .getTextContent().split("[ ]")[3]);
 			else if(nodeElement.getAttribute("sid").endsWith("Z"))
 				z = Float.parseFloat(nodeElement
-						                         .getTextContent().split("[ ]")[3]);
+						                     .getTextContent().split("[ ]")[3]);
 			nodeElement = (Element) nodeElement.getParentNode();
 		}
 		obj.setRotation(new Vec3(x, y, z));
@@ -233,8 +262,8 @@ public class ColladaLoader implements Asset3DLoader
 		{
 			String[] scaleS = nodeElement.getTextContent().split("[ ]");
 			obj.setScale(new Vec3(Float.parseFloat(scaleS[0]) * 20,
-			                     Float.parseFloat(scaleS[1]) * 20,
-			                     Float.parseFloat(scaleS[2]) * 20));
+			                      Float.parseFloat(scaleS[1]) * 20,
+			                      Float.parseFloat(scaleS[2]) * 20));
 		}
 		nodeElement = (Element) nodeElement.getParentNode();
 		assert nodeElement != null;
@@ -280,7 +309,7 @@ public class ColladaLoader implements Asset3DLoader
 					.getAttribute("source").substring(1);
 			float[] srcF = sources.get(sourceID);
 			sources.remove(sourceID);
-			for (int i = 0; i < srcF.length / 3; i++) // add vertices
+			for (int i = 0; i < srcF.length; i+=3) // add vertices
 			{
 				x = srcF[i];
 				y = srcF[i+1];
@@ -292,7 +321,7 @@ public class ColladaLoader implements Asset3DLoader
 			Element curPolylist;
 			List<String> semantics = new ArrayList<>();
 			List<String> srcIds = new ArrayList<>();
-			Map<Short, short[]> indexGroups = new HashMap<>();
+			Map<Short, short[]> indexGroups = new HashMap<>(); // Indices secundarios(normals, uvs, colors, ...) mapeados ao indice de posicao
 			Map<Short, List<Short>> matchingVerts = new HashMap<>();
 			int polylistCount = meshElement.getElementsByTagName("polylist").getLength();
 			for (int i = 0; i < polylistCount; i++)
@@ -304,7 +333,13 @@ public class ColladaLoader implements Asset3DLoader
 				                               .item(0).getTextContent().split("[ ]");
 				short[] perInputIndices = new short[indicesS.length];
 				for (int j = 0; j < indicesS.length; j++)
-					perInputIndices[j] = Short.parseShort(indicesS[j]);
+				{
+					int indice = Integer.parseInt(indicesS[j]);
+					if(indice <= Short.MAX_VALUE && indice >= 0)
+						perInputIndices[j] = (short) indice;
+					else
+						perInputIndices[j] = Short.MAX_VALUE;
+				}
 
 				//INPUTS
 				Element curInput;
@@ -322,6 +357,7 @@ public class ColladaLoader implements Asset3DLoader
 				// processamento de vertices com mesmo indice de posicao para gerar indices e
 				// listas de atributos apropriados
 				short[] indices = new short[perInputIndices.length/inputCount];
+
 				short curPrimary;
 				short[] curSecondaries;
 				for (int j = 0; j < perInputIndices.length; j+=inputCount)
@@ -374,8 +410,12 @@ public class ColladaLoader implements Asset3DLoader
 					}
 
 					indexGroups.put(curPrimary, curSecondaries); // adicionando vertice processado
-					indices[i/inputCount] = curPrimary;
+					indices[j/inputCount] = curPrimary;
 				}
+
+//				Log.d(TAG, "part indices count: " + indices.length);
+//				for (int j = 0; j < indices.length; j++)
+//					Log.d(TAG, "i " + indices[j]);
 
 				Model.Part part = new Model.Part(indices);
 
@@ -396,7 +436,7 @@ public class ColladaLoader implements Asset3DLoader
 				switch (semantics.get(j))
 				{
 					case "NORMAL":
-						for (int k = 0; k < src.length/3; k++)
+						for (int k = 0; k < src.length; k+=3)
 						{
 							x = src[k];
 							y = src[k+1];
@@ -404,8 +444,8 @@ public class ColladaLoader implements Asset3DLoader
 							rawNormals.add(new Vec3(x,y,z));
 						}
 						break;
-					case "TEXCOORDS":
-						for (int k = 0; k < src.length/2; k++)
+					case "TEXCOORD":
+						for (int k = 0; k < src.length; k+=2)
 						{
 							x = src[k];
 							y = src[k+1];
@@ -413,7 +453,7 @@ public class ColladaLoader implements Asset3DLoader
 						}
 						break;
 					case "COLOR":
-						for (int k = 0; k < src.length/3; k++)
+						for (int k = 0; k < src.length; k+=3)
 						{
 							float r = src[k];
 							float g = src[k+1];
@@ -439,23 +479,29 @@ public class ColladaLoader implements Asset3DLoader
 
 			//Populando listas finais de atributos do mesh de acordo com os
 			// dados do processamento feito nos indices de cada polylist.
-			for (short i : indexGroups.keySet())
+			for (short prim : indexGroups.keySet())
 			{
-				for (int j = 0; j < indexGroups.get(i).length; j++)
+				prim = (short) Math.abs(prim); // Forcando valor positivo
+				Log.d(TAG, "prim: " + prim);
+//				Log.d(TAG, "Pos " + prim + ": " + rawPositions.get(prim).toString());
+				positions.set(prim, rawPositions.get(prim));
+				short subIndex;
+				for (int j = 0; j < indexGroups.get(prim).length; j++)
 				{
+					subIndex = indexGroups.get(prim)[j];
 					switch (semantics.get(j+1))
 					{
-						case "VERTEX":
-							positions.set(i, rawPositions.get(i));
-							break;
 						case "NORMAL":
-							normals.set(j, rawNormals.get(j));
+//							Log.d(TAG, "Norm " + prim + ": " + rawNormals.get(subIndex).toString());
+							normals.set(prim, rawNormals.get(subIndex));
 							break;
 						case "TEXCOORD":
-							uvs.set(j, rawUvs.get(j));
+//							Log.d(TAG, "UV " + prim + ": " + rawUvs.get(subIndex).toString());
+							uvs.set(prim, rawUvs.get(subIndex));
 							break;
 						case "COLOR":
-							colors.set(j, rawColors.get(j));
+//							Log.d(TAG, "Col " + prim + ": " + rawColors.get(subIndex).toString());
+							colors.set(prim, rawColors.get(subIndex));
 							break;
 					}
 				}
@@ -463,7 +509,7 @@ public class ColladaLoader implements Asset3DLoader
 
 			int meshId = s.addModel(new Model(positions, normals, uvs, colors, parts));
 			obj.setMeshId(meshId);
-			Log.d(TAG, "Model count: " + s.getModels().size());
+//			Log.d(TAG, "Model count: " + s.getModels().size());
 		}
 
 		//Animations
@@ -632,12 +678,51 @@ public class ColladaLoader implements Asset3DLoader
 		Element effect = libraryEffects.get(effectId);
 		if(effect!=null)
 		{
-			effect = (Element) effect.getElementsByTagName("profile_COMMON").item(0);
 			Material m = new Material(materialElement.getAttribute("id"));
-			m.setAmbient(0,0,0);
-			m.setDiffuse(1, 0, 1);
+			effect = (Element)((Element)((Element) effect.getElementsByTagName("profile_COMMON").item(0))
+					.getElementsByTagName("technique").item(0))
+					.getElementsByTagName("phong").item(0); //TODO: suporte para outros modelos de ilum.?
+
+			Element e = (Element) ((Element)effect.getElementsByTagName("diffuse").item(0))
+					.getElementsByTagName("color").item(0);
+			String[] c;
+			if(e != null)
+			{
+				c = e.getTextContent().split("[ ]");
+				m.setAmbient(Float.parseFloat(c[0]), Float.parseFloat(c[1]), Float.parseFloat(c[2]));
+			}
+
+			e = (Element) ((Element)effect.getElementsByTagName("diffuse").item(0))
+					.getElementsByTagName("color").item(0);
+			if(e != null)
+			{
+				c = e.getTextContent().split("[ ]");
+				m.setDiffuse(Float.parseFloat(c[0]), Float.parseFloat(c[1]), Float.parseFloat(c[2]));
+			}
+			e = (Element) ((Element)effect.getElementsByTagName("diffuse").item(0))
+					.getElementsByTagName("texture").item(0);
+			if(e != null)
+			{
+				String texName = e.getAttribute("texture").split("[-]")[0]; // Improvisacao, usar library_images
+				c = texName.split("[_]");
+				texName = c[0] + "." + c[1];
+				m.setTexture(texName);
+			}
+
+			e = (Element) ((Element)effect.getElementsByTagName("specular").item(0))
+					.getElementsByTagName("color").item(0);
+			if(e != null)
+			{
+				c = e.getTextContent().split("[ ]");
+				m.setSpecular(Float.parseFloat(c[0]),Float.parseFloat(c[1]),Float.parseFloat(c[2]));
+			}
+
+			e = (Element) ((Element)effect.getElementsByTagName("shininess").item(0))
+					.getElementsByTagName("float").item(0);
+			if(e != null)
+				m.setShininess(Float.parseFloat(e.getTextContent()));
+
 			m.setTransparency(1);
-			//TODO: Parse do material
 
 			return m;
 		}

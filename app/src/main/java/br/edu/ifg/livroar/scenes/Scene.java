@@ -64,7 +64,7 @@ public class Scene extends ARObject
 		for (SceneObject g : objects)
 		{
 			g.draw(gl, this, curTime);
-//			gl.glLoadMatrixf(sceneTransMatrix, 0);
+			gl.glLoadMatrixf(sceneTransMatrix, 0);
 		}
 	}
 

@@ -105,4 +105,9 @@ public class Vec3
 		return (float) Math.sqrt((dx*dx) + (dy*dy) + (dz*dz));
 	}
 
+	@Override
+	public String toString ()
+	{
+		return "(" + x + ", " + y + ", " + z + ")";
+	}
 }
