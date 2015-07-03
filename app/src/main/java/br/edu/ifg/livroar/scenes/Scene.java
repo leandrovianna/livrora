@@ -58,13 +58,13 @@ public class Scene extends ARObject
 	public synchronized void draw (GL10 gl)
 	{
 		super.draw(gl);
-		sceneTransMatrix = DoubleArrayToFloatArray(this.getTransMatrix());
 		float curTime = (float) System.nanoTime()/ NANOS_PER_SEC;
 
-		for (SceneObject g : objects)
+		for (SceneObject obj : objects)
 		{
-			g.draw(gl, this, curTime);
-			gl.glLoadMatrixf(sceneTransMatrix, 0);
+//			gl.glPushMatrix();
+			obj.draw(gl, this, curTime);
+//			gl.glPopMatrix();
 		}
 	}
 

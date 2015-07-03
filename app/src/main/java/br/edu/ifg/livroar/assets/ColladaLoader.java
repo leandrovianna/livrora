@@ -64,13 +64,13 @@ public class ColladaLoader implements Asset3DLoader
 				Element curNode = sceneNodes.get(name);
 				if (curNode != null)
 				{
-					scene.addObject(getSceneObject(scene,
-					                               curNode,
-					                               libImages,
-					                               libEffects,
-					                               libMaterials,
-					                               libGeoms,
-					                               libAnims));
+					loadSceneObject(scene,
+					                curNode,
+					                libImages,
+					                libEffects,
+					                libMaterials,
+					                libGeoms,
+					                libAnims);
 				}
 			}
 		}
@@ -79,17 +79,17 @@ public class ColladaLoader implements Asset3DLoader
 			Log.d(TAG, "Carregando todos os objetos da cena");
 			for (String id : sceneNodes.keySet())
 			{
-				SceneObject o = getSceneObject(scene,
-				                               sceneNodes.get(id),
-				                               libImages,
-				                               libEffects,
-				                               libMaterials,
-				                               libGeoms,
-				                               libAnims);
-				scene.addObject(o);
-				Log.d(TAG, "Objeto '" + id + "' carregado: " + o.toString());
+				loadSceneObject(scene,
+				                sceneNodes.get(id),
+				                libImages,
+				                libEffects,
+				                libMaterials,
+				                libGeoms,
+				                libAnims);
 			}
 		}
+
+		Log.d(TAG, "Carregamento completo, " + scene.getObjects().size() + " objs e " + scene.getModels().size() + " models na cena");
 	}
 
 	private Map<String, Element> getLibraryImagesMap()
@@ -214,16 +214,17 @@ public class ColladaLoader implements Asset3DLoader
 		return map;
 	}
 
-	private SceneObject getSceneObject(Scene s,
-	                                   Element nodeElement,
-	                                   Map<String, Element> libraryImages,
-	                                   Map<String, Element> libraryEffects,
-	                                   Map<String, Element> libraryMaterials,
-	                                   Map<String, Element> libraryGeometries,
-	                                   Map<String, Element> libraryAnimations)
+	private void loadSceneObject (Scene scene,
+	                              Element nodeElement,
+	                              Map<String, Element> libraryImages,
+	                              Map<String, Element> libraryEffects,
+	                              Map<String, Element> libraryMaterials,
+	                              Map<String, Element> libraryGeometries,
+	                              Map<String, Element> libraryAnimations)
 	{
 		SceneObject obj = new SceneObject();
 		String nodeID = nodeElement.getAttribute("id");
+		Log.d(TAG, "-Fazendo parse do objeto '" + nodeID + "'");
 
 		//Posicao
 		nodeElement = (Element) nodeElement.getElementsByTagName("translate").item(0);
@@ -269,15 +270,35 @@ public class ColladaLoader implements Asset3DLoader
 		assert nodeElement != null;
 
 		//Geometry
-		String geomId = null;
-		nodeElement = (Element)nodeElement.getElementsByTagName("instance_geometry").item(0);
-		if(nodeElement!=null)
-			geomId = nodeElement.getAttribute("url").substring(1);
-
-		Element meshElement = libraryGeometries.get(geomId);
-		if(meshElement!=null)
+		Element instanceGeometry = (Element)nodeElement.getElementsByTagName("instance_geometry").item(0); // um geometry por scene node
+		if(instanceGeometry!=null)
 		{
-			Log.d(TAG, "Fazendo parse da geometry '" + geomId + "'" );
+			String geomId = nodeElement.getAttribute("url").substring(1);
+			if(libraryGeometries.containsKey(geomId))
+			{
+				Model m = getModel(scene, libraryGeometries.get(geomId), libraryImages, libraryEffects, libraryMaterials);
+				obj.setModelId(scene.addModel(m));
+			}
+		}
+
+		//Animations
+//		obj.setAnimations(getAnimations(nodeID, libraryAnimations));
+
+		scene.addObject(obj);
+		Log.d(TAG, "-Objeto '" + nodeID + "' adicionado a cena");
+	}
+
+	private Model getModel(Scene scene,
+	                       Element geometry,
+	                       Map<String, Element> libraryImages,
+	                       Map<String, Element> libraryEffects,
+	                       Map<String, Element> libraryMaterials)
+	{
+		if(geometry != null)
+		{
+			String geomId = geometry.getAttribute("id");
+			Log.d(TAG, "----Fazendo parse do model '" + geomId + "'" );
+			Element meshElement = (Element) geometry.getElementsByTagName("mesh").item(0);
 			meshElement = (Element) meshElement.getElementsByTagName("mesh").item(0);
 
 			List<Vec3> rawPositions = new ArrayList<>();
@@ -311,9 +332,9 @@ public class ColladaLoader implements Asset3DLoader
 			sources.remove(sourceID);
 			for (int i = 0; i < srcF.length; i+=3) // add vertices
 			{
-				x = srcF[i];
-				y = srcF[i+1];
-				z = srcF[i+2];
+				float x = srcF[i];
+				float y = srcF[i+1];
+				float z = srcF[i+2];
 				rawPositions.add(new Vec3(x,y,z));
 			}
 
@@ -421,8 +442,10 @@ public class ColladaLoader implements Asset3DLoader
 
 				//MATERIAL
 				String matName = curPolylist.getAttribute("material");
-				int matId = s.addMaterial(getMaterial(libraryMaterials.get(matName), libraryImages, libraryEffects));
+				Log.d(TAG, "----Fazendo parse do material '" + matName + "'");
+				int matId = scene.addMaterial(getMaterial(libraryMaterials.get(matName), libraryImages, libraryEffects));
 				part.setMaterialId(matId);
+				Log.d(TAG, "----Material '" + matName + "' adicionado a cena");
 
 				parts.add(part);
 			}
@@ -438,17 +461,17 @@ public class ColladaLoader implements Asset3DLoader
 					case "NORMAL":
 						for (int k = 0; k < src.length; k+=3)
 						{
-							x = src[k];
-							y = src[k+1];
-							z = src[k+2];
+							float x = src[k];
+							float y = src[k+1];
+							float z = src[k+2];
 							rawNormals.add(new Vec3(x,y,z));
 						}
 						break;
 					case "TEXCOORD":
 						for (int k = 0; k < src.length; k+=2)
 						{
-							x = src[k];
-							y = src[k+1];
+							float x = src[k];
+							float y = src[k+1];
 							rawUvs.add(new Vec2(x,y));
 						}
 						break;
@@ -482,7 +505,6 @@ public class ColladaLoader implements Asset3DLoader
 			for (short prim : indexGroups.keySet())
 			{
 				prim = (short) Math.abs(prim); // Forcando valor positivo
-				Log.d(TAG, "prim: " + prim);
 //				Log.d(TAG, "Pos " + prim + ": " + rawPositions.get(prim).toString());
 				positions.set(prim, rawPositions.get(prim));
 				short subIndex;
@@ -507,166 +529,10 @@ public class ColladaLoader implements Asset3DLoader
 				}
 			}
 
-			int meshId = s.addModel(new Model(positions, normals, uvs, colors, parts));
-			obj.setMeshId(meshId);
-//			Log.d(TAG, "Model count: " + s.getModels().size());
+			Log.d(TAG, "----Model '" + geomId + "' adicionado a cena");
+			return new Model(positions, normals, uvs, colors, parts);
 		}
-
-		//Animations
-//		obj.setAnimations(getAnimations(nodeID, libraryAnimations));
-
-		return obj;
-	}
-
-	//Suportando apenas uma animacao locXYZ/rotXYZ/scaleXYZ por objeto como imposto pelo exporter do blender
-	private List<Animation> getAnimations(String targetName, Map<String, Element> libraryAnimations)
-	{
-		List<Animation> animations = new ArrayList<>();
-		List<Keyframe> locX, locY, locZ, rotX, rotY, rotZ, sclX, sclY, sclZ;
-		List<Element> animslocRotScaleXYZ = new ArrayList<>(9);
-		for (int i = 0; i < 9; i++)
-			animslocRotScaleXYZ.add(null);
-//        Element locX = null, locY = null, locZ = null,
-//                rotX = null, rotY = null, rotZ = null,
-//                scaleX = null, scaleY = null, scaleZ = null;
-
-		for (String t : libraryAnimations.keySet())
-		{
-			Element curAnim = libraryAnimations.get(t);
-			String[] target = t.split("[/]");
-
-			if(target[0].equals(targetName))
-			{
-				switch (target[1])
-				{
-					case "location.X":
-						animslocRotScaleXYZ.set(0,curAnim);
-						break;
-					case "location.Y":
-						animslocRotScaleXYZ.set(1,curAnim);
-						break;
-					case "location.Z":
-						animslocRotScaleXYZ.set(2,curAnim);
-						break;
-					case "rotationX.ANGLE":
-						animslocRotScaleXYZ.set(3,curAnim);
-						break;
-					case "rotationY.ANGLE":
-						animslocRotScaleXYZ.set(4,curAnim);
-						break;
-					case "rotationZ.ANGLE":
-						animslocRotScaleXYZ.set(5,curAnim);
-						break;
-					case "scale.X":
-						animslocRotScaleXYZ.set(6,curAnim);
-						break;
-					case "scale.Y":
-						animslocRotScaleXYZ.set(7,curAnim);
-						break;
-					case "scale.Z":
-						animslocRotScaleXYZ.set(8,curAnim);
-				}
-			}
-		}
-
-		for (int i = 0; i < 9; i++) // Parse anims
-		{
-			Map<String, String[]> sourcesString = new HashMap<>();
-
-			Element curAnim = animslocRotScaleXYZ.get(i);
-			if(curAnim!=null)
-			{
-				int sourceCount = curAnim.getElementsByTagName("source").getLength();
-				for (int j = 0; j < sourceCount; j++)
-				{
-					curAnim = (Element) curAnim.getElementsByTagName("source").item(j);
-					String id = curAnim.getAttribute("id");
-					String type = ((Element)((Element)((Element)curAnim.getElementsByTagName("technique_common"))
-							.getElementsByTagName("accessor")).getElementsByTagName("param")).getAttribute("type");
-					switch (type)
-					{
-						case "float":
-							sourcesString.put(id, curAnim.getElementsByTagName("float_array").item(0).getTextContent().split("[ ]"));
-							break;
-						case "name":
-							sourcesString.put(id, curAnim.getElementsByTagName("Name_array").item(0).getTextContent().split("[ ]"));
-							break;
-					}
-					curAnim = (Element) curAnim.getParentNode();
-				}
-
-				float[] input = null;
-				float[] output = null;
-				Vec2[] intangents = null;
-				Vec2[] outtangents = null;
-				String methodUrl = null;
-
-				int inputCount = curAnim.getElementsByTagName("input").getLength();
-				for (int j = 0; j < inputCount; j++)
-				{
-					curAnim = (Element) curAnim.getElementsByTagName("input").item(j);
-					String semantic = curAnim.getAttribute("semantic");
-					String srcUrl = curAnim.getAttribute("source").substring(1);
-					switch (semantic)
-					{
-						case "INPUT":
-							input = new float[sourcesString.get(srcUrl).length];
-							for (int k = 0; k < input.length; k++)
-								input[k] = Float.parseFloat(sourcesString.get(srcUrl)[k]);
-							break;
-						case "OUTPUT":
-							output = new float[sourcesString.get(srcUrl).length];
-							for (int k = 0; k < output.length; k++)
-								output[k] = Float.parseFloat(sourcesString.get(srcUrl)[k]);
-							break;
-						case "INTERPOLATION":
-							methodUrl = srcUrl;
-							break;
-						case "IN_TANGENT":
-							intangents = new Vec2[sourcesString.get(srcUrl).length / 2];
-							int index = 0;
-							for (Vec2 v : intangents)
-							{
-								v.x = Float.parseFloat(sourcesString.get(srcUrl)[index++]);
-								v.y = Float.parseFloat(sourcesString.get(srcUrl)[index++]);
-							}
-							break;
-						case "OUT_TANGENT":
-							outtangents = new Vec2[sourcesString.get(srcUrl).length / 2];
-							index = 0;
-							for (Vec2 v : outtangents)
-							{
-								v.x = Float.parseFloat(sourcesString.get(srcUrl)[index++]);
-								v.y = Float.parseFloat(sourcesString.get(srcUrl)[index++]);
-							}
-							break;
-					}
-					curAnim = (Element) curAnim.getParentNode();
-				}
-
-				assert methodUrl!=null &&
-				       input!=null
-				       && output!=null;
-				for (int j = 0; j < sourcesString.get(methodUrl).length; j++)
-				{
-					switch (sourcesString.get(methodUrl)[j])
-					{
-						case "LINEAR":
-//							keyframes.add(new LinearKeyframe(new Vec2(input[j], output[j])));
-							break;
-						case "BEZIER":
-//							keyframes.add(new BezierKeyframe(new Vec2(input[j], output[j]), outtangents[j], intangents[j]));
-							break;
-					}
-				}
-
-
-			}
-		}
-
-//		animations.add(new Animation(keyframes));
-
-		return animations;
+		return null;
 	}
 
 	private Material getMaterial(Element materialElement,
@@ -728,6 +594,19 @@ public class ColladaLoader implements Asset3DLoader
 		}
 		else
 			return null;
+	}
+
+	//Suportando apenas uma animacao locXYZ/rotXYZ/scaleXYZ por objeto como imposto pelo exporter do blender
+	private Animation getAnimation(String targetName, Map<String, Element> libraryAnimations)
+	{
+		/* --Parse e pos processamento de animacoes--
+			Objetivo: obter uma so animacao com base em todos as animacoes destinadas ao alvo especificado
+		*
+		*   - Obter cada animacao como uma mapa de posicao em tempo;
+		*   - Iterar por cada mapa adicionando a posicao de acordo com seu tempo e alvo em um mapa de keyframe em tempo
+		*   - Retornar animacao contituida dos frames contidos no mapa de keyframe em tempo
+		* */
+		return null;
 	}
 
 	@Override

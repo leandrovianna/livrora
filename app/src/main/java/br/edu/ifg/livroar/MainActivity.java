@@ -30,7 +30,7 @@ public class MainActivity extends AndARActivity {
 
             setNonARRenderer(renderer); //adicionando o renderer
 
-            Scene kenny = new Scene("android.patt", "scenes/triangle.dae");
+            Scene kenny = new Scene("android.patt", "scenes/tric.dae");
             arToolkit.registerARObject(kenny);
 
             startPreview();

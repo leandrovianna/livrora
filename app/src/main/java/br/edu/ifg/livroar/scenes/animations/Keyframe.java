@@ -1,19 +1,27 @@
 package br.edu.ifg.livroar.scenes.animations;
 
-import br.edu.ifg.livroar.util.Vec2;
+import br.edu.ifg.livroar.util.Vec3;
 
 /**
  * Created by JoaoPaulo on 12/06/2015.
  */
 public abstract class Keyframe
 {
-    public Vec2 p;
+	public float time;
 
-    public Keyframe(Vec2 p)
-    {
-        this.p = p;
-    }
+	public Vec3 loc;
+	public Vec3 rot;
+	public Vec3 scl;
 
-    public abstract Keyframe getCurPosition (float curTime, Keyframe other);
+	public Keyframe (float time, Vec3 loc, Vec3 rot, Vec3 scl)
+	{
+		this.time = time;
+		this.loc = loc;
+		this.rot = rot;
+		this.scl = scl;
+	}
 
+	public abstract Vec3 getLocAt(float curTime, Keyframe next);
+	public abstract Vec3 getRotAt(float curTime, Keyframe next);
+	public abstract Vec3 getScaleAt(float curTime, Keyframe next);
 }

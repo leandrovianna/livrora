@@ -2,6 +2,7 @@ package br.edu.ifg.livroar.scenes;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -25,6 +26,11 @@ public class SceneObject
 	private List<Animation> animations;
 	private int             curAnimIndex;
 
+	public SceneObject ()
+	{
+		animations = new ArrayList<>();
+	}
+
 	public void init (GL10 gl, Scene s, float curTimeNano)
 	{
 //		animations.get(curAnimIndex).play(Animation.PLAY_MODE_LOOP);
@@ -34,8 +40,9 @@ public class SceneObject
 
 	public void draw (GL10 gl, Scene s, float curTimeNano)
 	{
-//		if(animations.size() > 0 && curAnimIndex < animations.size())
-//			animations.get(curAnimIndex).update(curTimeNano,loc,rot,scl);
+		if(!animations.isEmpty())
+			animations.get(curAnimIndex).update(curTimeNano / 1000000000L, loc,rot,scl);
+
 		gl.glTranslatef(loc.x, loc.y, loc.z);
 		gl.glRotatef(rot.x, 1, 0, 0);
 		gl.glRotatef(rot.y, 0, 1, 0);
@@ -45,31 +52,12 @@ public class SceneObject
 		Model m = s.getModel(model);
 		if(m != null)
 		{
-			if(m.initialized)
-				m.draw(gl,s);
-			else
+			if(!m.initialized)
 				m.init(gl,s);
+
+			m.draw(gl,s);
 		}
 	}
-
-	public void addAnimation(Animation a){
-		animations.add(a);
-	}
-
-	public int getCurAnimIndex() {
-		return curAnimIndex;
-	}
-
-//	public void setCurAnimIndex(int curAnimIndex) {
-//		if(animations.size() > curAnimIndex)
-//		{
-//			this.curAnimIndex = curAnimIndex;
-//			animations.get(curAnimIndex).setStartTime(System.nanoTime());
-//		}
-//		else
-//			Log.w(TAG, "Falha ao setar animacao atual. Animations size: "
-//			           + animations.size() + ", index inserido: " + curAnimIndex);
-//	}
 
 	public Vec3 getLocation()
 	{
@@ -101,24 +89,25 @@ public class SceneObject
 		this.scl = scale;
 	}
 
-	public int getMeshId ()
+	public int getModelId ()
 	{
 		return model;
 	}
 
-	public void setMeshId (int id)
+	public void setModelId (int id)
 	{
 		this.model = id;
 	}
 
-	public List<Animation> getAnimations ()
+	public void addAnimation(Animation a)
 	{
-		return animations;
+		animations.add(a);
 	}
 
-	public void setAnimations (List<Animation> animations)
+	public void setCurAnimation(int index)
 	{
-		this.animations = animations;
+		if(index > 0 && index < animations.size())
+			curAnimIndex = index;
 	}
 
 	//	@Override
