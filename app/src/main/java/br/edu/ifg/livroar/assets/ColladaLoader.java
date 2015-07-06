@@ -22,7 +22,9 @@ import br.edu.ifg.livroar.scenes.Model;
 import br.edu.ifg.livroar.scenes.Scene;
 import br.edu.ifg.livroar.scenes.SceneObject;
 import br.edu.ifg.livroar.scenes.animations.Animation;
+import br.edu.ifg.livroar.scenes.animations.BezierKeyframe;
 import br.edu.ifg.livroar.scenes.animations.Keyframe;
+import br.edu.ifg.livroar.scenes.animations.LinearKeyframe;
 import br.edu.ifg.livroar.util.RGBColor;
 import br.edu.ifg.livroar.util.Vec2;
 import br.edu.ifg.livroar.util.Vec3;
@@ -282,7 +284,8 @@ public class ColladaLoader implements Asset3DLoader
 		}
 
 		//Animations
-//		obj.setAnimations(getAnimations(nodeID, libraryAnimations));
+		obj.addAnimation(getLocRotScaleAnimation(nodeID, libraryAnimations));
+		obj.setCurAnimation(0);
 
 		scene.addObject(obj);
 		Log.d(TAG, "-Objeto '" + nodeID + "' adicionado a cena");
@@ -597,16 +600,255 @@ public class ColladaLoader implements Asset3DLoader
 	}
 
 	//Suportando apenas uma animacao locXYZ/rotXYZ/scaleXYZ por objeto como imposto pelo exporter do blender
-	private Animation getAnimation(String targetName, Map<String, Element> libraryAnimations)
+	private Animation getLocRotScaleAnimation (String targetName,
+	                                           Map<String, Element> libraryAnimations)
 	{
 		/* --Parse e pos processamento de animacoes--
 			Objetivo: obter uma so animacao com base em todos as animacoes destinadas ao alvo especificado
 		*
 		*   - Obter cada animacao como uma mapa de posicao em tempo;
 		*   - Iterar por cada mapa adicionando a posicao de acordo com seu tempo e alvo em um mapa de keyframe em tempo
-		*   - Retornar animacao contituida dos frames contidos no mapa de keyframe em tempo
+		*   - Retornar animacao constituida dos frames contidos no mapa de keyframe em tempo
 		* */
-		return null;
+
+		Map<String, float[]> targetInputs = new HashMap<>();
+		Map<String, float[]> targetOutputs = new HashMap<>();
+		Map<String, String[]> targetInterps = new HashMap<>();
+		Map<String, Vec2[]> targetIntangents = new HashMap<>();
+		Map<String, Vec2[]> targetOuttangents = new HashMap<>();
+
+		for (String target : libraryAnimations.keySet())
+		{
+			if(target.startsWith(targetName))
+			{
+				Element anim = libraryAnimations.get(target);
+				Map<String, String[]> idSource = new HashMap<>();
+
+				Element cur;
+				int count = anim.getElementsByTagName("source").getLength();
+				for (int i = 0; i < count; i++)
+				{
+					cur = (Element) anim.getElementsByTagName("source").item(i);
+					String srcId = cur.getAttribute("id");
+					String[] src;
+					Element array = (Element) cur.getElementsByTagName("float_array").item(0);
+					if(array == null)
+						array = (Element) cur.getElementsByTagName("Name_array").item(0);
+					if(array == null)
+						return null;
+					src = array.getTextContent().split("[ ]");
+					idSource.put(srcId, src);
+				}
+
+				float[] input;
+				float[] output;
+				Vec2[] intangents;
+				Vec2[] outtangents;
+
+				count = ((Element)anim.getElementsByTagName("sampler").item(0))
+						.getElementsByTagName("input").getLength();
+				for (int i = 0; i < count; i++)
+				{
+					cur = (Element) ((Element)anim.getElementsByTagName("sampler").item(0))
+							.getElementsByTagName("input").item(i);
+					String semantic = cur.getAttribute("semantic");
+					String url = cur.getAttribute("source").substring(1);
+					String[] src = idSource.get(url);
+
+					switch (semantic)
+					{
+						case "INPUT":
+							input = new float[src.length];
+							for (int j = 0; j < src.length; j++)
+								input[j] = Float.parseFloat(src[j]);
+
+							targetInputs.put(target, input);
+							break;
+						case "OUTPUT":
+							output = new float[src.length];
+							for (int j = 0; j < src.length; j++)
+								output[j] = Float.parseFloat(src[j]);
+
+							targetOutputs.put(target, output);
+							break;
+						case "INTERPOLATION":
+							targetInterps.put(target, src);
+							break;
+						case "IN_TANGENT":
+							intangents = new Vec2[src.length/2];
+							for (int j = 0; j < src.length; j+=2)
+								intangents[j] = new Vec2(Float.parseFloat(src[j]), 
+								                         Float.parseFloat(src[j+1]));
+
+							targetIntangents.put(target, intangents);
+							break;
+						case "OUT_TANGENT":
+							outtangents = new Vec2[src.length/2];
+							for (int j = 0; j < src.length; j+=2)
+								outtangents[j] = new Vec2(Float.parseFloat(src[j]),
+								                         Float.parseFloat(src[j+1]));
+
+							targetOuttangents.put(target, outtangents);
+							break;
+					}
+				}
+			}
+		}
+
+		Map<String, Map<Float, Keyframe>> targetTimeKey = new HashMap<>();
+
+		for (String target : targetInputs.keySet())
+		{
+			Map<Float, Keyframe> timeKey = new HashMap<>();
+
+			for (int i = 0; i < targetInputs.get(target).length; i++)
+			{
+				Vec3 loc = new Vec3(0,0,0);
+				Vec3 rot = new Vec3(0,0,0);
+				Vec3 scl = new Vec3(0,0,0);
+				//Memoria auxiliar requisitada pelo algoritmo maior do que precisaria ser
+				Vec2[] c0 = new Vec2[9];
+				Vec2[] c1 = new Vec2[9];
+
+				switch (target.split("[/]")[1])
+				{
+					case "location.X":
+						loc.x = targetOutputs.get(target)[i];
+						if(targetOuttangents.containsKey(target))
+							c0[BezierKeyframe.LOC_X] = targetOuttangents.get(target)[i];
+						if(targetIntangents.containsKey(target))
+						{
+							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							c1[BezierKeyframe.LOC_X] = targetIntangents.get(target)[j];
+						}
+						break;
+					case "location.Y":
+						loc.y = targetOutputs.get(target)[i];
+						if(targetOuttangents.containsKey(target))
+							c0[BezierKeyframe.LOC_Y] = targetOuttangents.get(target)[i];
+						if(targetIntangents.containsKey(target))
+						{
+							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							c1[BezierKeyframe.LOC_Y] = targetIntangents.get(target)[j];
+						}
+						break;
+					case "location.Z":
+						loc.z = targetOutputs.get(target)[i];
+						if(targetOuttangents.containsKey(target))
+							c0[BezierKeyframe.LOC_Z] = targetOuttangents.get(target)[i];
+						if(targetIntangents.containsKey(target))
+						{
+							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							c1[BezierKeyframe.LOC_Z] = targetIntangents.get(target)[j];
+						}
+						break;
+					case "rotationX.ANGLE":
+						rot.x = targetOutputs.get(target)[i];
+						if(targetOuttangents.containsKey(target))
+							c0[BezierKeyframe.ROT_X] = targetOuttangents.get(target)[i];
+						if(targetIntangents.containsKey(target))
+						{
+							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							c1[BezierKeyframe.ROT_X] = targetIntangents.get(target)[j];
+						}
+						break;
+					case "rotationY.ANGLE":
+						rot.y = targetOutputs.get(target)[i];
+						if(targetOuttangents.containsKey(target))
+							c0[BezierKeyframe.ROT_Y] = targetOuttangents.get(target)[i];
+						if(targetIntangents.containsKey(target))
+						{
+							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							c1[BezierKeyframe.ROT_Y] = targetIntangents.get(target)[j];
+						}
+						break;
+					case "rotationZ.ANGLE":
+						rot.z = targetOutputs.get(target)[i];
+						if(targetOuttangents.containsKey(target))
+							c0[BezierKeyframe.ROT_Z] = targetOuttangents.get(target)[i];
+						if(targetIntangents.containsKey(target))
+						{
+							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							c1[BezierKeyframe.ROT_Z] = targetIntangents.get(target)[j];
+						}
+						break;
+					case "scale.X":
+						scl.x = targetOutputs.get(target)[i];
+						if(targetOuttangents.containsKey(target))
+							c0[BezierKeyframe.SCL_X] = targetOuttangents.get(target)[i];
+						if(targetIntangents.containsKey(target))
+						{
+							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							c1[BezierKeyframe.SCL_X] = targetIntangents.get(target)[j];
+						}
+						break;
+					case "scale.Y":
+						scl.y = targetOutputs.get(target)[i];
+						if(targetOuttangents.containsKey(target))
+							c0[BezierKeyframe.SCL_Y] = targetOuttangents.get(target)[i];
+						if(targetIntangents.containsKey(target))
+						{
+							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							c1[BezierKeyframe.SCL_Y] = targetIntangents.get(target)[j];
+						}
+						break;
+					case "scale.Z":
+						scl.z = targetOutputs.get(target)[i];
+						if(targetOuttangents.containsKey(target))
+							c0[BezierKeyframe.SCL_Z] = targetOuttangents.get(target)[i];
+						if(targetIntangents.containsKey(target))
+						{
+							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							c1[BezierKeyframe.SCL_Z] = targetIntangents.get(target)[j];
+						}
+						break;
+				}
+
+				float time = targetInputs.get(target)[i];
+
+				switch (targetInterps.get(target)[i])
+				{
+					case "LINEAR":
+						timeKey.put(time, new LinearKeyframe(time, loc, rot, scl));
+						break;
+					case "BEZIER":
+						timeKey.put(time, new BezierKeyframe(time, loc, rot, scl, c0, c1));
+						break;
+				}
+			}
+
+			targetTimeKey.put(target, timeKey);
+		}
+
+		//  Caso o preprocessamento nao tenha otimizado corretamente o processo
+		//  e o benevolente GC resolva fazer uma aparicao
+		targetInputs = targetOutputs = null;
+		targetInterps = null;
+		targetIntangents = targetOuttangents = null;
+
+		Map<Float, Keyframe> finalTimeKey = new HashMap<>();
+
+		for (String target : targetTimeKey.keySet())
+		{
+			for (float time : targetTimeKey.get(target).keySet())
+			{
+				Keyframe key = null;
+				if(finalTimeKey.containsKey(time))
+					key = finalTimeKey.get(time);
+				else
+
+				//TODO: O Pos-processamento das anims
+								
+				if(targetTimeKey.get(target).get(time) instanceof BezierKeyframe)
+				{
+
+				}
+			}
+		}
+
+		Keyframe[] keys = new Keyframe[finalTimeKey.size()];
+		finalTimeKey.values().toArray(keys);
+		return new Animation(keys);
 	}
 
 	@Override

@@ -8,15 +8,25 @@ import br.edu.ifg.livroar.util.Vec3;
  */
 public class BezierKeyframe extends Keyframe
 {
-    public Vec2 c0;
-    public Vec2 c1;
+	public static final int LOC_X = 0;
+	public static final int LOC_Y = 1;
+	public static final int LOC_Z = 2;
+	public static final int ROT_X = 3;
+	public static final int ROT_Y = 4;
+	public static final int ROT_Z = 5;
+	public static final int SCL_X = 6;
+	public static final int SCL_Y = 7;
+	public static final int SCL_Z = 8;
+
+	public Vec2[] c0;
+	public Vec2[] c1;
 
 	public BezierKeyframe (float time,
 	                       Vec3 loc,
 	                       Vec3 rot,
 	                       Vec3 scl,
-	                       Vec2 c0,
-	                       Vec2 c1)
+	                       Vec2[] c0,
+	                       Vec2[] c1)
 	{
 		super(time, loc, rot, scl);
 		this.c0 = c0;

@@ -106,7 +106,7 @@ public class SceneObject
 
 	public void setCurAnimation(int index)
 	{
-		if(index > 0 && index < animations.size())
+		if(index >= 0 && index < animations.size())
 			curAnimIndex = index;
 	}
 
