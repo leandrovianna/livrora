@@ -275,7 +275,7 @@ public class ColladaLoader implements Asset3DLoader
 		Element instanceGeometry = (Element)nodeElement.getElementsByTagName("instance_geometry").item(0); // um geometry por scene node
 		if(instanceGeometry!=null)
 		{
-			String geomId = nodeElement.getAttribute("url").substring(1);
+			String geomId = instanceGeometry.getAttribute("url").substring(1);
 			if(libraryGeometries.containsKey(geomId))
 			{
 				Model m = getModel(scene, libraryGeometries.get(geomId), libraryImages, libraryEffects, libraryMaterials);
@@ -302,7 +302,6 @@ public class ColladaLoader implements Asset3DLoader
 			String geomId = geometry.getAttribute("id");
 			Log.d(TAG, "----Fazendo parse do model '" + geomId + "'" );
 			Element meshElement = (Element) geometry.getElementsByTagName("mesh").item(0);
-			meshElement = (Element) meshElement.getElementsByTagName("mesh").item(0);
 
 			List<Vec3> rawPositions = new ArrayList<>();
 			List<Vec3> positions;
@@ -603,14 +602,6 @@ public class ColladaLoader implements Asset3DLoader
 	private Animation getLocRotScaleAnimation (String targetName,
 	                                           Map<String, Element> libraryAnimations)
 	{
-		/* --Parse e pos processamento de animacoes--
-			Objetivo: obter uma so animacao com base em todos as animacoes destinadas ao alvo especificado
-		*
-		*   - Obter cada animacao como uma mapa de posicao em tempo;
-		*   - Iterar por cada mapa adicionando a posicao de acordo com seu tempo e alvo em um mapa de keyframe em tempo
-		*   - Retornar animacao constituida dos frames contidos no mapa de keyframe em tempo
-		* */
-
 		Map<String, float[]> targetInputs = new HashMap<>();
 		Map<String, float[]> targetOutputs = new HashMap<>();
 		Map<String, String[]> targetInterps = new HashMap<>();
@@ -676,17 +667,19 @@ public class ColladaLoader implements Asset3DLoader
 							break;
 						case "IN_TANGENT":
 							intangents = new Vec2[src.length/2];
+							int index = 0;
 							for (int j = 0; j < src.length; j+=2)
-								intangents[j] = new Vec2(Float.parseFloat(src[j]), 
-								                         Float.parseFloat(src[j+1]));
+								intangents[index++] = new Vec2(Float.parseFloat(src[j]),
+								                               (j+1 < src.length ? Float.parseFloat(src[j+1]) : 0)); // Curva aberta
 
 							targetIntangents.put(target, intangents);
 							break;
 						case "OUT_TANGENT":
 							outtangents = new Vec2[src.length/2];
+							index = 0;
 							for (int j = 0; j < src.length; j+=2)
-								outtangents[j] = new Vec2(Float.parseFloat(src[j]),
-								                         Float.parseFloat(src[j+1]));
+								outtangents[index++] = new Vec2(Float.parseFloat(src[j]),
+								                          (j+1 < src.length ? Float.parseFloat(src[j+1]) : 0)); // Curva aberta
 
 							targetOuttangents.put(target, outtangents);
 							break;
@@ -718,7 +711,7 @@ public class ColladaLoader implements Asset3DLoader
 							c0[BezierKeyframe.LOC_X] = targetOuttangents.get(target)[i];
 						if(targetIntangents.containsKey(target))
 						{
-							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							int j = (targetIntangents.get(target).length > i+1 ? i+1 : i);
 							c1[BezierKeyframe.LOC_X] = targetIntangents.get(target)[j];
 						}
 						break;
@@ -728,7 +721,7 @@ public class ColladaLoader implements Asset3DLoader
 							c0[BezierKeyframe.LOC_Y] = targetOuttangents.get(target)[i];
 						if(targetIntangents.containsKey(target))
 						{
-							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							int j = (targetIntangents.get(target).length > i+1 ? i+1 : i);
 							c1[BezierKeyframe.LOC_Y] = targetIntangents.get(target)[j];
 						}
 						break;
@@ -738,7 +731,7 @@ public class ColladaLoader implements Asset3DLoader
 							c0[BezierKeyframe.LOC_Z] = targetOuttangents.get(target)[i];
 						if(targetIntangents.containsKey(target))
 						{
-							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							int j = (targetIntangents.get(target).length > i+1 ? i+1 : i);
 							c1[BezierKeyframe.LOC_Z] = targetIntangents.get(target)[j];
 						}
 						break;
@@ -748,7 +741,7 @@ public class ColladaLoader implements Asset3DLoader
 							c0[BezierKeyframe.ROT_X] = targetOuttangents.get(target)[i];
 						if(targetIntangents.containsKey(target))
 						{
-							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							int j = (targetIntangents.get(target).length > i+1 ? i+1 : i);
 							c1[BezierKeyframe.ROT_X] = targetIntangents.get(target)[j];
 						}
 						break;
@@ -758,7 +751,7 @@ public class ColladaLoader implements Asset3DLoader
 							c0[BezierKeyframe.ROT_Y] = targetOuttangents.get(target)[i];
 						if(targetIntangents.containsKey(target))
 						{
-							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							int j = (targetIntangents.get(target).length > i+1 ? i+1 : i);
 							c1[BezierKeyframe.ROT_Y] = targetIntangents.get(target)[j];
 						}
 						break;
@@ -768,7 +761,7 @@ public class ColladaLoader implements Asset3DLoader
 							c0[BezierKeyframe.ROT_Z] = targetOuttangents.get(target)[i];
 						if(targetIntangents.containsKey(target))
 						{
-							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							int j = (targetIntangents.get(target).length > i+1 ? i+1 : i);
 							c1[BezierKeyframe.ROT_Z] = targetIntangents.get(target)[j];
 						}
 						break;
@@ -778,7 +771,7 @@ public class ColladaLoader implements Asset3DLoader
 							c0[BezierKeyframe.SCL_X] = targetOuttangents.get(target)[i];
 						if(targetIntangents.containsKey(target))
 						{
-							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							int j = (targetIntangents.get(target).length > i+1 ? i+1 : i);
 							c1[BezierKeyframe.SCL_X] = targetIntangents.get(target)[j];
 						}
 						break;
@@ -788,7 +781,7 @@ public class ColladaLoader implements Asset3DLoader
 							c0[BezierKeyframe.SCL_Y] = targetOuttangents.get(target)[i];
 						if(targetIntangents.containsKey(target))
 						{
-							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							int j = (targetIntangents.get(target).length > i+1 ? i+1 : i);
 							c1[BezierKeyframe.SCL_Y] = targetIntangents.get(target)[j];
 						}
 						break;
@@ -798,7 +791,7 @@ public class ColladaLoader implements Asset3DLoader
 							c0[BezierKeyframe.SCL_Z] = targetOuttangents.get(target)[i];
 						if(targetIntangents.containsKey(target))
 						{
-							int j = (targetIntangents.get(target).length > i ? i+1 : i);
+							int j = (targetIntangents.get(target).length > i+1 ? i+1 : i);
 							c1[BezierKeyframe.SCL_Z] = targetIntangents.get(target)[j];
 						}
 						break;
@@ -826,25 +819,131 @@ public class ColladaLoader implements Asset3DLoader
 		targetInterps = null;
 		targetIntangents = targetOuttangents = null;
 
+		//  Obtendo uma so animacao com base em todos as animacoes destinadas ao alvo especificado;
+		//  Mais uma razao para gerar objetos serializados pre-runtime e carrega-los ao inves de realizar esse parse.
 		Map<Float, Keyframe> finalTimeKey = new HashMap<>();
 
 		for (String target : targetTimeKey.keySet())
 		{
 			for (float time : targetTimeKey.get(target).keySet())
 			{
-				Keyframe key = null;
+				Keyframe key = targetTimeKey.get(target).get(time);
+				Keyframe finalKey;
 				if(finalTimeKey.containsKey(time))
-					key = finalTimeKey.get(time);
+					finalKey = finalTimeKey.get(time);
 				else
+					finalKey = (key instanceof LinearKeyframe ? new LinearKeyframe(time,
+					                                                               new Vec3(0,0,0),
+					                                                               new Vec3(0,0,0),
+					                                                               new Vec3(0,0,0))
+					                                          : new BezierKeyframe(time,
+					                                                               new Vec3(0,0,0),
+					                                                               new Vec3(0,0,0),
+					                                                               new Vec3(0,0,0),
+					                                                               new Vec2[9],
+					                                                               new Vec2[9])); //Incorreto, deveria levar em conta outros keys
 
-				//TODO: O Pos-processamento das anims
-								
-				if(targetTimeKey.get(target).get(time) instanceof BezierKeyframe)
+				switch (target.split("[/]")[1])
 				{
-
+					case "location.X":
+						finalKey.loc.x = key.loc.x;
+						if(finalKey instanceof BezierKeyframe)
+						{
+							((BezierKeyframe) finalKey).c0[BezierKeyframe.LOC_X] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c0[BezierKeyframe.LOC_X]
+							                                                                                      : new Vec2(time, .3f));
+							((BezierKeyframe) finalKey).c1[BezierKeyframe.LOC_X] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c1[BezierKeyframe.LOC_X]
+							                                                                                      : new Vec2(time, .6f));
+						}
+						break;
+					case "location.Y":
+						finalKey.loc.y = key.loc.y;
+						if(finalKey instanceof BezierKeyframe)
+						{
+							((BezierKeyframe) finalKey).c0[BezierKeyframe.LOC_Y] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c0[BezierKeyframe.LOC_Y]
+							                                                                                      : new Vec2(time, .3f));
+							((BezierKeyframe) finalKey).c1[BezierKeyframe.LOC_Y] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c1[BezierKeyframe.LOC_Y]
+							                                                                                      : new Vec2(time, .6f));
+						}
+						break;
+					case "location.Z":
+						finalKey.loc.z = key.loc.z;
+						if(finalKey instanceof BezierKeyframe)
+						{
+							((BezierKeyframe) finalKey).c0[BezierKeyframe.LOC_Z] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c0[BezierKeyframe.LOC_Z]
+							                                                                                      : new Vec2(time, .3f));
+							((BezierKeyframe) finalKey).c1[BezierKeyframe.LOC_Z] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c1[BezierKeyframe.LOC_Z]
+							                                                                                      : new Vec2(time, .6f));
+						}
+						break;
+					case "rotationX.ANGLE":
+						finalKey.rot.x = key.rot.x;
+						if(finalKey instanceof BezierKeyframe)
+						{
+							((BezierKeyframe) finalKey).c0[BezierKeyframe.ROT_X] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c0[BezierKeyframe.ROT_X]
+							                                                                                      : new Vec2(time, .3f));
+							((BezierKeyframe) finalKey).c1[BezierKeyframe.ROT_X] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c1[BezierKeyframe.ROT_X]
+							                                                                                      : new Vec2(time, .6f));
+						}
+						break;
+					case "rotationY.ANGLE":
+						finalKey.rot.y = key.rot.y;
+						if(finalKey instanceof BezierKeyframe)
+						{
+							((BezierKeyframe) finalKey).c0[BezierKeyframe.ROT_Y] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c0[BezierKeyframe.ROT_Y]
+							                                                                                      : new Vec2(time, .3f));
+							((BezierKeyframe) finalKey).c1[BezierKeyframe.ROT_Y] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c1[BezierKeyframe.ROT_Y]
+							                                                                                      : new Vec2(time, .6f));
+						}
+						break;
+					case "rotationZ.ANGLE":
+						finalKey.rot.z = key.rot.z;
+						if(finalKey instanceof BezierKeyframe)
+						{
+							((BezierKeyframe) finalKey).c0[BezierKeyframe.ROT_Z] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c0[BezierKeyframe.ROT_Z]
+							                                                                                      : new Vec2(time, .3f));
+							((BezierKeyframe) finalKey).c1[BezierKeyframe.ROT_Z] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c1[BezierKeyframe.ROT_Z]
+							                                                                                      : new Vec2(time, .6f));
+						}
+						break;
+					case "scale.X":
+						finalKey.scl.x = key.scl.x;
+						if(finalKey instanceof BezierKeyframe)
+						{
+							((BezierKeyframe) finalKey).c0[BezierKeyframe.SCL_X] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c0[BezierKeyframe.SCL_X]
+							                                                                                      : new Vec2(time, .3f));
+							((BezierKeyframe) finalKey).c1[BezierKeyframe.SCL_X] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c1[BezierKeyframe.SCL_X]
+							                                                                                      : new Vec2(time, .6f));
+						}
+						break;
+					case "scale.Y":
+						finalKey.scl.y = key.scl.y;
+						if(finalKey instanceof BezierKeyframe)
+						{
+							((BezierKeyframe) finalKey).c0[BezierKeyframe.SCL_Y] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c0[BezierKeyframe.SCL_Y]
+							                                                                                      : new Vec2(time, .3f));
+							((BezierKeyframe) finalKey).c1[BezierKeyframe.SCL_Y] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c1[BezierKeyframe.SCL_Y]
+							                                                                                      : new Vec2(time, .6f));
+						}
+						break;
+					case "scale.Z":
+						finalKey.scl.z = key.scl.z;
+						if(finalKey instanceof BezierKeyframe)
+						{
+							((BezierKeyframe) finalKey).c0[BezierKeyframe.SCL_Z] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c0[BezierKeyframe.SCL_Z]
+							                                                                                      : new Vec2(time, .3f));
+							((BezierKeyframe) finalKey).c1[BezierKeyframe.SCL_Z] = (key instanceof BezierKeyframe ? ((BezierKeyframe) key).c1[BezierKeyframe.SCL_Z]
+							                                                                                      : new Vec2(time, .6f));
+						}
 				}
+
+				finalTimeKey.put(time, finalKey);
 			}
 		}
+
+		//TODO: Ordenar timeKeys em ordem crescente de tempo
+
+		for (float t : finalTimeKey.keySet())
+			finalTimeKey.get(t).fix();
 
 		Keyframe[] keys = new Keyframe[finalTimeKey.size()];
 		finalTimeKey.values().toArray(keys);

@@ -33,6 +33,23 @@ public class BezierKeyframe extends Keyframe
 		this.c1 = c1;
 	}
 
+	public void fix()
+	{
+		super.fix();
+
+		Vec2[] fixdC0 = new Vec2[9];
+		Vec2[] fixdC1 = new Vec2[9];
+		for (int i = 0; i < 9; i++)
+		{
+			fixdC0[i] = ((c0.length == 9) && (c0[i] != null) ? c0[i]
+			                                                 : new Vec2(time, .3f));
+			fixdC1[i] = ((c1.length == 9) && (c1[i] != null) ? c1[i]
+			                                                 : new Vec2(time, .6f));
+		}
+		c0 = fixdC0;
+		c1 = fixdC1;
+	}
+
 	@Override
 	public Vec3 getLocAt (float curTime, Keyframe next)
 	{

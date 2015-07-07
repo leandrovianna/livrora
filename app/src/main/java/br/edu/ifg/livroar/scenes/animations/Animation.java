@@ -48,7 +48,6 @@ public class Animation
 				{
 
 				}
-				curKey = (curKey);
 			}
 			loc =   keyframes[curKey].getLocAt  (curTime, keyframes[nextKey]);
 			rot =   keyframes[curKey].getRotAt  (curTime, keyframes[nextKey]);

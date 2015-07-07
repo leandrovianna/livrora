@@ -21,6 +21,14 @@ public abstract class Keyframe
 		this.scl = scl;
 	}
 
+	public void fix()
+	{
+		// Nao ideal
+		if(loc == null) loc = new Vec3(0,0,0);
+		if(rot == null) rot = new Vec3(0,0,0);
+		if(scl == null) scl = new Vec3(0,0,0);
+	}
+
 	public abstract Vec3 getLocAt(float curTime, Keyframe next);
 	public abstract Vec3 getRotAt(float curTime, Keyframe next);
 	public abstract Vec3 getScaleAt(float curTime, Keyframe next);
